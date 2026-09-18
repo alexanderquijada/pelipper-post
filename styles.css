@@ -1,0 +1,419 @@
+/* Pelipper Post & Freight — static prototype (Phase 1)
+   Dark palette only, taken verbatim from the Style section of BRIEF.md. */
+
+:root {
+  --background: #0E1621;
+  --surface: #16202E;
+  --primary: #4FA3D1;
+  --secondary: #7FD1E8;
+  --accent: #F2A65A;
+  --success: #5FBF8F;
+  --error: #E8705A;
+  --on-surface: #E6EDF3;
+  --muted: #8FA3B8;
+
+  --hairline: rgba(143, 163, 184, 0.16);
+  --radius-lg: 12px;
+  --card-padding: 24px;
+  --gap: 20px;
+  --max-width: 1400px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--background);
+  color: var(--on-surface);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 32px 40px 8px;
+}
+
+/* ---------- 1. App bar ---------- */
+
+.app-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.app-bar__inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 16px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand__icon svg {
+  width: 30px;
+  height: 30px;
+  display: block;
+  fill: var(--primary);
+}
+
+.brand__wordmark {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.brand__tagline {
+  margin: 1px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.theme-toggle:hover {
+  color: var(--on-surface);
+  border-color: rgba(143, 163, 184, 0.34);
+}
+
+/* ---------- Shared card ---------- */
+
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--card-padding);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+}
+
+.card__title {
+  margin: 0 0 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+/* ---------- 2. Filter row ---------- */
+
+.filter-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.filter-row__controls {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-row__caption {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: var(--muted);
+}
+
+.field__select {
+  appearance: none;
+  min-width: 190px;
+  padding: 10px 38px 10px 14px;
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%238FA3B8' d='M7,10L12,15L17,10H7Z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 18px 18px;
+  color: var(--on-surface);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.field__select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* ---------- 3. KPI row ---------- */
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
+.metric-card__label {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.metric-card__value {
+  margin: 12px 0 0;
+  font-size: 40px;
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.metric-card__trend {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 10px 0 0;
+  font-size: 12.5px;
+}
+
+.metric-card__trend svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.metric-card__trend--good { color: var(--success); }
+.metric-card__trend--bad  { color: var(--error); }
+
+/* ---------- 4 & 5. Chart rows ---------- */
+
+.chart-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
+.trend-row,
+.roster-row {
+  margin-bottom: var(--gap);
+}
+
+.chart-placeholder {
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  border: 1px dashed rgba(143, 163, 184, 0.38);
+  border-radius: 10px;
+  background: rgba(79, 163, 209, 0.04);
+}
+
+.chart-placeholder--wide { height: 220px; }
+
+.chart-placeholder__name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--secondary);
+}
+
+.chart-placeholder__note {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.legend__swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* ---------- 6. Courier roster ---------- */
+
+.roster {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.roster__th {
+  padding: 0 14px 12px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.roster__th--avatar { width: 64px; }
+.roster__th--num { text-align: right; }
+
+.roster__td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.roster tbody tr:last-child .roster__td { border-bottom: none; }
+
+.roster__td--num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.roster__td--muted { color: var(--muted); }
+
+.roster__name { font-weight: 600; }
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(79, 163, 209, 0.12);
+  display: grid;
+  place-items: center;
+}
+
+.avatar__img {
+  width: 100%;
+  height: 100%;
+  /* official artwork is square with transparent padding — contain, don't crop */
+  object-fit: contain;
+  padding: 3px;
+  display: block;
+}
+
+.avatar__fallback svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--muted);
+  display: block;
+}
+
+.chip {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.chip--on-route {
+  color: var(--success);
+  background: rgba(95, 191, 143, 0.14);
+}
+
+.chip--resting {
+  color: var(--secondary);
+  background: rgba(127, 209, 232, 0.12);
+}
+
+.chip--grounded {
+  color: var(--error);
+  background: rgba(232, 112, 90, 0.14);
+}
+
+/* ---------- 7. Footer ---------- */
+
+.footer {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 12px 40px 40px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.footer p { margin: 0; }
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1100px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .chart-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .container { padding: 24px 20px 8px; }
+  .app-bar__inner,
+  .footer { padding-left: 20px; padding-right: 20px; }
+  .kpi-row { grid-template-columns: 1fr; }
+}

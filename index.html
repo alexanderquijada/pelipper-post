@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pelipper Post &amp; Freight — Executive Operations Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- 1. App bar -->
+  <header class="app-bar">
+    <div class="app-bar__inner">
+      <div class="brand">
+        <span class="brand__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,5.89 21.1,4 20,4Z" /></svg>
+        </span>
+        <div class="brand__text">
+          <h1 class="brand__wordmark">Pelipper Post &amp; Freight</h1>
+          <p class="brand__tagline">Your package, airborne.</p>
+        </div>
+      </div>
+
+      <button class="theme-toggle" type="button" title="Theme toggle (not wired up yet)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95Z" /></svg>
+        <span class="sr-only">Toggle theme</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- 2. Filter row -->
+    <section class="filter-row">
+      <div class="filter-row__controls">
+        <label class="field">
+          <span class="field__label">Month</span>
+          <select class="field__select">
+            <option selected>All Months</option>
+            <option>Oct 2025</option>
+            <option>Nov 2025</option>
+            <option>Dec 2025</option>
+            <option>Jan 2026</option>
+            <option>Feb 2026</option>
+            <option>Mar 2026</option>
+            <option>Apr 2026</option>
+            <option>May 2026</option>
+            <option>Jun 2026</option>
+            <option>Jul 2026</option>
+            <option>Aug 2026</option>
+            <option>Sep 2026</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Region</span>
+          <select class="field__select">
+            <option selected>All Regions</option>
+            <option>Kanto</option>
+            <option>Johto</option>
+            <option>Hoenn</option>
+            <option>Sinnoh</option>
+            <option>Unova</option>
+            <option>Galar</option>
+          </select>
+        </label>
+      </div>
+
+      <p class="filter-row__caption">Showing 12 months across 6 regions</p>
+    </section>
+
+    <!-- 3. KPI row -->
+    <section class="kpi-row">
+      <article class="card metric-card">
+        <p class="metric-card__label">Poké Balls Shipped</p>
+        <p class="metric-card__value">387,412</p>
+        <p class="metric-card__trend metric-card__trend--good">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7,15L12,10L17,15H7Z" /></svg>
+          6.2% vs. last month
+        </p>
+      </article>
+
+      <article class="card metric-card">
+        <p class="metric-card__label">Berry Crates Delivered</p>
+        <p class="metric-card__value">31,208</p>
+        <p class="metric-card__trend metric-card__trend--bad">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7,10L12,15L17,10H7Z" /></svg>
+          3.8% vs. last month
+        </p>
+      </article>
+
+      <article class="card metric-card">
+        <p class="metric-card__label">Gym Supply Runs</p>
+        <p class="metric-card__value">3,417</p>
+        <p class="metric-card__trend metric-card__trend--good">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7,15L12,10L17,15H7Z" /></svg>
+          2.4% vs. last month
+        </p>
+      </article>
+
+      <article class="card metric-card">
+        <p class="metric-card__label">Fainted Couriers</p>
+        <p class="metric-card__value">187</p>
+        <!-- inverted metric: fewer fainted couriers is good, so a decrease is green -->
+        <p class="metric-card__trend metric-card__trend--good">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7,10L12,15L17,10H7Z" /></svg>
+          18.5% vs. last month
+        </p>
+      </article>
+    </section>
+
+    <!-- 4. Chart row -->
+    <section class="chart-row">
+      <article class="card chart-card">
+        <h2 class="card__title">Parcels by Region</h2>
+        <div class="chart-placeholder">
+          <p class="chart-placeholder__name">Vertical bar chart</p>
+          <p class="chart-placeholder__note">Parcels delivered, six regions · Chart.js in Phase 6</p>
+        </div>
+      </article>
+
+      <article class="card chart-card">
+        <h2 class="card__title">Cargo Mix</h2>
+        <div class="chart-placeholder">
+          <p class="chart-placeholder__name">Doughnut chart</p>
+          <p class="chart-placeholder__note">Five cargo types · Chart.js in Phase 6</p>
+        </div>
+        <ul class="legend">
+          <li class="legend__item"><span class="legend__swatch" style="background:#4FA3D1"></span>Poké Balls</li>
+          <li class="legend__item"><span class="legend__swatch" style="background:#7FD1E8"></span>Berries</li>
+          <li class="legend__item"><span class="legend__swatch" style="background:#F2A65A"></span>Potions</li>
+          <li class="legend__item"><span class="legend__swatch" style="background:#9BB8D3"></span>TMs</li>
+          <li class="legend__item"><span class="legend__swatch" style="background:#2E6E92"></span>Evolution Stones</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- 5. Trend row -->
+    <section class="trend-row">
+      <article class="card chart-card">
+        <h2 class="card__title">Gym Supply Runs &amp; Parcels Delivered</h2>
+        <div class="chart-placeholder chart-placeholder--wide">
+          <p class="chart-placeholder__name">Full-width area chart</p>
+          <p class="chart-placeholder__note">Twelve months, Oct 2025 – Sep 2026 · Chart.js in Phase 6</p>
+        </div>
+      </article>
+    </section>
+
+    <!-- 6. Courier roster -->
+    <section class="roster-row">
+      <article class="card">
+        <h2 class="card__title">Courier Roster</h2>
+        <table class="roster">
+          <thead>
+            <tr>
+              <th class="roster__th roster__th--avatar"><span class="sr-only">Sprite</span></th>
+              <th class="roster__th">Courier</th>
+              <th class="roster__th">Species</th>
+              <th class="roster__th">Home Region</th>
+              <th class="roster__th roster__th--num">Runs</th>
+              <th class="roster__th roster__th--num">On-Time Rate</th>
+              <th class="roster__th">Status</th>
+            </tr>
+          </thead>
+          <!-- rows rendered by app.js from the COURIERS array -->
+          <tbody id="roster-body"></tbody>
+        </table>
+      </article>
+    </section>
+
+  </main>
+
+  <!-- 7. Footer -->
+  <footer class="footer">
+    <p>Made with coffee and Claude Code · mock data, not a real carrier.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
