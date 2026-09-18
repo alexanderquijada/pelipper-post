@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-18 — **Phase 6 complete: the dashboard is BUILT.** Deployment still unverified
+- **Last updated:** 2026-09-18 — **BUILD COMPLETE (Phases 0–7).** Only the Vercel deployment is outstanding.
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -63,7 +63,7 @@ what the capstone document and videos require — nothing more.
 | 4 | 2.3 | Custom `MetricCard` component | ✅ Done | `Extract reusable MetricCard component with typed props` |
 | 5 | 2.4 | Mock dataset `src/data/metrics.json` | ✅ Done | `Add realistic mock metrics dataset and TypeScript types` |
 | 6 | 2.4 | Full dashboard — charts, filters, roster | ✅ Done | `Build full dashboard with charts, filters, and courier roster` |
-| 7 | — | Final pass: cleanup, README | ⬜ Not started | `Final pass: cleanup, README, and documentation` |
+| 7 | — | Final pass: cleanup, README | ✅ Done | `Final pass: cleanup, README, and documentation` |
 | 8 | — | Submit repo + live URL on Workday | ⬜ Not started | — |
 
 **Status key:** ⬜ Not started · 🟡 In progress · ✅ Done
@@ -72,22 +72,33 @@ what the capstone document and videos require — nothing more.
 
 ## 4. → NEXT STEP
 
-**The dashboard is built and working locally. The only thing standing between this project and
-submission is the Vercel deployment.**
+**THE BUILD IS COMPLETE.** Phases 0–7 are done, committed and pushed. Every item in `BRIEF.md` §8's
+Definition of Done is met **except the live Vercel URL**. There is no remaining code work.
 
-**1. Get the live URL serving.** This is the blocker and it is not a repo problem — see the red item
-in §8. The build queue stalled on an account-wide single build slot. If it's still wedged, §8 also
-records the Vercel CLI fallback (`vercel build` + `vercel deploy --prebuilt`), which bypasses
-Vercel's build system entirely. It's a last resort and unverified — read the caveats first.
+**1. Get the live URL serving.** The only blocker, and it is not a repo problem — `npm run build`
+exits 0 and the dashboard runs correctly locally. See the red item in §8: the build queue stalled on
+an account-wide single build slot (Hobby plan shares one slot across *all* projects, which is why
+cancelling deployments inside this project freed nothing).
+
+Note the error has **changed** since it was first recorded: it was `NOT_FOUND` (a deployment existed
+but served a tree with no `index.html`); as of the final check it is **`DEPLOYMENT_NOT_FOUND`** —
+no deployment is attached to the hostname at all. Consistent with the stuck builds having been
+cancelled without a successful one replacing them. **Start at Project → Deployments and redeploy the
+newest commit.**
+
+If the queue is still wedged, §8 records the Vercel CLI fallback (`vercel build` +
+`vercel deploy --prebuilt`), which bypasses Vercel's build system entirely. Last resort, and
+unverified — read the caveats first.
 
 **2. Then confirm the deployed site actually works** — not just that it returns 200. Load it, toggle
-the theme, change both filters, and check a sprite renders. Only then put the URL on the Workday form.
+the theme, change both filters, and check a sprite renders. Only then put the URL on the Workday
+form, and update §5 and the README's "Live site" section, which both currently say deployment is
+pending.
 
-**3. Phase 7 — final pass: cleanup and README.** The README should cover what the project is, how to
-run it, and the Pokémon trademark / fan-project note required by §9.
+**3. Submit** the GitHub repo URL and the live URL on the Workday Microsoft Form (phase 8).
 
-Both post-Phase-6 open items are now **closed** (§8): code-splitting declined with reasoning, and the
-categorical palette replaced with Okabe–Ito. Nothing is waiting on a decision.
+Nothing is waiting on a decision. Both post-Phase-6 open items are closed in §8: code-splitting
+declined with reasoning, categorical palette replaced with Okabe–Ito.
 
 ---
 
@@ -104,14 +115,21 @@ categorical palette replaced with Okabe–Ito. Nothing is waiting on a decision.
 asks for — the GitHub repo URL and the live Vercel URL. Both have to load at submission time, so
 re-check them after the final phase.
 
-> ⚠️ **STILL UNVERIFIED as of 2026-09-18 — that live URL returns a Vercel 404**
-> (`x-vercel-error: NOT_FOUND`). Root cause is known and is **not** a repo problem: Vercel's build
-> queue stalled, so the domain is still serving `d9d9798`, a docs-only commit from before
-> `index.html` existed. Full write-up in section 8. Fix is dashboard-side — cancel the stuck builds,
-> redeploy the newest commit.
+> ⚠️ **NOT WORKING as of the final check, 2026-09-18.** `https://pelipper-post.vercel.app/` returns
+> **HTTP 404 with `x-vercel-error: DEPLOYMENT_NOT_FOUND`** and the body *"The deployment could not be
+> found on Vercel."*
+>
+> **This has never once served the site.** It is not a repo problem — `npm run build` exits 0 and the
+> dashboard runs correctly locally. Root cause and full history in §8.
+>
+> **The error changed during the project**, which is itself a clue: it was `NOT_FOUND` (a deployment
+> existed, but served a commit with no `index.html`), and is now `DEPLOYMENT_NOT_FOUND` (nothing
+> attached to the hostname at all) — consistent with the stuck builds having been cancelled without a
+> successful one replacing them.
 >
 > **Do not put this URL on the Workday form until it has been loaded in a browser and seen to render
-> the dashboard.** It has never yet served the site.
+> the dashboard.** The README's "Live site" section says deployment is pending and must be updated at
+> the same time.
 
 ---
 
@@ -541,6 +559,37 @@ Append here as the build goes. Date, what came up, what was decided.
   the vermillion, dropping Berries/Evo Stones to **ΔE 1.7 deutan**. Okabe–Ito works by separating
   lightness as well as hue, so darkening one member without re-checking the whole set breaks it. The
   final gold `#6B4E00` was chosen by searching candidates against all four other slots at once.
+
+- **2026-09-18 — Phase 7, final pass. BUILD COMPLETE.** `npm run build` **exit 0**, no TypeScript
+  errors. `node scripts/validate-data.mjs` **exit 0**, every check passed.
+
+  **`BRIEF.md` §8 Definition of Done — 8 of 9 met.** The only outstanding item is the live URL:
+
+  | # | Item | Status |
+  |---|---|---|
+  | 1 | Runs clean with `npm run dev`, no console or TypeScript errors | ✅ dev ready in 177ms; **0 console errors/warnings** in-browser; `vue-tsc` clean |
+  | 2 | `npm run build` succeeds | ✅ exit 0, 579ms |
+  | 3 | KPI cards, charts and roster render real values from the JSON | ✅ 265,314 / 25,888 / 3,193 / 151 = the sum of all 72 records |
+  | 4 | Both filters work, and work together | ✅ Hoenn + Aug 2026 → 3,242 / 342 / 38 / 5, matching that exact record |
+  | 5 | At least one sprite visibly renders | ✅ **7/7 loaded**, 475×475 each, from `raw.githubusercontent.com` |
+  | 6 | Theme toggle works both directions | ✅ `pelipperDark` → `pelipperLight` → back |
+  | 7 | Nothing left from the Vue starter template | ✅ grep clean; the last remnant (scaffold `README.md`) replaced this phase |
+  | 8 | Committed and pushed to GitHub | ✅ working tree clean, `main` up to date |
+  | 9 | **Live Vercel URL loads and works** | ❌ **`DEPLOYMENT_NOT_FOUND`** — see §5 and §8 |
+
+  **Removed in this phase:** the create-vue scaffold `README.md` (still titled "pelipper-app" and
+  full of Vite boilerplate) — replaced with a real one. That was the last piece of starter template
+  in the repo.
+
+  **Audited and found clean — nothing else to remove.** Every one of the six runtime dependencies is
+  imported; every devDependency is referenced by a config or the build script; no unused exports; no
+  unused destructured variables in any component; no untracked junk. Worth noting because
+  "delete everything unused" turned up exactly one file.
+
+  **Kept deliberately:** `.vscode/extensions.json` is technically scaffold output, but it only
+  recommends the Vue language plugin and genuinely helps anyone cloning the repo. `SETUP.md` and
+  `CLAUDE-CODE-PROMPTS.md` are kept as the capstone process record — the workflow *is* the
+  deliverable here. Say the word if any of those should go.
 
 ---
 
