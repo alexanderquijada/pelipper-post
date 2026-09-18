@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-18 — Phase 1 complete, deployed live to Vercel
+- **Last updated:** 2026-09-18 — Phase 1 complete; live URL still 404ing (Vercel build queue, §8)
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -56,7 +56,7 @@ what the capstone document and videos require — nothing more.
 |---|---|---|---|---|
 | 0 | — | Local setup + repo creation — **automated by `setup.sh`** | ✅ Done | `Add project brief and documentation` |
 | 1 | 2.1 | Static HTML prototype from the brief | ✅ Done | `Add static dashboard prototype` |
-| — | 2.1 | Import repo into Vercel (browser, one time) | 🟡 Imported — first deploy 404s, unresolved | — |
+| — | 2.1 | Import repo into Vercel (browser, one time) | 🟡 Imported — live URL still 404s; build queue stalled, see §8 | — |
 | 2a | 2.2 | Vue + Vite + TS + Router scaffold | ⬜ Not started | `Scaffold Vue project with Vite, TypeScript, and Vue Router` |
 | 2b | 2.2 | Dashboard shell replaces starter content | ⬜ Not started | `Add dashboard shell` |
 | 3 | 2.3 | Vuetify 3 + MDI, refactor shell | ⬜ Not started | `Add Vuetify 3 and refactor dashboard shell to Vuetify components` |
@@ -99,11 +99,14 @@ problem from the Phase 2 framework switch, and it predates the scaffold.
 asks for — the GitHub repo URL and the live Vercel URL. Both have to load at submission time, so
 re-check them after the final phase.
 
-> ⚠️ **As of 2026-09-18 that live URL returns a Vercel 404** (`x-vercel-error: NOT_FOUND`). Vercel is
-> answering the hostname, so the project exists, but no production deployment is attached to it. Most
-> likely one of: the first deploy is still running, it failed, or production is on a different
-> domain (check for `pelipper-post-git-main-<scope>.vercel.app` under Project → Deployments →
-> Domains). Confirm the real production URL before putting it on the Workday form.
+> ⚠️ **STILL UNVERIFIED as of 2026-09-18 — that live URL returns a Vercel 404**
+> (`x-vercel-error: NOT_FOUND`). Root cause is known and is **not** a repo problem: Vercel's build
+> queue stalled, so the domain is still serving `d9d9798`, a docs-only commit from before
+> `index.html` existed. Full write-up in section 8. Fix is dashboard-side — cancel the stuck builds,
+> redeploy the newest commit.
+>
+> **Do not put this URL on the Workday form until it has been loaded in a browser and seen to render
+> the dashboard.** It has never yet served the site.
 
 ---
 
@@ -176,37 +179,100 @@ Append here as the build goes. Date, what came up, what was decided.
   anywhere in the repo. **The file must not be added before Phase 2** — there's no `package.json`
   yet, so it would break the deploy that currently works. Both documents are now corrected.
 
+- **2026-09-18 — Live-site 404 diagnosed: Vercel's build queue was stuck.** The Deployments tab showed
+  three production deployments on `main`: `1ea88a7` and `740e50b` both sitting in `Initializing` for
+  17 and 28 minutes, behind `d9d9798` which was `Ready` and had built in 2 seconds. So every push
+  *did* create a deployment — the Git integration was healthy throughout. The two newer builds were
+  queued waiting on a build slot, never failing, never shipping. The live domain therefore kept
+  serving `d9d9798`, a **docs-only commit predating `index.html`** — a deployment with no HTML in it.
+  That is the 404. `vercel-status.com` reported all systems operational, so it wasn't an incident.
+  **Fix:** cancel the stuck deployments to free the slot, then redeploy the newest commit. Repo-side
+  changes: none. `vercel.json` stays as written — it's correct and gets read once a build runs.
+
+  **Correcting two wrong calls made earlier the same day.** Recorded because both were reasonable and
+  both cost time:
+
+  1. **"The Output Directory is misconfigured."** Wrong. It's a sound theory — there's no `public/`
+     in this repo — but the setting was never even reached, because no build ran to read it.
+  2. **"No production deployment is attached / pushes aren't triggering builds."** Wrong in the
+     opposite direction. Three deployments existed the entire time; the push→deploy chain was never
+     broken. The supporting evidence for this one *looked* strong — every path including
+     `/index.html` returned an identical platform 404, and a targeted fix produced no change over a
+     three-minute poll. Both facts were real, and both had an innocent explanation: the served
+     deployment truly had no files, and the build carrying the fix was still queued.
+
+  **The transferable lesson:** a *stale but Ready* production deployment is externally identical to
+  *pushes never deploying*. Same healthy hostname, same uniform 404, same non-response to new pushes.
+  What separates them is whether queued builds sit behind the Ready one — visible **only in the
+  Deployments list**. The deployment detail page shows "Ready" and looks perfectly healthy, because
+  it is; it's just old. **Check the list, not the detail page, and match the SHA against
+  `git log`.** A standing check to that effect is now in section 8.
+
 ---
 
 ## 8. Known issues / watch list
 
-- 🔴 **OPEN NOW — the live site 404s on the static Phase 1 deploy.** `https://pelipper-post.vercel.app/`
-  returns `x-vercel-error: NOT_FOUND`. Two competing hypotheses, both plausible, **different fixes**.
-  Don't assume one and stop looking:
+- 🔴 **OPEN — live site 404s. ROOT CAUSE FOUND 2026-09-18: Vercel's build queue is stuck.**
 
-  **Hypothesis A — the Output Directory is wrong.** On the `"Other"` framework preset Vercel serves
-  `public/` if it exists and the repo root otherwise, and it routes from **build-time metadata rather
-  than a live filesystem** — so it can 404 before it ever looks for a file. There is no `public/` in
-  this repo (verified 2026-09-18), which is exactly the case where that resolution goes wrong.
-  *Fix, applied 2026-09-18:* a root `vercel.json` pinning the output directory explicitly —
+  **What the Deployments tab actually showed:**
 
-  ```json
-  { "outputDirectory": "." }
-  ```
+  | Commit | What it is | State | Age |
+  |---|---|---|---|
+  | `1ea88a7` | Record live Vercel URL… | **Initializing** | 17 min |
+  | `740e50b` | Add static dashboard prototype | **Initializing** | 28 min |
+  | `d9d9798` | Record setup results… | Ready (built in 2s) | 39 min |
 
-  Nothing else goes in that file yet. No `framework`, no `buildCommand` — there's no `package.json`,
-  so either would break the static deploy.
+  Every push created a deployment, so **webhooks are firing and the Git integration is healthy.**
+  The two most recent builds have been stuck in `Initializing` for 17 and 28 minutes — waiting for a
+  build slot, not failing. A queued build has not errored; it simply never ran.
 
-  **Hypothesis B — no production deployment is attached to the domain.** The hostname resolves and
-  Vercel answers it, but that only proves the *project* exists. If the first deploy never ran, failed,
-  or was never promoted to production, the domain 404s exactly like this. *Fix:* Project →
-  Deployments. If there are no deployments at all, the GitHub connection never completed — reconnect
-  it under Settings → Git. If production is simply on another domain, use the real one
-  (`pelipper-post-git-main-<scope>.vercel.app`) and correct section 5.
+  Meanwhile the live domain keeps serving **the last deployment that actually shipped — `d9d9798`,
+  a docs-only commit made before `index.html` existed.** That deployment is genuinely a tree with no
+  HTML in it. Hence the 404, and hence why `/index.html`, `/styles.css` and a deliberately fake path
+  all returned byte-identical `NOT_FOUND`: there were no files to find. It also explains why the
+  `vercel.json` push appeared to do nothing for three minutes — **that build never ran.**
 
-  **The cheap discriminator:** pushing to `main` should itself trigger a fresh deployment. If a new
-  deployment appears in Vercel after a push, the Git connection is fine and A is the likely cause.
-  **If no new deployment appears at all, that's B — and the Git integration is the real problem.**
+  `vercel-status.com` showed all systems operational (Builds, CI/CD, Git Integrations), so this was
+  not a platform incident.
+
+  **Fix — dashboard-side:** cancel the stuck deployments to free the build slot, then redeploy the
+  newest commit. Nothing in the repo needs changing. Keep `vercel.json` as it is; it's correct and
+  will be read the moment a build actually runs.
+
+  **⚠️ Two earlier diagnoses were wrong. Record of why, so the same wrong turns aren't retaken:**
+
+  1. *"The Output Directory is misconfigured."* Plausible — there's no `public/` here — but the
+     setting was never reached, because no build ran to read it.
+  2. *"No production deployment is attached / pushes aren't triggering builds."* Wrong in the
+     opposite direction: **three** deployments existed the whole time. The push→deploy chain was
+     never broken.
+
+  **Why both looked right:** a *stale but Ready* production deployment is externally
+  indistinguishable from *pushes never deploying*. Both give a healthy hostname, a uniform
+  platform 404, and no visible response to new pushes. The thing that separates them is whether
+  **queued** builds are sitting behind the Ready one — and that is only visible in the
+  **Deployments list**. The deployment *detail* page for the live deployment shows "Ready" and
+  looks entirely healthy, because it is healthy; it's just old. **The list is the diagnostic
+  surface, not the detail page.**
+
+- ✅ **STANDING CHECK — after every phase push, open the Deployments tab and confirm two things:**
+  **(1) a NEW deployment exists for the commit you just pushed, and (2) it reached `Ready`.**
+  Both conditions, every time. Neither one alone is sufficient.
+
+  This replaces the earlier "does a push trigger a deployment?" check, which was too weak — it would
+  have passed during the stuck-queue incident above while the site was 404ing.
+
+  **Why both halves matter:** the two failure modes hit on this project both report as "successful"
+  if you only glance at the project's status badge —
+
+  | Failure mode | What the badge says | What's actually true |
+  |---|---|---|
+  | Stale `Ready` deployment | ✅ Ready | Live site is an old commit; your changes aren't on it |
+  | Builds stuck `Initializing` | ✅ Ready | New builds are queued and will never ship on their own |
+
+  In both cases the badge reflects *the last deployment that shipped*, not *the commit you pushed*.
+  Match the commit SHA in the Deployments list against `git log --oneline -1`. If it doesn't match,
+  the live site is not your latest work — regardless of what the badge says.
 
 - 🔴 **BLOCKING IN PHASE 2 — Vercel will not re-detect the framework.** Separate issue from the 404
   above; fixing one does not fix the other. Vercel fixes the Framework
