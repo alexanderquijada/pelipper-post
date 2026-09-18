@@ -91,9 +91,12 @@ A `vercel.json` in the repo **overrides whatever the dashboard thinks**, which i
 better fix: it's version controlled, it explains itself, and it survives anyone re-importing the
 project later. The `rewrites` line is the single-page-app fallback so the one route still resolves.
 
-**Timing matters: this file must not exist before Phase 2.** There's no `package.json` yet, so
-telling Vercel to run a Vite build today would break the static deploy that currently works. The
-Phase 2 prompt handles it — you don't need to create it yourself.
+**Timing matters.** A `vercel.json` already exists at the repo root, but it holds only
+`{ "outputDirectory": "." }` — that's an unrelated fix for the static deploy 404 (see §8 of
+`PELIPPER-POST-STATUS.md`). Phase 2 **overwrites** it with the config above. The `framework` and
+`buildCommand` keys must not be added before then: there's no `package.json` yet, so telling Vercel
+to run a Vite build today would break the static deploy. The Phase 2 prompt handles the swap — you
+don't need to edit it yourself.
 
 **If you'd rather click it:** Project → Settings → Build & Deployment → Framework Preset → **Vite**,
 then redeploy. Same result, but nothing in the repo records that you did it.

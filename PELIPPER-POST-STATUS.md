@@ -56,7 +56,7 @@ what the capstone document and videos require — nothing more.
 |---|---|---|---|---|
 | 0 | — | Local setup + repo creation — **automated by `setup.sh`** | ✅ Done | `Add project brief and documentation` |
 | 1 | 2.1 | Static HTML prototype from the brief | ✅ Done | `Add static dashboard prototype` |
-| — | 2.1 | Import repo into Vercel (browser, one time) | ✅ Done | — |
+| — | 2.1 | Import repo into Vercel (browser, one time) | 🟡 Imported — first deploy 404s, unresolved | — |
 | 2a | 2.2 | Vue + Vite + TS + Router scaffold | ⬜ Not started | `Scaffold Vue project with Vite, TypeScript, and Vue Router` |
 | 2b | 2.2 | Dashboard shell replaces starter content | ⬜ Not started | `Add dashboard shell` |
 | 3 | 2.3 | Vuetify 3 + MDI, refactor shell | ⬜ Not started | `Add Vuetify 3 and refactor dashboard shell to Vuetify components` |
@@ -77,9 +77,12 @@ what the capstone document and videos require — nothing more.
 deletes the static prototype (`index.html`, `styles.css`, `app.js`) and all Vue starter content,
 wires one route `/` → `HomeView`, and builds the dashboard shell. Two commits, not one.
 
-**Phase 2 must also create `vercel.json` at the repo root** — without it the live site breaks the
-moment this stops being static HTML. See the red item at the top of section 8. Do not create that
-file before Phase 2; there is no `package.json` yet, so it would break the deploy that works today.
+**Phase 2 must also overwrite the root `vercel.json`** with the Vite config — it currently holds only
+`{ "outputDirectory": "." }` for the static deploy, and that value is wrong the moment there's a build
+step. Without the swap the live site breaks. See the second red item in section 8.
+
+**Note the live site is 404ing right now** (first red item in section 8) — that's a separate, open
+problem from the Phase 2 framework switch, and it predates the scaffold.
 
 ---
 
@@ -177,13 +180,44 @@ Append here as the build goes. Date, what came up, what was decided.
 
 ## 8. Known issues / watch list
 
-- 🔴 **BLOCKING IN PHASE 2 — Vercel will not re-detect the framework.** Vercel fixes the Framework
+- 🔴 **OPEN NOW — the live site 404s on the static Phase 1 deploy.** `https://pelipper-post.vercel.app/`
+  returns `x-vercel-error: NOT_FOUND`. Two competing hypotheses, both plausible, **different fixes**.
+  Don't assume one and stop looking:
+
+  **Hypothesis A — the Output Directory is wrong.** On the `"Other"` framework preset Vercel serves
+  `public/` if it exists and the repo root otherwise, and it routes from **build-time metadata rather
+  than a live filesystem** — so it can 404 before it ever looks for a file. There is no `public/` in
+  this repo (verified 2026-09-18), which is exactly the case where that resolution goes wrong.
+  *Fix, applied 2026-09-18:* a root `vercel.json` pinning the output directory explicitly —
+
+  ```json
+  { "outputDirectory": "." }
+  ```
+
+  Nothing else goes in that file yet. No `framework`, no `buildCommand` — there's no `package.json`,
+  so either would break the static deploy.
+
+  **Hypothesis B — no production deployment is attached to the domain.** The hostname resolves and
+  Vercel answers it, but that only proves the *project* exists. If the first deploy never ran, failed,
+  or was never promoted to production, the domain 404s exactly like this. *Fix:* Project →
+  Deployments. If there are no deployments at all, the GitHub connection never completed — reconnect
+  it under Settings → Git. If production is simply on another domain, use the real one
+  (`pelipper-post-git-main-<scope>.vercel.app`) and correct section 5.
+
+  **The cheap discriminator:** pushing to `main` should itself trigger a fresh deployment. If a new
+  deployment appears in Vercel after a push, the Git connection is fine and A is the likely cause.
+  **If no new deployment appears at all, that's B — and the Git integration is the real problem.**
+
+- 🔴 **BLOCKING IN PHASE 2 — Vercel will not re-detect the framework.** Separate issue from the 404
+  above; fixing one does not fix the other. Vercel fixes the Framework
   Preset **at import time** and does **not** re-detect it on later pushes. This project was imported
   while the repo was plain static HTML, so it is pinned to **"Other"**. When Phase 2 turns it into a
   Vue + Vite app, Vercel will keep serving it as static files and **the live site will go blank or
   404.**
 
-  **Fix — Phase 2 creates `vercel.json` at the repo root:**
+  **Fix — Phase 2 REPLACES the existing root `vercel.json` with the Vite config.** As of 2026-09-18
+  that file already exists, holding only `{ "outputDirectory": "." }` for the static deploy. Phase 2
+  overwrites it wholesale — the `"."` output directory is wrong the moment there's a build step:
 
   ```json
   {
@@ -197,8 +231,9 @@ Append here as the build goes. Date, what came up, what was decided.
   A `vercel.json` in the repo **overrides the dashboard preset**, so this fixes it in code and
   survives anyone re-importing the project later. The rewrite is the SPA fallback.
 
-  **Do NOT add that file before Phase 2.** There is no `package.json` yet, so a `vite` framework
-  setting would break the static deploy that currently works.
+  **Do NOT add those settings before Phase 2.** There is no `package.json` yet, so a `vite` framework
+  setting would break the static deploy. The file existing today is fine — it's the `framework` and
+  `buildCommand` keys specifically that have to wait for the scaffold.
 
   Manual alternative if you'd rather click it: Project → Settings → Build & Deployment →
   Framework Preset → **Vite**, then redeploy. The `vercel.json` is the better answer — it's version
