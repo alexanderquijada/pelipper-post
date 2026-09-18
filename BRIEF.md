@@ -237,9 +237,19 @@ Top to bottom, one page, no scrolling required at 1440×900 beyond the courier t
      in that case show a small empty-state message instead of an awkward one-bar chart.
    - **Cargo Mix** — doughnut chart, five segments, with a legend
 
-5. **Trend row** — one full-width area chart: **Gym Supply Runs & Parcels Delivered over 12 months**.
-   This chart always shows all twelve months (it's the trend view) but respects the region filter,
-   and highlights the currently selected month with a marker when one is selected.
+5. **Trend row** — one full-width card: **Gym Supply Runs & Parcels Delivered over 12 months**,
+   drawn as **two vertically stacked area panels sharing one time axis** — Parcels Delivered on top,
+   Gym Supply Runs beneath. Each panel has its own y-axis, both starting at zero, and the y-axis
+   gutters are pinned to the same width so the two time axes line up exactly.
+
+   **Not a dual-axis chart, deliberately.** Parcels Delivered runs in the tens of thousands and Gym
+   Supply Runs in the tens — roughly a 200× gap. Plotted against two y-scales in one frame, the
+   smaller series flattens against the axis and the point where the lines cross is an artefact of
+   the scales chosen rather than anything real. Two aligned single-axis panels keep both shapes
+   readable and every comparison honest, while still reading as one chart in one card.
+
+   The card always shows all twelve months (it's the trend view) but respects the region filter,
+   and highlights the currently selected month with a marker on both panels when one is selected.
 
 6. **Courier roster** — full-width Vuetify table: circular sprite avatar, courier name, species,
    home region, total runs, on-time rate, and status as a colored chip. Respects the region filter.
@@ -287,8 +297,47 @@ Cohesive palette drawn from Pelipper — white body, blue wings, orange beak. **
 | on-surface text | `#E6EDF3` | `#16202E` |
 | muted text | `#8FA3B8` | `#5C7186` |
 
-**Chart series colors, in this order** (a blue ramp with one orange for contrast):
+### Chart colors — two palettes, because there are two different jobs
+
+An earlier version of this brief specified one blue ramp for every chart. That was wrong: a ramp
+encodes **magnitude**, so using it for unordered categories implies a ranking that doesn't exist —
+and four near-neighbour blues are not mutually distinguishable. Measured with a
+Viénot–Brettel–Mollon dichromat simulation and CIEDE2000, the ramp used categorically put three of
+ten pairs below the ΔE 15 normal-vision floor (Poké Balls/TMs **11.6**, Berries/TMs **12.0**,
+Poké Balls/Berries **14.3**) and collapsed **Berries/TMs to ΔE 4.3 under deuteranopia and 1.3 under
+tritanopia** — effectively the same colour.
+
+**1. Sequential ramp — ORDERED data only.** The twelve-month trend chart. Unchanged:
+
 `#4FA3D1`, `#7FD1E8`, `#F2A65A`, `#9BB8D3`, `#2E6E92`
+
+**2. Categorical palette — UNORDERED categories.** The cargo-mix doughnut and the region bar chart.
+**Okabe–Ito**, which is colourblind-safe because it varies lightness as well as hue. Two variants,
+because no single set clears 3:1 against both a near-black and a white card:
+
+| Slot | Dark theme | on `#16202E` | Light theme | on `#FFFFFF` |
+|---|---|---|---|---|
+| Poké Balls | `#56B4E9` | 7.11:1 | `#0072B2` | 5.19:1 |
+| Berries | `#E69F00` | 7.28:1 | `#D55E00` | 3.87:1 |
+| Potions | `#009E73` | 4.79:1 | `#009E73` | 3.42:1 |
+| TMs | `#CC79A7` | 5.36:1 | `#CC79A7` | 3.06:1 |
+| Evolution Stones | `#F0E442` | 12.41:1 | `#6B4E00` | 7.74:1 |
+
+Every slot clears **3:1** against its own surface. Across all ten pairs the worst red-green
+separation is **ΔE 11.7 deutan / 14.3 protan** (dark) and **18.0 / 12.2** (light) — comfortably
+above the ΔE 8 floor.
+
+The light variant uses the darker Okabe–Ito members. Evolution Stones becomes a deep gold rather
+than Okabe–Ito's yellow, because `#F0E442` is only **1.32:1** on white; the gold must also stay dark
+enough to avoid colliding with the vermillion under red-green CVD.
+
+**Known limitation:** under **tritanopia** (blue-yellow, ~0.01% of people) Berries and TMs sit at
+ΔE 0.6 in the light theme. Not resolvable while keeping Okabe–Ito, which is optimised for the far
+more common red-green types. The mitigation below covers it.
+
+**Required alongside the categorical palette — identity must never rest on colour alone:**
+- a **2px surface-coloured gap** between adjacent doughnut segments
+- a legend listing each segment's **label, value and percentage share**
 
 **Feel:**
 - Clean and minimal with real whitespace. Cards get generous internal padding (24px), and the gaps

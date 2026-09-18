@@ -11,7 +11,7 @@ import {
   Tooltip,
   type ChartOptions,
 } from 'chart.js'
-import { SERIES_COLORS, compactNumber, fullNumber, useChartTheme, withAlpha } from './chartTheme'
+import { SEQUENTIAL_COLORS, compactNumber, fullNumber, useChartTheme, withAlpha } from './chartTheme'
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Filler, Tooltip)
 
@@ -34,7 +34,8 @@ const { muted, grid, surface, ink } = useChartTheme()
  * rather than anything real. Stacking two single-axis panels keeps both shapes
  * readable and keeps every comparison honest.
  */
-const MARKER = SERIES_COLORS[2] // the one orange in the ramp
+// Twelve months IS ordered data, so the sequential ramp is correct here.
+const MARKER = SEQUENTIAL_COLORS[2] // the one orange in the ramp
 
 function panelOptions(opts: {
   showXTicks: boolean
@@ -112,12 +113,12 @@ function series(values: number[], color: string) {
 
 const parcelsData = computed(() => ({
   labels: props.labels,
-  datasets: [series(props.parcelsDelivered, SERIES_COLORS[0])],
+  datasets: [series(props.parcelsDelivered, SEQUENTIAL_COLORS[0])],
 }))
 
 const gymData = computed(() => ({
   labels: props.labels,
-  datasets: [series(props.gymSupplyRuns, SERIES_COLORS[1])],
+  datasets: [series(props.gymSupplyRuns, SEQUENTIAL_COLORS[1])],
 }))
 
 const parcelsOptions = computed(() => panelOptions({ showXTicks: false, unit: 'parcels' }))
@@ -127,7 +128,7 @@ const gymOptions = computed(() => panelOptions({ showXTicks: true, unit: 'runs' 
 <template>
   <div>
     <div class="panel-label text-caption text-muted">
-      <span class="dot" :style="{ background: SERIES_COLORS[0] }" />
+      <span class="dot" :style="{ background: SEQUENTIAL_COLORS[0] }" />
       Parcels Delivered
     </div>
     <div class="panel panel--tall">
@@ -135,7 +136,7 @@ const gymOptions = computed(() => panelOptions({ showXTicks: true, unit: 'runs' 
     </div>
 
     <div class="panel-label text-caption text-muted mt-3">
-      <span class="dot" :style="{ background: SERIES_COLORS[1] }" />
+      <span class="dot" :style="{ background: SEQUENTIAL_COLORS[1] }" />
       Gym Supply Runs
     </div>
     <div class="panel panel--short">

@@ -86,9 +86,8 @@ the theme, change both filters, and check a sprite renders. Only then put the UR
 **3. Phase 7 — final pass: cleanup and README.** The README should cover what the project is, how to
 run it, and the Pokémon trademark / fan-project note required by §9.
 
-**Two open items Alex may want to decide before then**, both recorded in §8:
-- 🟡 the chunk-size warning is back (Chart.js pushes the bundle to 534 kB)
-- 🟡 the brief's chart palette fails the categorical colour-contrast check
+Both post-Phase-6 open items are now **closed** (§8): code-splitting declined with reasoning, and the
+categorical palette replaced with Okabe–Ito. Nothing is waiting on a decision.
 
 ---
 
@@ -510,6 +509,39 @@ Append here as the build goes. Date, what came up, what was decided.
   Also fixed: the theme toggle used `theme.global.name.value = …`, deprecated in Vuetify 3.13, which
   logged a warning on every toggle. Now `theme.change()`. That's what took console output to zero.
 
+- **2026-09-18 — Phase 6 rulings.** Three decisions from Alex, and a correction to my own analysis.
+
+  1. **RATIFIED — two aligned trend panels.** `BRIEF.md` §4 now describes what was actually built:
+     one card, one shared time axis, two aligned single-axis panels, with the reasoning recorded so
+     it doesn't read like a deviation.
+  2. **DECLINED — code-splitting Chart.js.** See §8 for the reasoning and, more importantly, the
+     distinction from the `vite-plugin-vuetify` call.
+  3. **PALETTE — replaced with Okabe–Ito**, split by job. See §8 and `BRIEF.md` §6.
+
+  **Correcting my Phase 6 report — I got the colourblind finding wrong, and Alex got the pair wrong.**
+  Worth recording precisely, because both errors are instructive:
+
+  - **My error:** I reported "colourblind separation actually passes". It does not. I had run the
+    validator in its default **adjacent-pairs** mode, which checks 4 of 10 pairs. Re-run with
+    `--pairs all` it **FAILS**. A palette check that only compares neighbours in a list is close to
+    meaningless for a doughnut, where any segment can end up beside any other.
+  - **Alex's error:** the collapsing pair is **Berries/TMs** (`#7FD1E8` / `#9BB8D3`), not
+    Poké Balls/TMs. Independently measured: Berries/TMs is **ΔE 4.3 deutan, 5.3 protan, 1.3 tritan**.
+    Poké Balls/TMs is 11.2 deutan / 9.1 protan — poor, but not the collapse. The quoted 0.6 / 0.5
+    doesn't reproduce for that pair. Two independent methods agreed on Berries/TMs: my CIEDE2000 +
+    LMS script, and the OKLab-based validator, which flagged the same pair at ΔE 4.6.
+  - **Alex's normal-vision numbers were exactly right** — Poké Balls/TMs 11.6, Berries/TMs 12.0,
+    Poké Balls/Berries 14.3, all reproduced to one decimal. Three of ten pairs below the ΔE 15 floor,
+    as stated.
+
+  **And one thing neither of us predicted.** Alex expected `#F0E442` alone to fail on the light
+  surface. **Three of the five fail**: `#F0E442` at 1.32:1, `#56B4E9` at 2.31:1, `#E69F00` at 2.25:1.
+  So the light theme needed a full variant, not a one-colour patch. The first attempt at that variant
+  then introduced a *new* collapse — darkening the yellow to `#A67C00` put it at the same lightness as
+  the vermillion, dropping Berries/Evo Stones to **ΔE 1.7 deutan**. Okabe–Ito works by separating
+  lightness as well as hue, so darkening one member without re-checking the whole set breaks it. The
+  final gold `#6B4E00` was chosen by searching candidates against all four other slots at once.
+
 ---
 
 ## 8. Known issues / watch list
@@ -668,15 +700,42 @@ Append here as the build goes. Date, what came up, what was decided.
   **The CSS barely moved because most of it is `@mdi/font`**, not Vuetify — that stylesheet declares
   a class for every icon in the set.
 
-- 🟡 **The chunk-size warning is back — Chart.js. Alex's call.** Adding `chart.js` + `vue-chartjs`
-  took the JS bundle from 325.70 kB to **534.43 kB** (gzip 180.89 kB), past Vite's default 500 kB
-  warning threshold. **The build still exits 0** — this is a warning, not an error, and the app works.
-  Options, in order of preference: lazy-load the chart components with `defineAsyncComponent` so
-  Chart.js lands in its own chunk; or accept it and raise `build.chunkSizeWarningLimit`. Not done,
-  because the Phase 6 prompt didn't ask for code-splitting. **Do not silently raise the threshold** —
-  that hides the number rather than improving it.
+- ⛔️ **CONSIDERED AND DECLINED — code-splitting Chart.js. Do not re-raise.** Adding `chart.js` +
+  `vue-chartjs` took the JS bundle from 325.70 kB to **534.43 kB** (gzip 180.89 kB), past Vite's
+  default 500 kB warning threshold. The build exits 0; the warning is cosmetic.
 
-- 🟡 **The brief's chart palette fails the categorical colour-contrast check. Alex's call.**
+  **Declined because Chart.js is above-the-fold content that every page view needs immediately.**
+  Lazy-loading it would trade a visible flash of empty chart containers on first paint for a
+  cosmetic terminal warning. That's a worse dashboard in exchange for a tidier build log.
+
+  **This deliberately differs from the `vite-plugin-vuetify` decision, and the distinction is the
+  point.** There, the waste was Vuetify components that nobody ever rendered — removing them cost
+  the user nothing. Here, every byte is used on first paint. The principle is **"don't defer what's
+  needed immediately"**, not "always split". A bundle-size number is not a goal in itself; what
+  matters is whether the bytes earn their place.
+
+  Also do **not** raise `build.chunkSizeWarningLimit` to silence it — that hides the number rather
+  than improving it, and the number is worth seeing if it ever grows again for a worse reason.
+
+- ✅ **RESOLVED 2026-09-18 — categorical chart palette replaced with Okabe–Ito.** `BRIEF.md` §6 now
+  specifies two palettes for two jobs: the original blue ramp stays for the **ordered** twelve-month
+  trend chart, and **Okabe–Ito** (two theme variants) covers the **unordered** cargo-mix doughnut and
+  region bar chart. Root cause was the spec, not the implementation: a sequential ramp was being used
+  for categorical data, and four near-neighbour blues cannot be mutually distinguishable.
+
+  Measured with a Viénot–Brettel–Mollon LMS dichromat simulation and CIEDE2000, all ten pairs.
+  Worst red-green separation is now **ΔE 11.7 deutan / 14.3 protan** (dark) and **18.0 / 12.2**
+  (light), against a floor of 8. Every slot clears 3:1 on its own surface. Full table in `BRIEF.md` §6.
+
+  Kept, because they were right and they mean identity never rests on colour alone: the 2px
+  surface-coloured segment gaps and the legend carrying label + value + share.
+
+  **Residual, accepted:** under **tritanopia** (~0.01% of people) Berries/TMs sit at ΔE 0.6 in the
+  light theme. Not fixable while keeping Okabe–Ito, which is optimised for the far more common
+  red-green types. The value+share legend is the mitigation. Recorded in `BRIEF.md` §6.
+
+- ~~🟡 **The brief's chart palette fails the categorical colour-contrast check.**~~ *(superseded by
+  the entry above — kept for the record of what was measured)*
   `BRIEF.md` §6 fixes the series colours as `#4FA3D1, #7FD1E8, #F2A65A, #9BB8D3, #2E6E92`. Run
   through a perceptual-contrast validator against the dark surface `#16202E`, the five-colour
   categorical palette fails:

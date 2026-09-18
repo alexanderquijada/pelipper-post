@@ -9,13 +9,14 @@ import {
   Tooltip,
   type ChartOptions,
 } from 'chart.js'
-import { SERIES_COLORS, compactNumber, fullNumber, useChartTheme } from './chartTheme'
+import { compactNumber, fullNumber, useChartTheme } from './chartTheme'
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip)
 
 const props = defineProps<{ labels: string[]; values: number[] }>()
 
-const { muted, grid, surface, ink } = useChartTheme()
+// Regions are unordered categories. One series, so one colour: categorical slot 0.
+const { muted, grid, surface, ink, categorical } = useChartTheme()
 
 const data = computed(() => ({
   labels: props.labels,
@@ -23,8 +24,8 @@ const data = computed(() => ({
     {
       label: 'Parcels delivered',
       data: props.values,
-      backgroundColor: SERIES_COLORS[0],
-      hoverBackgroundColor: SERIES_COLORS[1],
+      backgroundColor: categorical.value[0],
+      hoverBackgroundColor: categorical.value[1],
       // 4px rounded data-end, anchored to the baseline
       borderRadius: 4,
       borderSkipped: 'bottom' as const,

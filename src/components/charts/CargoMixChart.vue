@@ -2,13 +2,14 @@
 import { computed } from 'vue'
 import { Doughnut } from 'vue-chartjs'
 import { ArcElement, Chart as ChartJS, Tooltip, type ChartOptions } from 'chart.js'
-import { SERIES_COLORS, fullNumber, useChartTheme } from './chartTheme'
+import { fullNumber, useChartTheme } from './chartTheme'
 
 ChartJS.register(ArcElement, Tooltip)
 
 const props = defineProps<{ labels: string[]; values: number[] }>()
 
-const { muted, grid, surface, ink } = useChartTheme()
+// Cargo types are UNORDERED, so this uses the categorical palette, not the ramp.
+const { grid, surface, ink, categorical } = useChartTheme()
 
 const total = computed(() => props.values.reduce((a, b) => a + b, 0))
 
@@ -17,7 +18,7 @@ const data = computed(() => ({
   datasets: [
     {
       data: props.values,
-      backgroundColor: [...SERIES_COLORS],
+      backgroundColor: [...categorical.value],
       // 2px surface-coloured gap between segments so adjacent fills never touch
       borderColor: surface.value,
       borderWidth: 2,
@@ -58,7 +59,7 @@ const legend = computed(() =>
     return {
       label,
       value,
-      color: SERIES_COLORS[i % SERIES_COLORS.length]!,
+      color: categorical.value[i % categorical.value.length]!,
       pct: total.value > 0 ? ((value / total.value) * 100).toFixed(1) : '0.0',
     }
   }),
