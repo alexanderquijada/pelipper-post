@@ -57,7 +57,11 @@ Owner: Alex Quijada. Alex is a designer, not a developer. He reviews and redirec
 ## Tech constraints
 
 Vue 3 (`<script setup>`, Composition API) · Vite · TypeScript · Vue Router (one route) ·
-Vuetify 3 · `@mdi/font` · Chart.js + vue-chartjs · mock data from `src/data/metrics.json`.
+**Vuetify 3.x (pinned — do not upgrade to 4)** · `@mdi/font` · Chart.js + vue-chartjs ·
+mock data from `src/data/metrics.json`.
+
+Install Vuetify as `vuetify@^3`. A bare `npm install vuetify` resolves to 4.x and silently
+jumps a major version.
 
 **Not used:** Pinia, Vitest, Playwright, JSX, ESLint, Prettier, Tailwind, any backend, any auth.
 

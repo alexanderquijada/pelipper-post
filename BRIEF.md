@@ -170,7 +170,8 @@ Requirements:
 - **Vite** as the build tool
 - **TypeScript** on
 - **Vue Router** installed (single route `/` — it's there because the capstone asks for it)
-- **Vuetify 3** for components, plus **Material Design Icons** (`@mdi/font`)
+- **Vuetify 3.x (pinned — do not upgrade to 4)** for components, plus **Material Design Icons**
+  (`@mdi/font`). Install as `vuetify@^3`; a bare `npm install vuetify` now resolves to 4.x.
 - **Chart.js** + **vue-chartjs** for all charts
 - No Pinia, no testing framework, no JSX, no ESLint, no Prettier
 - Single page — everything renders in `src/views/HomeView.vue`

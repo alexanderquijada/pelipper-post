@@ -78,10 +78,6 @@ what the capstone document and videos require — nothing more.
 props. This is the capstone's "custom reusable component" requirement, so the props interface
 matters as much as the markup.
 
-**One decision waiting for Alex —** see the bundle-size note in §8. Vuetify is currently registered
-with every component imported, which works but ships ~638 kB of JS. `vite-plugin-vuetify` would
-tree-shake it. Not done, because it's outside what the Phase 3 prompt asked for.
-
 **Deployment is still unverified** — see §8. Judge Phase 4 on `npm run dev` and `npm run build`
 locally; the live URL will confirm separately once Vercel's build queue clears.
 
@@ -263,9 +259,9 @@ Append here as the build goes. Date, what came up, what was decided.
 
   Decisions the phase prompt didn't cover:
 
-  1. **All Vuetify components are registered eagerly** (`import * as components from
-     'vuetify/components'`). Simple and reliable, and it avoids adding a build plugin the prompt
-     didn't ask for — but it's why the bundle is large. See the §8 bundle note; this is Alex's call.
+  1. ~~**All Vuetify components are registered eagerly.**~~ **Superseded same day** — Alex approved
+     `vite-plugin-vuetify`, added in its own commit (`52653e7`). JS dropped 49%, the chunk-size
+     warning is gone, and a component census confirmed nothing was dropped. See §8.
   2. **`src/utils/sprites.ts` created now, not in Phase 6.** The phase prompt asked for `v-avatar`
      sprites in the roster, and `BRIEF.md` §2 requires the URL builder to live in exactly one file.
      Building the roster without it would have meant inlining the CDN path and moving it later.
@@ -312,6 +308,19 @@ Append here as the build goes. Date, what came up, what was decided.
   Both directions, and both background values match `BRIEF.md` §6 exactly. For the icons, the app-bar
   `v-icon` computes `font-family: "Material Design Icons"` and measures **30px wide** — a glyph that
   failed to load renders zero-width, so this rules out the empty-box failure mode.
+
+- **2026-09-18 — Post-Phase-3 cleanup.** Three follow-ups, two commits.
+
+  1. **`vite-plugin-vuetify` added** (`52653e7`, deliberately isolated so it reverts alone). Bundle
+     JS 637.90 kB → **325.70 kB**, chunk-size warning gone, rendered-component census identical
+     before and after in both themes. Full numbers in §8.
+  2. **`@mdi/font` left alone — considered and declined.** Only the `woff2` is ever fetched, so the
+     other three formats cost users nothing. Recorded in §8 as closed so it isn't re-raised.
+  3. **Vuetify pinned to 3.x in the governing docs.** `BRIEF.md` §3 and `CLAUDE.md` now both read
+     "Vuetify 3.x (pinned — do not upgrade to 4)" and name `vuetify@^3` as the install command. This
+     is the first change to either document since they were written — made on Alex's explicit
+     instruction, because a bare `npm install vuetify` now resolves to 4.x and would quietly break
+     the stated tech constraint.
 
 ---
 
@@ -451,23 +460,36 @@ Append here as the build goes. Date, what came up, what was decided.
 - **Nested-folder trap.** `npm create vue@latest` will try to scaffold into a subfolder. Phase 2's
   prompt handles it, but check the file tree after Phase 2 — a stray subfolder is the single most
   common way this build goes sideways (it happened twice in the capstone videos).
-- 🟡 **Bundle size — Vuetify is registered without tree-shaking. Alex's call.** `main.ts` does
-  `import * as components from 'vuetify/components'`, so every component ships whether used or not:
+- ✅ **RESOLVED 2026-09-18 — bundle size. `vite-plugin-vuetify` added; the chunk-size warning is
+  gone.** `main.ts` no longer does `import * as components from 'vuetify/components'`; the plugin
+  scans templates and registers only what's used (`autoImport: true` in `vite.config.ts`).
 
-  | Asset | Size | gzip |
-  |---|---|---|
-  | `index.js` | 637.90 kB | 202.37 kB |
-  | `index.css` | 833.29 kB | 117.99 kB |
-  | MDI webfonts (woff2/woff/ttf/eot) | ~3.6 MB total | — |
+  | Asset | Before | After | Change |
+  |---|---|---|---|
+  | `index.js` | 637.90 kB (gzip 202.37) | **325.70 kB** (gzip 109.79) | **−49%** |
+  | `index.css` | 833.29 kB (gzip 117.99) | **678.18 kB** (gzip 97.44) | −19% |
+  | modules transformed | 576 | 269 | −53% |
 
-  Vite prints a chunk-size warning because of it. **Nothing is broken** — it builds, deploys and runs
-  fine, and for a single-page capstone dashboard it's cosmetic. The fix is `vite-plugin-vuetify`,
-  which auto-imports only the components actually used and typically cuts this by more than half.
-  Not done in Phase 3 because the prompt didn't ask for a build plugin and `CLAUDE.md` rule 1 says
-  don't invent scope. Say the word and it's a ten-minute change.
+  Verified nothing was dropped — a tree-shaker can silently remove a component that's only referenced
+  dynamically. Took a census of rendered Vuetify elements over the DevTools Protocol, in both themes:
+  8 `v-card`, 7 `v-avatar`, 7 `v-img`, 7 `v-chip`, 2 `v-select`, 1 `v-table`, 4 `v-icon`, plus
+  `v-app-bar` / `v-main` / `v-container` / `v-row`. Identical before and after, theme toggle still
+  works both directions, MDI glyphs still 30px wide. Kept as its own commit
+  (`52653e7`) so it can be reverted alone if it ever misbehaves.
 
-  The four MDI font formats come from `@mdi/font`'s stock CSS; only `woff2` is needed by any browser
-  this will ever run in. Same call, same reasoning.
+  **The CSS barely moved because most of it is `@mdi/font`**, not Vuetify — that stylesheet declares
+  a class for every icon in the set.
+
+- ⛔️ **CONSIDERED AND DECLINED — trimming the extra `@mdi/font` webfont formats. Do not re-raise.**
+  `dist/` carries four formats (`woff2` 403 kB, `woff` 588 kB, `ttf` 1.31 MB, `eot` 1.31 MB) because
+  that's what `@mdi/font`'s stock CSS declares. **Only the `woff2` is ever fetched** — every browser
+  this will run in supports it, and the `@font-face` `src` list is ordered so the others are never
+  requested. They sit in the deployment costing users nothing. Stripping them would mean hand-editing
+  or overriding vendor CSS for zero user-facing gain. Decision: leave `@mdi/font` exactly as is.
+
+- **Vuetify major-version trap.** A bare `npm install vuetify` resolves to **4.x** — installing
+  without a pin silently jumps a major version past the 3.x this project requires. Always
+  `npm install "vuetify@^3"`. Now stated in `BRIEF.md` §3 and `CLAUDE.md` too.
 
 - **Vuetify overrides custom CSS.** Both Video 203 and 204 lost time to this. When layout fixes
   "don't take", the cause is Vuetify's own styles, not missing CSS. Fix with Vuetify props and
