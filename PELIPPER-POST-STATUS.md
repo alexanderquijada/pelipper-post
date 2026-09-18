@@ -84,6 +84,11 @@ become real `<v-icon>`s once `@mdi/font` is installed, and the **theme toggle** 
 **Deployment is still unverified** — see §8. Judge Phase 3 on `npm run dev` and `npm run build`
 locally; the live URL will confirm separately once Vercel's build queue clears.
 
+**If the queue is still wedged when the dashboard is finished,** §8 records a Vercel CLI fallback
+(`vercel build` + `vercel deploy --prebuilt`) that builds locally and uploads the output, bypassing
+Vercel's build system. It's a **last resort and unverified** — read the caveats in §8 before using
+it. The normal git-push deploy is what the capstone is teaching.
+
 ---
 
 ## 5. Live links
@@ -231,9 +236,11 @@ Append here as the build goes. Date, what came up, what was decided.
      `src/assets/` is now gone entirely — it isn't in the `BRIEF.md` §3 structure either.
   4. **`index.html` title set** to the real dashboard name; the scaffold shipped `Vite App` and
      `lang=""`. Now `lang="en"`.
-  5. **`vite-plugin-vue-devtools` was left installed.** It ships with `create-vue` and adds a small
-     floating toggle **in dev only** — it is not in the production bundle. Not on the §2 exclusion
-     list. Say the word and it comes out.
+  5. ~~**`vite-plugin-vue-devtools` was left installed.**~~ **Reversed same day at Alex's request —
+     removed.** Uninstalled and taken out of `vite.config.ts`. It had only ever added a dev-only
+     floating toggle; the production bundle is byte-identical before and after (89.30 kB → 89.30 kB),
+     which confirms it never shipped. `npm run dev` and `npm run build` both re-verified clean after
+     removal.
   6. **The shell is structural, not styled to spec.** KPI values render as `—` and the three charts
      plus the roster are dashed placeholder boxes labelled with the component that will fill them
      (`RegionBarChart`, `CargoMixChart`, `DeliveryTrendChart`, `CourierRoster`). Both filter
@@ -275,6 +282,35 @@ Append here as the build goes. Date, what came up, what was decided.
   stall builds here indefinitely — which is why cancelling deployments *inside this project* didn't
   free anything. Worth remembering at every future phase push: a build stuck in `Initializing` here
   may have nothing to do with this repo, and no repo-side change can clear it.
+
+  ### Fallback if the queue is still wedged at submission time — Vercel CLI, prebuilt deploy
+
+  **Last resort. Do not reach for this early.** The git-push→auto-deploy loop is part of what the
+  capstone is teaching, and a working live URL produced that way is worth more than a working live
+  URL produced by hand. Use this only if the slot is still stuck once the dashboard is finished and
+  the submission is otherwise blocked.
+
+  The idea: build **locally**, then upload the finished output, so Vercel's build system never runs
+  and the stuck slot shouldn't matter.
+
+  ```bash
+  npm install -g vercel
+  cd ~/Projects/pelipper-post
+  vercel login
+  vercel link                      # connect this folder to the existing project
+  vercel build --prod              # builds locally into .vercel/output
+  vercel deploy --prebuilt --prod  # uploads that output, no remote build
+  ```
+
+  ⚠️ **Unverified — likely, not proven.** Vercel documents that `--prebuilt` skips their build step
+  and deploys an existing `.vercel/output`. What they do **not** explicitly document is whether a
+  prebuilt deploy still consumes an account build slot. The reasoning is sound (no build runs, so
+  there should be nothing to queue) but it has not been tested on this account. If the deploy also
+  hangs, this theory is wrong — say so here rather than retrying it.
+
+  Note `.vercel` is already in `.gitignore`, so `vercel link` and `vercel build` won't dirty the
+  repo. `vercel.json` is read by the CLI exactly as it would be by the remote builder, so the Vite
+  config applies either way.
 
   **Fix — dashboard-side:** cancel the stuck deployments to free the build slot, then redeploy the
   newest commit. Nothing in the repo needs changing. Keep `vercel.json` as it is; it's correct and
