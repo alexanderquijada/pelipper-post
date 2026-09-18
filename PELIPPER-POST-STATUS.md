@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-18 — Phase 1 complete; live URL still 404ing (Vercel build queue, §8)
+- **Last updated:** 2026-09-18 — Phase 2 complete (Vue scaffold + shell); deployment still unverified
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -57,8 +57,8 @@ what the capstone document and videos require — nothing more.
 | 0 | — | Local setup + repo creation — **automated by `setup.sh`** | ✅ Done | `Add project brief and documentation` |
 | 1 | 2.1 | Static HTML prototype from the brief | ✅ Done | `Add static dashboard prototype` |
 | — | 2.1 | Import repo into Vercel (browser, one time) | 🟡 Imported — live URL still 404s; build queue stalled, see §8 | — |
-| 2a | 2.2 | Vue + Vite + TS + Router scaffold | ⬜ Not started | `Scaffold Vue project with Vite, TypeScript, and Vue Router` |
-| 2b | 2.2 | Dashboard shell replaces starter content | ⬜ Not started | `Add dashboard shell` |
+| 2a | 2.2 | Vue + Vite + TS + Router scaffold | ✅ Done | `Scaffold Vue project with Vite, TypeScript, and Vue Router` |
+| 2b | 2.2 | Dashboard shell replaces starter content | ✅ Done | `Add dashboard shell` |
 | 3 | 2.3 | Vuetify 3 + MDI, refactor shell | ⬜ Not started | `Add Vuetify 3 and refactor dashboard shell to Vuetify components` |
 | 4 | 2.3 | Custom `MetricCard` component | ⬜ Not started | `Extract reusable MetricCard component with typed props` |
 | 5 | 2.4 | Mock dataset `src/data/metrics.json` | ⬜ Not started | `Add realistic mock metrics dataset and TypeScript types` |
@@ -72,17 +72,17 @@ what the capstone document and videos require — nothing more.
 
 ## 4. → NEXT STEP
 
-**Phase 2 — the Vue + Vite + TypeScript + Router scaffold.** Paste the Phase 2 prompt from
-`CLAUDE-CODE-PROMPTS.md`. It scaffolds into the repo **root** (watch for the nested-folder trap),
-deletes the static prototype (`index.html`, `styles.css`, `app.js`) and all Vue starter content,
-wires one route `/` → `HomeView`, and builds the dashboard shell. Two commits, not one.
+**Phase 3 — Vuetify 3 + MDI, refactor the shell to Vuetify components.** Paste the Phase 3 prompt
+from `CLAUDE-CODE-PROMPTS.md`. Register `pelipperDark` (default) and `pelipperLight` in `main.ts`
+using the palette in `BRIEF.md` §6, then rebuild the shell with `v-app` / `v-app-bar` /
+`v-container` / `v-row` / `v-col`. Watch for Vuetify overriding the hand-written CSS — fix with
+Vuetify props and spacing utilities, not `!important` (§8, and `CLAUDE.md` rule 8).
 
-**Phase 2 must also overwrite the root `vercel.json`** with the Vite config — it currently holds only
-`{ "outputDirectory": "." }` for the static deploy, and that value is wrong the moment there's a build
-step. Without the swap the live site breaks. See the second red item in section 8.
+Two things Phase 3 should clean up while it's in there: the inline MDI **SVG paths** in `App.vue`
+become real `<v-icon>`s once `@mdi/font` is installed, and the **theme toggle** becomes functional.
 
-**Note the live site is 404ing right now** (first red item in section 8) — that's a separate, open
-problem from the Phase 2 framework switch, and it predates the scaffold.
+**Deployment is still unverified** — see §8. Judge Phase 3 on `npm run dev` and `npm run build`
+locally; the live URL will confirm separately once Vercel's build queue clears.
 
 ---
 
@@ -114,7 +114,7 @@ re-check them after the final phase.
 
 - macOS (Darwin 25.6.0)
 - Project root: `~/Projects/pelipper-post`
-- Node: _record the version here after Phase 0_
+- Node: v26.9.0 · npm 11.19.1 (recorded 2026-09-18, Phase 2)
 - Auth: GitHub via `gh auth login`; Vercel via the GitHub integration in the browser
 
 ---
@@ -207,6 +207,41 @@ Append here as the build goes. Date, what came up, what was decided.
   Deployments list**. The deployment detail page shows "Ready" and looks perfectly healthy, because
   it is; it's just old. **Check the list, not the detail page, and match the SHA against
   `git log`.** A standing check to that effect is now in section 8.
+
+- **2026-09-18 — Phase 2.** Scaffolded with `npm create vue@latest -- --ts --router pelipper-app`,
+  then moved everything to the repo root and deleted the subfolder. `create-vue` 3.24 feature flags
+  are **opt-in**, so `--ts --router` alone gave TypeScript + Router with no Pinia, Vitest, Cypress,
+  Playwright, ESLint, Prettier or JSX — matching the exclusions in §2. Verified locally: `npm run dev`
+  clean, `npm run build` clean with no `vue-tsc` errors. **Deployment not verified** — Vercel's queue
+  is still stalled (§8), which is why this phase was judged locally.
+
+  Decisions the phase prompt didn't cover:
+
+  1. **`.gitignore` was merged, not overwritten.** The existing file already covered `node_modules`,
+     `dist`, `.env*`, `.vercel` and the editor entries. Appended only what the scaffold added and we
+     lack: `logs`, `lerna-debug.log*`, `coverage`, `*.tsbuildinfo`, `.eslintcache`,
+     `*.timestamp-*-*.mjs`. Skipped the Cypress and Vitest entries — we don't use either.
+  2. **`package.json` name changed `pelipper-app` → `pelipper-post`** to match the repo. The
+     scaffold folder name was a throwaway, and leaving it would have been the only place in the repo
+     still carrying it.
+  3. **Palette tokens live in a non-scoped `<style>` in `App.vue`**, not a new `src/assets/*.css`.
+     The starter `base.css` / `main.css` were deleted per `CLAUDE.md` rule 7, and re-adding a global
+     stylesheet is exactly the thing that fights Vuetify in Phase 3. Kept to CSS custom properties
+     plus a minimal body reset so there's little to unpick when the Vuetify theme takes over.
+     `src/assets/` is now gone entirely — it isn't in the `BRIEF.md` §3 structure either.
+  4. **`index.html` title set** to the real dashboard name; the scaffold shipped `Vite App` and
+     `lang=""`. Now `lang="en"`.
+  5. **`vite-plugin-vue-devtools` was left installed.** It ships with `create-vue` and adds a small
+     floating toggle **in dev only** — it is not in the production bundle. Not on the §2 exclusion
+     list. Say the word and it comes out.
+  6. **The shell is structural, not styled to spec.** KPI values render as `—` and the three charts
+     plus the roster are dashed placeholder boxes labelled with the component that will fill them
+     (`RegionBarChart`, `CargoMixChart`, `DeliveryTrendChart`, `CourierRoster`). Both filter
+     dropdowns list their real options but are inert, same as the Phase 1 prototype.
+
+  **`vercel.json` swapped to the Vite config** — `framework: vite`, `buildCommand: npm run build`,
+  `outputDirectory: dist`, plus the SPA rewrite. The `{ "outputDirectory": "." }` value from the
+  static deploy is gone; it would have served the repo root and shipped nothing.
 
 ---
 
