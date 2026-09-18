@@ -381,28 +381,26 @@ Append here as the build goes. Date, what came up, what was decided.
 
   | Check | Result | Target |
   |---|---|---|
-  | Gym Season lift (Mar–May) | **+34%** | +25–40% |
-  | December berry multiple | **1.93×** | ~2× |
-  | Storm-season fainted couriers | **3.42** vs 1.77 | higher |
+  | Gym Season lift (Mar–May) | **+35%** | +25–40% |
+  | December berry multiple | **1.96×** | ~2× |
+  | Storm-season fainted couriers | **3.17** vs 1.88 | higher |
   | Biggest storm on-time hit | **Hoenn** | Hoenn |
 
-  Hoenn's dip is clearly visible: ~94% most months, **88.7% in July and 88.2% in August**, with a
-  separate 89.8% dip in December from the berry rush.
+  Hoenn's dip is clearly visible: ~94% most months, **88.3% in July and 88.2% in August**, with a
+  separate 90.4% dip in December from the berry rush.
+
+  *(Figures above are post-regeneration — see the unification entry below.)*
 
   Built with a seeded generator run from the scratchpad, never committed — `scripts/` still contains
   only `validate-data.mjs`. Seed `20260918`, so the dataset is reproducible if it ever needs a tweak.
 
   Decisions and findings the phase prompt didn't cover:
 
-  1. **`BRIEF.md` §2 contradicts its own example.** The prose says `pokeBallsShipped` should be
-     "around 30–35% of `parcelsDelivered`", but the sample record shows 9,184 of 14,237 — **64.5%**.
-     Followed the prose; the generated data sits at **29.6–35.1%**. The validator doesn't check this
-     ratio either way. **Flagging because the brief should probably be corrected** — if the example
-     is what Alex actually wants, the data needs regenerating.
-  2. **`cargoMix` and `pokeBallsShipped` are independent** — nothing links `cargoMix["Poké Balls"]`
-     to `pokeBallsShipped`, and the brief's example has them differ wildly. Read as *shipped* vs.
-     *delivered*. `cargoMix` sums exactly to `parcelsDelivered` in all 72 records (the last cargo
-     type is computed as the remainder, so it can't drift).
+  1. ~~**`BRIEF.md` §2 contradicts its own example.**~~ **Resolved same day — see the follow-up
+     entry below.** Alex confirmed the prose was right and the example wrong, then went further:
+     the two fields are now required to be the same number.
+  2. ~~**`cargoMix` and `pokeBallsShipped` are independent.**~~ **Overruled same day.** They are one
+     measure. See below.
   3. **Month-over-month movement: 53 of 66 transitions land inside the brief's ±3–15% band.** The
      13 outside it are not noise, and tightening them further would have meant weakening the
      seasonality the brief also demands:
@@ -422,15 +420,56 @@ Append here as the build goes. Date, what came up, what was decided.
 
   | Region | Avg volume | Avg on-time | Fainted/mo | Oct→Sep growth |
   |---|---|---|---|---|
-  | Kanto | 15,749 | 95.3% | 1.00 | +5.8% |
-  | Johto | 13,536 | 94.1% | 1.42 | +0.2% |
-  | Hoenn | 11,677 | 92.9% | 2.67 | +12.3% |
-  | Sinnoh | 10,223 | **90.0%** | **3.50** | +10.9% |
-  | Unova | 10,400 | 92.9% | 1.67 | **+31.9%** |
-  | Galar | 8,341 | 91.4% | 2.00 | +20.7% |
+  | Kanto | 15,677 | **95.2%** | 1.17 | +5.3% |
+  | Johto | 13,419 | 94.1% | 1.50 | +7.5% |
+  | Hoenn | 11,681 | 92.8% | 2.67 | +5.7% |
+  | Sinnoh | 10,297 | **89.9%** | **3.33** | +6.8% |
+  | Unova | 10,374 | 92.8% | 1.83 | **+31.4%** |
+  | Galar | **8,224** | 91.3% | 2.08 | +17.1% |
 
   Kanto highest volume and best on-time; Sinnoh worst on-time and most fainted; Unova fastest
-  growth; Galar smallest. Johto flat, i.e. stable. All as `BRIEF.md` §2 specifies.
+  growth by a wide margin; Galar smallest, climbing from a low base. All as `BRIEF.md` §2 specifies.
+
+- **2026-09-18 — Phase 5 follow-up: `pokeBallsShipped` unified with `cargoMix["Poké Balls"]`.**
+  Alex resolved the contradiction flagged above and extended it into a rule.
+
+  **The resolution.** The prose ("around 30–35%") was correct; the example record's `9184` was
+  written before that guidance existed and never reconciled. The telling detail: the same example's
+  `cargoMix["Poké Balls"]` is **4,611 — exactly 32.4% of its `parcelsDelivered`**. The right number
+  was already in the example, in a different field.
+
+  **The rule, which goes beyond just fixing the example.** `pokeBallsShipped` and
+  `cargoMix["Poké Balls"]` are now **required to be the identical number in every record**. The
+  reason is a display one, not a data one: on the finished dashboard `pokeBallsShipped` is a KPI card
+  and `cargoMix["Poké Balls"]` is a doughnut segment, sitting inches apart. Two different numbers
+  under the same label is an unanswerable question in a leadership meeting. The earlier
+  *shipped-vs-delivered* reading was defensible in the abstract and wrong in context.
+
+  **What changed:**
+
+  1. **`metrics.json` regenerated**, same seed (`20260918`). One Poké Balls figure per record now
+     drives both fields; the other four cargo types split the remainder, which is also what keeps
+     Poké Balls the largest segment structurally rather than by luck. Verified across all 72
+     records: **0 disagreements, 0 records where Poké Balls isn't the largest segment, 0 cargoMix sum
+     mismatches.** Share of parcels **30.1–35.4%**; `pokeBallsShipped` Gym Season lift **+31%**.
+     Seasonality and region character are unchanged.
+  2. **`scripts/validate-data.mjs` gained the missing check** — per-record equality, with a message
+     that explains the dashboard consequence rather than just reporting a delta. Plus a softer note
+     if Poké Balls stops being the largest cargo segment. **Confirmed the check actually fires
+     before trusting it**: run against the pre-fix data it failed all 72 records and exited 1.
+     That gap — a relationship the brief never encoded, so the validator never tested — was the real
+     defect, not the data.
+  3. **`BRIEF.md` §2 corrected.** The example's `pokeBallsShipped` is now `4611`, matching its own
+     `cargoMix`; the metrics table row states the equality; and the prose states it as a rule with
+     the reasoning, demoting "30–35%" to a description of where the number lands rather than a
+     separate target. The corrected example is fully self-consistent — cargoMix sums to 14,237,
+     equality holds, Poké Balls is the largest segment.
+  4. **The ±3–15% month-over-month band is now explicitly a guide, not a hard rule** (`BRIEF.md` §2).
+     It states that seasonal transitions may exceed 15%, quiet months may fall under 3%, and that
+     **where the band and the seasonality rules conflict, visible seasonality wins.** This ratifies
+     the Phase 5 judgement call — the brief no longer reads as though the data broke a rule.
+
+  Validator green after the change: exit 0, zero problems, zero notes. `npm run build` exit 0.
 
 ---
 

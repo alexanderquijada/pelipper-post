@@ -88,6 +88,20 @@ for (const m of data.months ?? []) {
       fail(`${m.key} / ${r.region}: cargoMix sums to ${sum} but parcelsDelivered is ${r.parcelsDelivered} (off by ${sum - r.parcelsDelivered})`);
     }
 
+    // pokeBallsShipped and cargoMix["Poké Balls"] are ONE measure, so they must
+    // be the same number. On the dashboard a KPI card and a doughnut segment
+    // sit inches apart; two different values for "Poké Balls" is unanswerable.
+    const mixPokeBalls = mix['Poké Balls'];
+    if (typeof mixPokeBalls === 'number' && mixPokeBalls !== r.pokeBallsShipped) {
+      fail(`${m.key} / ${r.region}: pokeBallsShipped is ${r.pokeBallsShipped} but cargoMix["Poké Balls"] is ${mixPokeBalls}. These are the same measure and must be identical — the KPI card and the doughnut segment would disagree.`);
+    }
+
+    // Poké Balls is the headline cargo type and should be the largest segment.
+    const biggestCargo = Object.entries(mix).sort((a, b) => b[1] - a[1])[0]?.[0];
+    if (biggestCargo && biggestCargo !== 'Poké Balls') {
+      note(`${m.key} / ${r.region}: largest cargo segment is "${biggestCargo}", not Poké Balls`);
+    }
+
     // suspiciously round numbers
     if (r.pokeBallsShipped % 100 === 0 && r.parcelsDelivered % 100 === 0) {
       note(`${m.key} / ${r.region}: numbers look rounded (${r.pokeBallsShipped}, ${r.parcelsDelivered}) — the brief asks for 7,142 not 7,000`);

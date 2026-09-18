@@ -46,7 +46,7 @@ No API calls, no backend. The app imports the JSON directly.
 
 | Field | Meaning | Valid range (per region per month) |
 |---|---|---|
-| `pokeBallsShipped` | Poké Balls shipped (the volume headline) | 2,000 – 9,500 |
+| `pokeBallsShipped` | Poké Balls shipped (the volume headline). **Must equal `cargoMix["Poké Balls"]`.** | 2,000 – 9,500 |
 | `berryCrates` | Berry crates delivered (perishable freight) | 150 – 900 |
 | `gymSupplyRuns` | Bulk restock runs to Gyms & Pokémon Centers | 20 – 85 |
 | `faintedCouriers` | Couriers who fainted mid-route (open exceptions) | 0 – 8 |
@@ -57,7 +57,16 @@ No API calls, no backend. The app imports the JSON directly.
 These ranges are wide on purpose — they have to hold for *both* the smallest region in its
 slowest month *and* the largest region at the peak of Gym Season. A small region like Galar will sit
 near the floor all year; Kanto in April will sit near the ceiling. That's correct, not a bug.
-`pokeBallsShipped` should land around 30–35% of `parcelsDelivered`.
+
+**Rule: `pokeBallsShipped` and `cargoMix["Poké Balls"]` are the same measure and must be the
+identical number in every record.** Not "close", not "consistent" — identical. They render inches
+apart on the finished dashboard: `pokeBallsShipped` is a KPI card, `cargoMix["Poké Balls"]` is a
+doughnut segment. Two different numbers under the same label is an unanswerable question in a
+leadership meeting. This is enforced per record by `scripts/validate-data.mjs`.
+
+Poké Balls should also remain the **largest** segment of `cargoMix`. As a consequence of the two
+rules above, `pokeBallsShipped` naturally lands around **30–35% of `parcelsDelivered`** — that's a
+description of where the number falls, not a separate target to hit.
 
 **These ranges are enforced.** `scripts/validate-data.mjs` checks every one of the 72 records against
 this table, plus every seasonality rule below. Run it before building anything on the data.
@@ -78,7 +87,13 @@ The numbers must look like a real business, not random noise:
   - *Sinnoh* — mountainous, lowest on-time rate year-round, most fainted couriers
   - *Unova* — mid volume, fastest growth month over month
   - *Galar* — smallest, newest region, volumes climbing from a low base
-- Month-over-month movement should be believable (±3–15%), never a perfectly smooth line.
+- Month-over-month movement should be believable — **±3–15% is the guide, not a hard rule.**
+  Seasonal transitions may legitimately exceed 15% (the post-December drop is the obvious one, and a
+  real parcel carrier does lose that much volume in January), and quiet months may move less than
+  3%. **Where the band and the seasonality rules above conflict, visible seasonality wins** — the
+  dashboard's job is to surface the storm-season story, and flattening a real seasonal swing to stay
+  inside a band would defeat that. What matters is that the line is never perfectly smooth and never
+  moves by an implausible amount without a seasonal reason.
 - Nothing rounded to suspiciously clean numbers (use 7,142 not 7,000).
 
 ### Courier roster (7 couriers)
@@ -112,7 +127,7 @@ Each courier: `name`, `species`, `dexId`, `homeRegion`, `runs`, `onTimeRate`, `s
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 9184,
+          "pokeBallsShipped": 4611,
           "berryCrates": 412,
           "gymSupplyRuns": 54,
           "faintedCouriers": 1,
