@@ -235,6 +235,12 @@ Append here as the build goes. Date, what came up, what was decided.
   `vercel-status.com` showed all systems operational (Builds, CI/CD, Git Integrations), so this was
   not a platform incident.
 
+  **The piece that explains it: Vercel's Hobby plan allows ONE concurrent build across the ENTIRE
+  ACCOUNT, not one per project.** Another project on the same account holding that single slot will
+  stall builds here indefinitely — which is why cancelling deployments *inside this project* didn't
+  free anything. Worth remembering at every future phase push: a build stuck in `Initializing` here
+  may have nothing to do with this repo, and no repo-side change can clear it.
+
   **Fix — dashboard-side:** cancel the stuck deployments to free the build slot, then redeploy the
   newest commit. Nothing in the repo needs changing. Keep `vercel.json` as it is; it's correct and
   will be read the moment a build actually runs.
