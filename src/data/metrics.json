@@ -1,0 +1,1310 @@
+{
+  "company": "Pelipper Post & Freight",
+  "tagline": "Your package, airborne.",
+  "regions": [
+    "Kanto",
+    "Johto",
+    "Hoenn",
+    "Sinnoh",
+    "Unova",
+    "Galar"
+  ],
+  "cargoTypes": [
+    "Poké Balls",
+    "Berries",
+    "Potions",
+    "TMs",
+    "Evolution Stones"
+  ],
+  "months": [
+    {
+      "key": "2025-10",
+      "label": "Oct 2025",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 4609,
+          "berryCrates": 424,
+          "gymSupplyRuns": 55,
+          "faintedCouriers": 0,
+          "onTimeRate": 0.959,
+          "parcelsDelivered": 14664,
+          "cargoMix": {
+            "Poké Balls": 4581,
+            "Berries": 3338,
+            "Potions": 2963,
+            "TMs": 2171,
+            "Evolution Stones": 1611
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 4127,
+          "berryCrates": 393,
+          "gymSupplyRuns": 51,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.953,
+          "parcelsDelivered": 13078,
+          "cargoMix": {
+            "Poké Balls": 4271,
+            "Berries": 2942,
+            "Potions": 2699,
+            "TMs": 1968,
+            "Evolution Stones": 1198
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 3354,
+          "berryCrates": 325,
+          "gymSupplyRuns": 42,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.945,
+          "parcelsDelivered": 10487,
+          "cargoMix": {
+            "Poké Balls": 3435,
+            "Berries": 2262,
+            "Potions": 2069,
+            "TMs": 1637,
+            "Evolution Stones": 1084
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 2974,
+          "berryCrates": 260,
+          "gymSupplyRuns": 33,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.91,
+          "parcelsDelivered": 9263,
+          "cargoMix": {
+            "Poké Balls": 2901,
+            "Berries": 2086,
+            "Potions": 1817,
+            "TMs": 1445,
+            "Evolution Stones": 1014
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 2708,
+          "berryCrates": 293,
+          "gymSupplyRuns": 32,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.938,
+          "parcelsDelivered": 8579,
+          "cargoMix": {
+            "Poké Balls": 2876,
+            "Berries": 1951,
+            "Potions": 1636,
+            "TMs": 1257,
+            "Evolution Stones": 859
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 2386,
+          "berryCrates": 196,
+          "gymSupplyRuns": 24,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.923,
+          "parcelsDelivered": 7472,
+          "cargoMix": {
+            "Poké Balls": 2455,
+            "Berries": 1688,
+            "Potions": 1531,
+            "TMs": 1124,
+            "Evolution Stones": 674
+          }
+        }
+      ]
+    },
+    {
+      "key": "2025-11",
+      "label": "Nov 2025",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 5202,
+          "berryCrates": 521,
+          "gymSupplyRuns": 56,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.963,
+          "parcelsDelivered": 16498,
+          "cargoMix": {
+            "Poké Balls": 5269,
+            "Berries": 3553,
+            "Potions": 3265,
+            "TMs": 2413,
+            "Evolution Stones": 1998
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 4214,
+          "berryCrates": 488,
+          "gymSupplyRuns": 47,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.949,
+          "parcelsDelivered": 13374,
+          "cargoMix": {
+            "Poké Balls": 4300,
+            "Berries": 3030,
+            "Potions": 2744,
+            "TMs": 1974,
+            "Evolution Stones": 1326
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 3812,
+          "berryCrates": 401,
+          "gymSupplyRuns": 40,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.939,
+          "parcelsDelivered": 11998,
+          "cargoMix": {
+            "Poké Balls": 3753,
+            "Berries": 2656,
+            "Potions": 2336,
+            "TMs": 1861,
+            "Evolution Stones": 1392
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 3132,
+          "berryCrates": 325,
+          "gymSupplyRuns": 37,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.907,
+          "parcelsDelivered": 9800,
+          "cargoMix": {
+            "Poké Balls": 2998,
+            "Berries": 2118,
+            "Potions": 2057,
+            "TMs": 1486,
+            "Evolution Stones": 1141
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 2924,
+          "berryCrates": 367,
+          "gymSupplyRuns": 36,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.935,
+          "parcelsDelivered": 9308,
+          "cargoMix": {
+            "Poké Balls": 2870,
+            "Berries": 1982,
+            "Potions": 1833,
+            "TMs": 1342,
+            "Evolution Stones": 1281
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 2586,
+          "berryCrates": 263,
+          "gymSupplyRuns": 25,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.921,
+          "parcelsDelivered": 8041,
+          "cargoMix": {
+            "Poké Balls": 2698,
+            "Berries": 1703,
+            "Potions": 1627,
+            "TMs": 1172,
+            "Evolution Stones": 841
+          }
+        }
+      ]
+    },
+    {
+      "key": "2025-12",
+      "label": "Dec 2025",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 4913,
+          "berryCrates": 797,
+          "gymSupplyRuns": 50,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.92,
+          "parcelsDelivered": 16412,
+          "cargoMix": {
+            "Poké Balls": 4738,
+            "Berries": 4577,
+            "Potions": 3050,
+            "TMs": 2132,
+            "Evolution Stones": 1915
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 4032,
+          "berryCrates": 779,
+          "gymSupplyRuns": 48,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.905,
+          "parcelsDelivered": 13459,
+          "cargoMix": {
+            "Poké Balls": 4140,
+            "Berries": 3633,
+            "Potions": 2399,
+            "TMs": 1833,
+            "Evolution Stones": 1454
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 3798,
+          "berryCrates": 660,
+          "gymSupplyRuns": 41,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.898,
+          "parcelsDelivered": 12626,
+          "cargoMix": {
+            "Poké Balls": 3861,
+            "Berries": 3634,
+            "Potions": 2302,
+            "TMs": 1774,
+            "Evolution Stones": 1055
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 3273,
+          "berryCrates": 593,
+          "gymSupplyRuns": 32,
+          "faintedCouriers": 4,
+          "onTimeRate": 0.872,
+          "parcelsDelivered": 10750,
+          "cargoMix": {
+            "Poké Balls": 3270,
+            "Berries": 3111,
+            "Potions": 2087,
+            "TMs": 1420,
+            "Evolution Stones": 862
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 3065,
+          "berryCrates": 612,
+          "gymSupplyRuns": 34,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.896,
+          "parcelsDelivered": 10146,
+          "cargoMix": {
+            "Poké Balls": 2944,
+            "Berries": 2762,
+            "Potions": 1937,
+            "TMs": 1415,
+            "Evolution Stones": 1088
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 2480,
+          "berryCrates": 451,
+          "gymSupplyRuns": 25,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.885,
+          "parcelsDelivered": 8385,
+          "cargoMix": {
+            "Poké Balls": 2404,
+            "Berries": 2365,
+            "Potions": 1526,
+            "TMs": 1089,
+            "Evolution Stones": 1001
+          }
+        }
+      ]
+    },
+    {
+      "key": "2026-01",
+      "label": "Jan 2026",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 4458,
+          "berryCrates": 341,
+          "gymSupplyRuns": 53,
+          "faintedCouriers": 0,
+          "onTimeRate": 0.96,
+          "parcelsDelivered": 14179,
+          "cargoMix": {
+            "Poké Balls": 4694,
+            "Berries": 2996,
+            "Potions": 2738,
+            "TMs": 2076,
+            "Evolution Stones": 1675
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 4095,
+          "berryCrates": 344,
+          "gymSupplyRuns": 50,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.946,
+          "parcelsDelivered": 12763,
+          "cargoMix": {
+            "Poké Balls": 3924,
+            "Berries": 2762,
+            "Potions": 2439,
+            "TMs": 1995,
+            "Evolution Stones": 1643
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 3247,
+          "berryCrates": 286,
+          "gymSupplyRuns": 42,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.941,
+          "parcelsDelivered": 10198,
+          "cargoMix": {
+            "Poké Balls": 3305,
+            "Berries": 2212,
+            "Potions": 2076,
+            "TMs": 1546,
+            "Evolution Stones": 1059
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 3024,
+          "berryCrates": 240,
+          "gymSupplyRuns": 34,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.906,
+          "parcelsDelivered": 9426,
+          "cargoMix": {
+            "Poké Balls": 2943,
+            "Berries": 2028,
+            "Potions": 1889,
+            "TMs": 1414,
+            "Evolution Stones": 1152
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 2760,
+          "berryCrates": 257,
+          "gymSupplyRuns": 34,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.932,
+          "parcelsDelivered": 8681,
+          "cargoMix": {
+            "Poké Balls": 2844,
+            "Berries": 1874,
+            "Potions": 1792,
+            "TMs": 1330,
+            "Evolution Stones": 841
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 2474,
+          "berryCrates": 177,
+          "gymSupplyRuns": 27,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.921,
+          "parcelsDelivered": 7718,
+          "cargoMix": {
+            "Poké Balls": 2352,
+            "Berries": 1746,
+            "Potions": 1501,
+            "TMs": 1142,
+            "Evolution Stones": 977
+          }
+        }
+      ]
+    },
+    {
+      "key": "2026-02",
+      "label": "Feb 2026",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 4711,
+          "berryCrates": 429,
+          "gymSupplyRuns": 55,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.956,
+          "parcelsDelivered": 14909,
+          "cargoMix": {
+            "Poké Balls": 4553,
+            "Berries": 3211,
+            "Potions": 2906,
+            "TMs": 2250,
+            "Evolution Stones": 1989
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 4191,
+          "berryCrates": 383,
+          "gymSupplyRuns": 50,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.946,
+          "parcelsDelivered": 13275,
+          "cargoMix": {
+            "Poké Balls": 4056,
+            "Berries": 2891,
+            "Potions": 2568,
+            "TMs": 1979,
+            "Evolution Stones": 1781
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 3625,
+          "berryCrates": 338,
+          "gymSupplyRuns": 42,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.943,
+          "parcelsDelivered": 11290,
+          "cargoMix": {
+            "Poké Balls": 3696,
+            "Berries": 2389,
+            "Potions": 2317,
+            "TMs": 1713,
+            "Evolution Stones": 1175
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 3228,
+          "berryCrates": 269,
+          "gymSupplyRuns": 34,
+          "faintedCouriers": 4,
+          "onTimeRate": 0.905,
+          "parcelsDelivered": 10017,
+          "cargoMix": {
+            "Poké Balls": 3341,
+            "Berries": 2094,
+            "Potions": 2036,
+            "TMs": 1559,
+            "Evolution Stones": 987
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 3152,
+          "berryCrates": 350,
+          "gymSupplyRuns": 36,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.938,
+          "parcelsDelivered": 9925,
+          "cargoMix": {
+            "Poké Balls": 3257,
+            "Berries": 2273,
+            "Potions": 1916,
+            "TMs": 1528,
+            "Evolution Stones": 951
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 2394,
+          "berryCrates": 206,
+          "gymSupplyRuns": 26,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.924,
+          "parcelsDelivered": 7493,
+          "cargoMix": {
+            "Poké Balls": 2405,
+            "Berries": 1723,
+            "Potions": 1427,
+            "TMs": 1108,
+            "Evolution Stones": 830
+          }
+        }
+      ]
+    },
+    {
+      "key": "2026-03",
+      "label": "Mar 2026",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 5822,
+          "berryCrates": 396,
+          "gymSupplyRuns": 72,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.96,
+          "parcelsDelivered": 17072,
+          "cargoMix": {
+            "Poké Balls": 5397,
+            "Berries": 3887,
+            "Potions": 3246,
+            "TMs": 2654,
+            "Evolution Stones": 1888
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 4746,
+          "berryCrates": 387,
+          "gymSupplyRuns": 64,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.95,
+          "parcelsDelivered": 13701,
+          "cargoMix": {
+            "Poké Balls": 4433,
+            "Berries": 3045,
+            "Potions": 2872,
+            "TMs": 2036,
+            "Evolution Stones": 1315
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 4013,
+          "berryCrates": 364,
+          "gymSupplyRuns": 59,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.945,
+          "parcelsDelivered": 11767,
+          "cargoMix": {
+            "Poké Balls": 3927,
+            "Berries": 2656,
+            "Potions": 2427,
+            "TMs": 1751,
+            "Evolution Stones": 1006
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 3902,
+          "berryCrates": 268,
+          "gymSupplyRuns": 45,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.91,
+          "parcelsDelivered": 11287,
+          "cargoMix": {
+            "Poké Balls": 3756,
+            "Berries": 2384,
+            "Potions": 2368,
+            "TMs": 1706,
+            "Evolution Stones": 1073
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 3697,
+          "berryCrates": 358,
+          "gymSupplyRuns": 51,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.935,
+          "parcelsDelivered": 10596,
+          "cargoMix": {
+            "Poké Balls": 3500,
+            "Berries": 2348,
+            "Potions": 2213,
+            "TMs": 1589,
+            "Evolution Stones": 946
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 3052,
+          "berryCrates": 235,
+          "gymSupplyRuns": 36,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.921,
+          "parcelsDelivered": 8779,
+          "cargoMix": {
+            "Poké Balls": 2780,
+            "Berries": 2011,
+            "Potions": 1752,
+            "TMs": 1311,
+            "Evolution Stones": 925
+          }
+        }
+      ]
+    },
+    {
+      "key": "2026-04",
+      "label": "Apr 2026",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 6429,
+          "berryCrates": 421,
+          "gymSupplyRuns": 73,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.962,
+          "parcelsDelivered": 18388,
+          "cargoMix": {
+            "Poké Balls": 5831,
+            "Berries": 4199,
+            "Potions": 3853,
+            "TMs": 2624,
+            "Evolution Stones": 1881
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 5348,
+          "berryCrates": 410,
+          "gymSupplyRuns": 65,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.945,
+          "parcelsDelivered": 15565,
+          "cargoMix": {
+            "Poké Balls": 4913,
+            "Berries": 3451,
+            "Potions": 2975,
+            "TMs": 2310,
+            "Evolution Stones": 1916
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 4769,
+          "berryCrates": 333,
+          "gymSupplyRuns": 58,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.942,
+          "parcelsDelivered": 13599,
+          "cargoMix": {
+            "Poké Balls": 4497,
+            "Berries": 2889,
+            "Potions": 2834,
+            "TMs": 1972,
+            "Evolution Stones": 1407
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 3857,
+          "berryCrates": 280,
+          "gymSupplyRuns": 46,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.905,
+          "parcelsDelivered": 11204,
+          "cargoMix": {
+            "Poké Balls": 3610,
+            "Berries": 2401,
+            "Potions": 2280,
+            "TMs": 1611,
+            "Evolution Stones": 1302
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 4218,
+          "berryCrates": 369,
+          "gymSupplyRuns": 54,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.935,
+          "parcelsDelivered": 12191,
+          "cargoMix": {
+            "Poké Balls": 4012,
+            "Berries": 2798,
+            "Potions": 2478,
+            "TMs": 1890,
+            "Evolution Stones": 1013
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 3290,
+          "berryCrates": 239,
+          "gymSupplyRuns": 37,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.919,
+          "parcelsDelivered": 9385,
+          "cargoMix": {
+            "Poké Balls": 3102,
+            "Berries": 2066,
+            "Potions": 1897,
+            "TMs": 1348,
+            "Evolution Stones": 972
+          }
+        }
+      ]
+    },
+    {
+      "key": "2026-05",
+      "label": "May 2026",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 5647,
+          "berryCrates": 432,
+          "gymSupplyRuns": 71,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.961,
+          "parcelsDelivered": 16723,
+          "cargoMix": {
+            "Poké Balls": 5441,
+            "Berries": 3754,
+            "Potions": 3343,
+            "TMs": 2412,
+            "Evolution Stones": 1773
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 5115,
+          "berryCrates": 394,
+          "gymSupplyRuns": 63,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.947,
+          "parcelsDelivered": 15040,
+          "cargoMix": {
+            "Poké Balls": 4872,
+            "Berries": 3414,
+            "Potions": 2970,
+            "TMs": 2237,
+            "Evolution Stones": 1547
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 4414,
+          "berryCrates": 330,
+          "gymSupplyRuns": 58,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.939,
+          "parcelsDelivered": 13000,
+          "cargoMix": {
+            "Poké Balls": 4151,
+            "Berries": 2940,
+            "Potions": 2631,
+            "TMs": 1981,
+            "Evolution Stones": 1297
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 3993,
+          "berryCrates": 277,
+          "gymSupplyRuns": 49,
+          "faintedCouriers": 4,
+          "onTimeRate": 0.913,
+          "parcelsDelivered": 11510,
+          "cargoMix": {
+            "Poké Balls": 3769,
+            "Berries": 2476,
+            "Potions": 2331,
+            "TMs": 1760,
+            "Evolution Stones": 1174
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 4086,
+          "berryCrates": 357,
+          "gymSupplyRuns": 53,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.936,
+          "parcelsDelivered": 12021,
+          "cargoMix": {
+            "Poké Balls": 3812,
+            "Berries": 2736,
+            "Potions": 2299,
+            "TMs": 1888,
+            "Evolution Stones": 1286
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 3101,
+          "berryCrates": 230,
+          "gymSupplyRuns": 38,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.921,
+          "parcelsDelivered": 9000,
+          "cargoMix": {
+            "Poké Balls": 2949,
+            "Berries": 1923,
+            "Potions": 1732,
+            "TMs": 1315,
+            "Evolution Stones": 1081
+          }
+        }
+      ]
+    },
+    {
+      "key": "2026-06",
+      "label": "Jun 2026",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 4946,
+          "berryCrates": 400,
+          "gymSupplyRuns": 54,
+          "faintedCouriers": 0,
+          "onTimeRate": 0.962,
+          "parcelsDelivered": 15420,
+          "cargoMix": {
+            "Poké Balls": 4790,
+            "Berries": 3254,
+            "Potions": 2953,
+            "TMs": 2302,
+            "Evolution Stones": 2121
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 4504,
+          "berryCrates": 384,
+          "gymSupplyRuns": 53,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.948,
+          "parcelsDelivered": 14171,
+          "cargoMix": {
+            "Poké Balls": 4487,
+            "Berries": 3025,
+            "Potions": 2836,
+            "TMs": 2196,
+            "Evolution Stones": 1627
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 3639,
+          "berryCrates": 331,
+          "gymSupplyRuns": 43,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.943,
+          "parcelsDelivered": 11573,
+          "cargoMix": {
+            "Poké Balls": 3777,
+            "Berries": 2546,
+            "Potions": 2215,
+            "TMs": 1757,
+            "Evolution Stones": 1278
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 3213,
+          "berryCrates": 284,
+          "gymSupplyRuns": 37,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.912,
+          "parcelsDelivered": 10247,
+          "cargoMix": {
+            "Poké Balls": 3214,
+            "Berries": 2343,
+            "Potions": 1991,
+            "TMs": 1489,
+            "Evolution Stones": 1210
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 3558,
+          "berryCrates": 383,
+          "gymSupplyRuns": 39,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.94,
+          "parcelsDelivered": 11077,
+          "cargoMix": {
+            "Poké Balls": 3624,
+            "Berries": 2349,
+            "Potions": 2242,
+            "TMs": 1690,
+            "Evolution Stones": 1172
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 2805,
+          "berryCrates": 222,
+          "gymSupplyRuns": 28,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.92,
+          "parcelsDelivered": 8837,
+          "cargoMix": {
+            "Poké Balls": 2727,
+            "Berries": 1901,
+            "Potions": 1805,
+            "TMs": 1365,
+            "Evolution Stones": 1039
+          }
+        }
+      ]
+    },
+    {
+      "key": "2026-07",
+      "label": "Jul 2026",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 4539,
+          "berryCrates": 392,
+          "gymSupplyRuns": 49,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.945,
+          "parcelsDelivered": 14276,
+          "cargoMix": {
+            "Poké Balls": 4704,
+            "Berries": 3056,
+            "Potions": 2812,
+            "TMs": 2189,
+            "Evolution Stones": 1515
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 3988,
+          "berryCrates": 416,
+          "gymSupplyRuns": 47,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.925,
+          "parcelsDelivered": 12669,
+          "cargoMix": {
+            "Poké Balls": 4084,
+            "Berries": 2679,
+            "Potions": 2458,
+            "TMs": 1992,
+            "Evolution Stones": 1456
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 3380,
+          "berryCrates": 370,
+          "gymSupplyRuns": 39,
+          "faintedCouriers": 6,
+          "onTimeRate": 0.887,
+          "parcelsDelivered": 10727,
+          "cargoMix": {
+            "Poké Balls": 3598,
+            "Berries": 2387,
+            "Potions": 2047,
+            "TMs": 1584,
+            "Evolution Stones": 1111
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 3045,
+          "berryCrates": 279,
+          "gymSupplyRuns": 35,
+          "faintedCouriers": 4,
+          "onTimeRate": 0.878,
+          "parcelsDelivered": 9694,
+          "cargoMix": {
+            "Poké Balls": 3092,
+            "Berries": 2186,
+            "Potions": 1986,
+            "TMs": 1398,
+            "Evolution Stones": 1032
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 3393,
+          "berryCrates": 359,
+          "gymSupplyRuns": 40,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.913,
+          "parcelsDelivered": 10694,
+          "cargoMix": {
+            "Poké Balls": 3537,
+            "Berries": 2424,
+            "Potions": 2049,
+            "TMs": 1608,
+            "Evolution Stones": 1076
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 2559,
+          "berryCrates": 247,
+          "gymSupplyRuns": 25,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.897,
+          "parcelsDelivered": 8033,
+          "cargoMix": {
+            "Poké Balls": 2575,
+            "Berries": 1837,
+            "Potions": 1533,
+            "TMs": 1234,
+            "Evolution Stones": 854
+          }
+        }
+      ]
+    },
+    {
+      "key": "2026-08",
+      "label": "Aug 2026",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 4795,
+          "berryCrates": 408,
+          "gymSupplyRuns": 51,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.938,
+          "parcelsDelivered": 14930,
+          "cargoMix": {
+            "Poké Balls": 4801,
+            "Berries": 3242,
+            "Potions": 3002,
+            "TMs": 2347,
+            "Evolution Stones": 1538
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 3861,
+          "berryCrates": 413,
+          "gymSupplyRuns": 48,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.929,
+          "parcelsDelivered": 12234,
+          "cargoMix": {
+            "Poké Balls": 3818,
+            "Berries": 2648,
+            "Potions": 2423,
+            "TMs": 1836,
+            "Evolution Stones": 1509
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 3502,
+          "berryCrates": 340,
+          "gymSupplyRuns": 42,
+          "faintedCouriers": 6,
+          "onTimeRate": 0.882,
+          "parcelsDelivered": 11078,
+          "cargoMix": {
+            "Poké Balls": 3657,
+            "Berries": 2510,
+            "Potions": 2151,
+            "TMs": 1722,
+            "Evolution Stones": 1038
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 2891,
+          "berryCrates": 281,
+          "gymSupplyRuns": 32,
+          "faintedCouriers": 5,
+          "onTimeRate": 0.874,
+          "parcelsDelivered": 9211,
+          "cargoMix": {
+            "Poké Balls": 2900,
+            "Berries": 2115,
+            "Potions": 1826,
+            "TMs": 1351,
+            "Evolution Stones": 1019
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 3261,
+          "berryCrates": 390,
+          "gymSupplyRuns": 37,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.911,
+          "parcelsDelivered": 10268,
+          "cargoMix": {
+            "Poké Balls": 3420,
+            "Berries": 2239,
+            "Potions": 2058,
+            "TMs": 1565,
+            "Evolution Stones": 986
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 2495,
+          "berryCrates": 241,
+          "gymSupplyRuns": 27,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.892,
+          "parcelsDelivered": 7928,
+          "cargoMix": {
+            "Poké Balls": 2492,
+            "Berries": 1718,
+            "Potions": 1661,
+            "TMs": 1195,
+            "Evolution Stones": 862
+          }
+        }
+      ]
+    },
+    {
+      "key": "2026-09",
+      "label": "Sep 2026",
+      "regions": [
+        {
+          "region": "Kanto",
+          "pokeBallsShipped": 4974,
+          "berryCrates": 386,
+          "gymSupplyRuns": 59,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.953,
+          "parcelsDelivered": 15515,
+          "cargoMix": {
+            "Poké Balls": 5189,
+            "Berries": 3521,
+            "Potions": 3175,
+            "TMs": 2343,
+            "Evolution Stones": 1287
+          }
+        },
+        {
+          "region": "Johto",
+          "pokeBallsShipped": 4146,
+          "berryCrates": 391,
+          "gymSupplyRuns": 50,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.951,
+          "parcelsDelivered": 13107,
+          "cargoMix": {
+            "Poké Balls": 4354,
+            "Berries": 2981,
+            "Potions": 2707,
+            "TMs": 2012,
+            "Evolution Stones": 1053
+          }
+        },
+        {
+          "region": "Hoenn",
+          "pokeBallsShipped": 3720,
+          "berryCrates": 372,
+          "gymSupplyRuns": 46,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.944,
+          "parcelsDelivered": 11778,
+          "cargoMix": {
+            "Poké Balls": 3877,
+            "Berries": 2566,
+            "Potions": 2357,
+            "TMs": 1748,
+            "Evolution Stones": 1230
+          }
+        },
+        {
+          "region": "Sinnoh",
+          "pokeBallsShipped": 3232,
+          "berryCrates": 297,
+          "gymSupplyRuns": 36,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.909,
+          "parcelsDelivered": 10270,
+          "cargoMix": {
+            "Poké Balls": 3156,
+            "Berries": 2332,
+            "Potions": 2032,
+            "TMs": 1466,
+            "Evolution Stones": 1284
+          }
+        },
+        {
+          "region": "Unova",
+          "pokeBallsShipped": 3552,
+          "berryCrates": 423,
+          "gymSupplyRuns": 47,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.935,
+          "parcelsDelivered": 11319,
+          "cargoMix": {
+            "Poké Balls": 3737,
+            "Berries": 2464,
+            "Potions": 2256,
+            "TMs": 1704,
+            "Evolution Stones": 1158
+          }
+        },
+        {
+          "region": "Galar",
+          "pokeBallsShipped": 2854,
+          "berryCrates": 231,
+          "gymSupplyRuns": 29,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.918,
+          "parcelsDelivered": 9015,
+          "cargoMix": {
+            "Poké Balls": 2972,
+            "Berries": 2058,
+            "Potions": 1840,
+            "TMs": 1341,
+            "Evolution Stones": 804
+          }
+        }
+      ]
+    }
+  ],
+  "couriers": [
+    {
+      "name": "Skyler",
+      "species": "Pelipper",
+      "dexId": 279,
+      "homeRegion": "Hoenn",
+      "runs": 2148,
+      "onTimeRate": 0.943,
+      "status": "On Route"
+    },
+    {
+      "name": "Gale",
+      "species": "Pidgeot",
+      "dexId": 18,
+      "homeRegion": "Kanto",
+      "runs": 2613,
+      "onTimeRate": 0.964,
+      "status": "On Route"
+    },
+    {
+      "name": "Nimbus",
+      "species": "Dragonite",
+      "dexId": 149,
+      "homeRegion": "Johto",
+      "runs": 2402,
+      "onTimeRate": 0.951,
+      "status": "Resting"
+    },
+    {
+      "name": "Tidal",
+      "species": "Gyarados",
+      "dexId": 130,
+      "homeRegion": "Sinnoh",
+      "runs": 1874,
+      "onTimeRate": 0.906,
+      "status": "Grounded"
+    },
+    {
+      "name": "Brix",
+      "species": "Machamp",
+      "dexId": 68,
+      "homeRegion": "Unova",
+      "runs": 1596,
+      "onTimeRate": 0.938,
+      "status": "On Route"
+    },
+    {
+      "name": "Dash",
+      "species": "Doduo",
+      "dexId": 84,
+      "homeRegion": "Galar",
+      "runs": 1142,
+      "onTimeRate": 0.918,
+      "status": "Resting"
+    },
+    {
+      "name": "Emberlyn",
+      "species": "Rapidash",
+      "dexId": 78,
+      "homeRegion": "Kanto",
+      "runs": 2037,
+      "onTimeRate": 0.959,
+      "status": "On Route"
+    }
+  ]
+}

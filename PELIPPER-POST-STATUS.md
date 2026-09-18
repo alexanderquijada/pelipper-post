@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-18 — Phase 4 complete (MetricCard extracted); deployment still unverified
+- **Last updated:** 2026-09-18 — Phase 5 complete (dataset validated green); deployment still unverified
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -61,7 +61,7 @@ what the capstone document and videos require — nothing more.
 | 2b | 2.2 | Dashboard shell replaces starter content | ✅ Done | `Add dashboard shell` |
 | 3 | 2.3 | Vuetify 3 + MDI, refactor shell | ✅ Done | `Add Vuetify 3 and refactor dashboard shell to Vuetify components` |
 | 4 | 2.3 | Custom `MetricCard` component | ✅ Done | `Extract reusable MetricCard component with typed props` |
-| 5 | 2.4 | Mock dataset `src/data/metrics.json` | ⬜ Not started | `Add realistic mock metrics dataset and TypeScript types` |
+| 5 | 2.4 | Mock dataset `src/data/metrics.json` | ✅ Done | `Add realistic mock metrics dataset and TypeScript types` |
 | 6 | 2.4 | Full dashboard — charts, filters, roster | ⬜ Not started | `Build full dashboard with charts, filters, and courier roster` |
 | 7 | — | Final pass: cleanup, README | ⬜ Not started | `Final pass: cleanup, README, and documentation` |
 | 8 | — | Submit repo + live URL on Workday | ⬜ Not started | — |
@@ -72,19 +72,24 @@ what the capstone document and videos require — nothing more.
 
 ## 4. → NEXT STEP
 
-**Phase 5 — the mock dataset, `src/data/metrics.json`.** Paste the Phase 5 prompt from
-`CLAUDE-CODE-PROMPTS.md`. Twelve months × six regions = **72 region records**, built to the shape and
-the valid ranges in `BRIEF.md` §2, including the seasonality rules (Gym Season Mar–May, the December
-berry rush, the Jul–Aug storm dip) and the six per-region personalities.
+**Phase 6 — the full dashboard: charts, filters, courier roster.** Paste the Phase 6 prompt from
+`CLAUDE-CODE-PROMPTS.md`. The data and its types are ready and validated; this phase wires them up.
 
-**Run `node scripts/validate-data.mjs` before building anything on the data** — it checks all 72
-records against the ranges and every seasonality rule. `BRIEF.md` §2 says to, and the script is
-already in the repo from Phase 0.
+What Phase 6 has to replace — both are still hardcoded inline in `HomeView.vue`:
+- `KPI_CARDS` → the four KPI values, computed from `metrics.json` through the filters
+- `COURIERS` → the roster, read from `metrics.json` and filtered by region
 
-Phase 5 also replaces two sets of hardcoded placeholders: `KPI_CARDS` and `COURIERS`, both currently
-inline in `HomeView.vue`.
+Three things already written down that Phase 6 must not rediscover:
+1. **Import the JSON with one assertion** — `raw as MetricsDataset`. The reason is documented at the
+   top of `src/types/metrics.ts`; don't loosen the types to avoid it.
+2. **The trend caption has to become dynamic** — 📌 item in §8, including the Oct 2025 edge case
+   where no prior month exists and every card must get `trend: null`.
+3. **`onTimeRate` is stored 0–1**, which is exactly what `MetricCard`'s `format="percent"` expects.
+   No conversion.
 
-**Deployment is still unverified** — see §8. Judge Phase 5 on `npm run dev` and `npm run build`
+Re-run `node scripts/validate-data.mjs` if the data is ever touched again.
+
+**Deployment is still unverified** — see §8. Judge Phase 6 on `npm run dev` and `npm run build`
 locally; the live URL will confirm separately once Vercel's build queue clears.
 
 **If the queue is still wedged when the dashboard is finished,** §8 records a Vercel CLI fallback
@@ -369,6 +374,63 @@ Append here as the build goes. Date, what came up, what was decided.
   inverted case needs no probe: `Fainted Couriers` ships with `trend: -0.185, invertTrend: true` and
   renders a **green down-arrow**, while `Berry Crates` renders a **red down-arrow** on a similar
   decrease. Both visible side by side in the committed state.
+
+- **2026-09-18 — Phase 5.** `src/data/metrics.json` (33 KB, 72 region records, Oct 2025 → Sep 2026,
+  7 couriers) and `src/types/metrics.ts`. **`node scripts/validate-data.mjs` exits 0 — every check
+  passed, zero problems and zero notes.** Headline seasonality as measured by the validator:
+
+  | Check | Result | Target |
+  |---|---|---|
+  | Gym Season lift (Mar–May) | **+34%** | +25–40% |
+  | December berry multiple | **1.93×** | ~2× |
+  | Storm-season fainted couriers | **3.42** vs 1.77 | higher |
+  | Biggest storm on-time hit | **Hoenn** | Hoenn |
+
+  Hoenn's dip is clearly visible: ~94% most months, **88.7% in July and 88.2% in August**, with a
+  separate 89.8% dip in December from the berry rush.
+
+  Built with a seeded generator run from the scratchpad, never committed — `scripts/` still contains
+  only `validate-data.mjs`. Seed `20260918`, so the dataset is reproducible if it ever needs a tweak.
+
+  Decisions and findings the phase prompt didn't cover:
+
+  1. **`BRIEF.md` §2 contradicts its own example.** The prose says `pokeBallsShipped` should be
+     "around 30–35% of `parcelsDelivered`", but the sample record shows 9,184 of 14,237 — **64.5%**.
+     Followed the prose; the generated data sits at **29.6–35.1%**. The validator doesn't check this
+     ratio either way. **Flagging because the brief should probably be corrected** — if the example
+     is what Alex actually wants, the data needs regenerating.
+  2. **`cargoMix` and `pokeBallsShipped` are independent** — nothing links `cargoMix["Poké Balls"]`
+     to `pokeBallsShipped`, and the brief's example has them differ wildly. Read as *shipped* vs.
+     *delivered*. `cargoMix` sums exactly to `parcelsDelivered` in all 72 records (the last cargo
+     type is computed as the remainder, so it can't drift).
+  3. **Month-over-month movement: 53 of 66 transitions land inside the brief's ±3–15% band.** The
+     13 outside it are not noise, and tightening them further would have meant weakening the
+     seasonality the brief also demands:
+     - **4 above 15%** — all seasonal: Hoenn's post-holiday drop (Dec→Jan, −19.2%) and three Gym
+       Season ramps. A parcel carrier losing ~19% of volume after December is realistic.
+     - **9 below 3%** — quiet months. A real business doesn't move ≥3% every single month.
+  4. **Precise union types kept over a raw-JSON-assignable shape.** TypeScript widens JSON strings
+     to `string`, so `raw` isn't directly assignable to `MetricsDataset`. Verified both ways with a
+     throwaway `vue-tsc` probe (since deleted): the union version needs one `as MetricsDataset` at
+     the import site, which is documented at the top of `src/types/metrics.ts`. Loosening the types
+     would trade autocomplete and exhaustiveness everywhere for one assertion in one file.
+  5. **Courier `onTimeRate` values were adjusted** to track their home region's character rather
+     than the Phase 1 placeholders — Gale and Emberlyn (Kanto) highest at 96.4% / 95.9%, Tidal
+     (Sinnoh) lowest at 90.6% and `Grounded`, Skyler (Hoenn) mid at 94.3%. `runs` carried over.
+
+  Region character across all twelve months, as generated:
+
+  | Region | Avg volume | Avg on-time | Fainted/mo | Oct→Sep growth |
+  |---|---|---|---|---|
+  | Kanto | 15,749 | 95.3% | 1.00 | +5.8% |
+  | Johto | 13,536 | 94.1% | 1.42 | +0.2% |
+  | Hoenn | 11,677 | 92.9% | 2.67 | +12.3% |
+  | Sinnoh | 10,223 | **90.0%** | **3.50** | +10.9% |
+  | Unova | 10,400 | 92.9% | 1.67 | **+31.9%** |
+  | Galar | 8,341 | 91.4% | 2.00 | +20.7% |
+
+  Kanto highest volume and best on-time; Sinnoh worst on-time and most fainted; Unova fastest
+  growth; Galar smallest. Johto flat, i.e. stable. All as `BRIEF.md` §2 specifies.
 
 ---
 
