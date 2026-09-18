@@ -63,11 +63,43 @@ you, by hand, once. After this, **every push deploys automatically forever.**
 **You don't need to touch Vercel again.** From here on, every time Claude Code pushes at the end of
 a phase, Vercel rebuilds your live site by itself.
 
-### A note on what Vercel builds
+### ⚠️ A note on what Vercel builds — read this before Phase 2
 
 You'll import the repo while Phase 1 is still plain HTML, so Vercel deploys it as a static site.
-When Phase 2 converts the project to Vue, Vercel detects Vite on the next push and switches to
-`npm run build` → `dist` on its own. You don't have to change a setting.
+That part is fine.
+
+**What is not fine:** Vercel decides the Framework Preset **once, when you import the repo**, and
+never revisits it. It does **not** notice later that the project became a Vue app. Because this repo
+was imported as plain HTML, it is pinned to **"Other"** — so when Phase 2 adds a build step, Vercel
+will go on serving raw files and **your live site will go blank or 404.** Nothing warns you about
+this. The deploy reports success.
+
+*(An earlier version of this file said Vercel switches over on its own. It doesn't. Ignore that.)*
+
+**The fix — Phase 2 creates a `vercel.json` at the repo root:**
+
+```json
+{
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+```
+
+A `vercel.json` in the repo **overrides whatever the dashboard thinks**, which is why this is the
+better fix: it's version controlled, it explains itself, and it survives anyone re-importing the
+project later. The `rewrites` line is the single-page-app fallback so the one route still resolves.
+
+**Timing matters: this file must not exist before Phase 2.** There's no `package.json` yet, so
+telling Vercel to run a Vite build today would break the static deploy that currently works. The
+Phase 2 prompt handles it — you don't need to create it yourself.
+
+**If you'd rather click it:** Project → Settings → Build & Deployment → Framework Preset → **Vite**,
+then redeploy. Same result, but nothing in the repo records that you did it.
+
+**How you'll know it broke:** the live URL goes blank, 404s, or shows raw text after a Phase 2 push.
+Tell Claude Code: *"the live site is blank after the Vue scaffold — check `vercel.json`."*
 
 ### Optional — password protection
 
