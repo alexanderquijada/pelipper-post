@@ -84,7 +84,7 @@ Then **Phase 1** from `CLAUDE-CODE-PROMPTS.md`.
 
 | What | URL |
 |---|---|
-| GitHub repo | _not created yet — Phase 1 creates it_ |
+| GitHub repo | https://github.com/alexanderquijada/pelipper-post |
 | Vercel project | _not created yet_ |
 | Live dashboard | _not deployed yet_ |
 | Local dev server | `http://localhost:5173` (after Phase 2) |
