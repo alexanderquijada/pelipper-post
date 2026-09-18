@@ -1,7 +1,9 @@
 <script setup lang="ts">
-// Phase 2 = structure only. Every value below is a placeholder.
-// Phase 3 swaps these elements for Vuetify components, Phase 4 extracts
-// MetricCard, Phase 5 adds the dataset, Phase 6 wires filters and charts.
+import { ref } from 'vue'
+import { spriteUrl, SPRITE_FALLBACK_ICON } from '@/utils/sprites'
+
+// Phase 3 = Vuetify refactor. Filters are still inert and the three charts are
+// still placeholders; Phase 5 adds the dataset and Phase 6 wires both up.
 
 const KPI_SLOTS = [
   'Poké Balls Shipped',
@@ -24,257 +26,187 @@ const MONTHS = [
   'Jul 2026',
   'Aug 2026',
   'Sep 2026',
-] as const
+]
 
-const REGIONS = ['All Regions', 'Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Galar'] as const
+const REGIONS = ['All Regions', 'Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Galar']
+
+// Bound so the dropdowns behave like real selects. Nothing reads them yet.
+const selectedMonth = ref(MONTHS[0])
+const selectedRegion = ref(REGIONS[0])
+
+type CourierStatus = 'On Route' | 'Resting' | 'Grounded'
+
+interface Courier {
+  name: string
+  species: string
+  dexId: number
+  homeRegion: string
+  runs: number
+  onTimeRate: number
+  status: CourierStatus
+}
+
+// Fabricated placeholder roster — replaced by src/data/metrics.json in Phase 5.
+const COURIERS: Courier[] = [
+  { name: 'Skyler', species: 'Pelipper', dexId: 279, homeRegion: 'Hoenn', runs: 2148, onTimeRate: 0.961, status: 'On Route' },
+  { name: 'Gale', species: 'Pidgeot', dexId: 18, homeRegion: 'Kanto', runs: 2613, onTimeRate: 0.974, status: 'On Route' },
+  { name: 'Nimbus', species: 'Dragonite', dexId: 149, homeRegion: 'Johto', runs: 2402, onTimeRate: 0.958, status: 'Resting' },
+  { name: 'Tidal', species: 'Gyarados', dexId: 130, homeRegion: 'Sinnoh', runs: 1874, onTimeRate: 0.913, status: 'Grounded' },
+  { name: 'Brix', species: 'Machamp', dexId: 68, homeRegion: 'Unova', runs: 1596, onTimeRate: 0.937, status: 'On Route' },
+  { name: 'Dash', species: 'Doduo', dexId: 84, homeRegion: 'Galar', runs: 1142, onTimeRate: 0.896, status: 'Resting' },
+  { name: 'Emberlyn', species: 'Rapidash', dexId: 78, homeRegion: 'Kanto', runs: 2037, onTimeRate: 0.949, status: 'On Route' },
+]
+
+const STATUS_COLOR: Record<CourierStatus, string> = {
+  'On Route': 'success',
+  Resting: 'secondary',
+  Grounded: 'error',
+}
+
+const formatNumber = (n: number) => n.toLocaleString('en-US')
+const formatRate = (r: number) => `${(r * 100).toFixed(1)}%`
+
+// Sprites that 404'd, by dexId — swaps the avatar to an MDI icon.
+const failedSprites = ref(new Set<number>())
+
+function onSpriteError(dexId: number) {
+  failedSprites.value = new Set(failedSprites.value).add(dexId)
+}
 </script>
 
 <template>
-  <main class="container">
+  <v-container class="pelipper-width px-6 py-8">
     <!-- 2. Filter row -->
-    <section class="filter-row">
-      <div class="filter-row__controls">
-        <label class="field">
-          <span class="field__label">Month</span>
-          <select class="field__select">
-            <option v-for="month in MONTHS" :key="month">{{ month }}</option>
-          </select>
-        </label>
+    <v-row align="end" class="mb-2">
+      <v-col cols="12" sm="6" md="3">
+        <v-select v-model="selectedMonth" :items="MONTHS" label="Month" />
+      </v-col>
 
-        <label class="field">
-          <span class="field__label">Region</span>
-          <select class="field__select">
-            <option v-for="region in REGIONS" :key="region">{{ region }}</option>
-          </select>
-        </label>
-      </div>
+      <v-col cols="12" sm="6" md="3">
+        <v-select v-model="selectedRegion" :items="REGIONS" label="Region" />
+      </v-col>
 
-      <p class="filter-row__caption">Showing 12 months across 6 regions</p>
-    </section>
+      <v-col cols="12" md="6" class="text-md-right">
+        <span class="text-body-2 text-muted">Showing 12 months across 6 regions</span>
+      </v-col>
+    </v-row>
 
-    <!-- 3. KPI row — four slots. MetricCard replaces these in Phase 4. -->
-    <section class="kpi-row">
-      <article v-for="label in KPI_SLOTS" :key="label" class="card metric-card">
-        <p class="metric-card__label">{{ label }}</p>
-        <p class="metric-card__value">—</p>
-        <p class="metric-card__trend">trend in Phase 6</p>
-      </article>
-    </section>
+    <!-- 3. KPI row — MetricCard replaces these in Phase 4 -->
+    <v-row class="mb-2">
+      <v-col v-for="label in KPI_SLOTS" :key="label" cols="12" sm="6" lg="3">
+        <v-card class="pa-6" height="100%">
+          <div class="text-overline text-muted">{{ label }}</div>
+          <div class="text-h4 font-weight-bold mt-2">—</div>
+          <div class="text-caption text-muted mt-2">trend in Phase 6</div>
+        </v-card>
+      </v-col>
+    </v-row>
 
-    <!-- 4. Chart row — two side by side -->
-    <section class="chart-row">
-      <article class="card">
-        <h2 class="card__title">Parcels by Region</h2>
-        <div class="slot">
-          <p class="slot__name">RegionBarChart</p>
-          <p class="slot__note">Vertical bar chart · Phase 6</p>
-        </div>
-      </article>
+    <!-- 4. Chart row -->
+    <v-row class="mb-2">
+      <v-col cols="12" md="6">
+        <v-card class="pa-6" height="100%">
+          <h2 class="text-subtitle-1 font-weight-bold mb-4">Parcels by Region</h2>
+          <div class="chart-slot d-flex flex-column align-center justify-center rounded-lg">
+            <p class="text-body-2 font-weight-bold text-secondary mb-1">RegionBarChart</p>
+            <p class="text-caption text-muted mb-0">Vertical bar chart · Phase 6</p>
+          </div>
+        </v-card>
+      </v-col>
 
-      <article class="card">
-        <h2 class="card__title">Cargo Mix</h2>
-        <div class="slot">
-          <p class="slot__name">CargoMixChart</p>
-          <p class="slot__note">Doughnut, five segments · Phase 6</p>
-        </div>
-      </article>
-    </section>
+      <v-col cols="12" md="6">
+        <v-card class="pa-6" height="100%">
+          <h2 class="text-subtitle-1 font-weight-bold mb-4">Cargo Mix</h2>
+          <div class="chart-slot d-flex flex-column align-center justify-center rounded-lg">
+            <p class="text-body-2 font-weight-bold text-secondary mb-1">CargoMixChart</p>
+            <p class="text-caption text-muted mb-0">Doughnut, five segments · Phase 6</p>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
 
-    <!-- 5. Trend row — one full width -->
-    <section class="trend-row">
-      <article class="card">
-        <h2 class="card__title">Gym Supply Runs &amp; Parcels Delivered</h2>
-        <div class="slot slot--wide">
-          <p class="slot__name">DeliveryTrendChart</p>
-          <p class="slot__note">Full-width area chart, twelve months · Phase 6</p>
-        </div>
-      </article>
-    </section>
+    <!-- 5. Trend row -->
+    <v-row class="mb-2">
+      <v-col cols="12">
+        <v-card class="pa-6">
+          <h2 class="text-subtitle-1 font-weight-bold mb-4">Gym Supply Runs &amp; Parcels Delivered</h2>
+          <div class="chart-slot chart-slot--wide d-flex flex-column align-center justify-center rounded-lg">
+            <p class="text-body-2 font-weight-bold text-secondary mb-1">DeliveryTrendChart</p>
+            <p class="text-caption text-muted mb-0">Full-width area chart, twelve months · Phase 6</p>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
 
     <!-- 6. Courier roster -->
-    <section class="roster-row">
-      <article class="card">
-        <h2 class="card__title">Courier Roster</h2>
-        <div class="slot slot--wide">
-          <p class="slot__name">CourierRoster</p>
-          <p class="slot__note">Table with hotlinked sprite avatars · Phase 6</p>
-        </div>
-      </article>
-    </section>
-  </main>
+    <v-row>
+      <v-col cols="12">
+        <v-card class="pa-6">
+          <h2 class="text-subtitle-1 font-weight-bold mb-4">Courier Roster</h2>
+
+          <v-table>
+            <thead>
+              <tr>
+                <th class="text-left" style="width: 72px"></th>
+                <th class="text-left">Courier</th>
+                <th class="text-left">Species</th>
+                <th class="text-left">Home Region</th>
+                <th class="text-right">Runs</th>
+                <th class="text-right">On-Time Rate</th>
+                <th class="text-left">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="courier in COURIERS" :key="courier.name">
+                <td>
+                  <v-avatar size="44" class="sprite-avatar">
+                    <v-img
+                      v-if="!failedSprites.has(courier.dexId)"
+                      :src="spriteUrl(courier.dexId)"
+                      :alt="`${courier.species} sprite`"
+                      @error="onSpriteError(courier.dexId)"
+                    />
+                    <v-icon v-else :icon="SPRITE_FALLBACK_ICON" color="muted" />
+                  </v-avatar>
+                </td>
+                <td class="font-weight-bold">{{ courier.name }}</td>
+                <td class="text-muted">{{ courier.species }}</td>
+                <td class="text-muted">{{ courier.homeRegion }}</td>
+                <td class="text-right">{{ formatNumber(courier.runs) }}</td>
+                <td class="text-right">{{ formatRate(courier.onTimeRate) }}</td>
+                <td>
+                  <v-chip :color="STATUS_COLOR[courier.status]" variant="tonal" size="small">
+                    {{ courier.status }}
+                  </v-chip>
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style scoped>
-.container {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 32px 40px 8px;
-}
+/* Custom rules left after the refactor. Both read their colour from Vuetify's
+   generated theme variables (--v-theme-* holds an "R,G,B" triplet), so nothing
+   here duplicates a hex from main.ts and nothing drifts when the theme changes.
 
-/* Shared card */
-.card {
-  background: var(--surface);
-  border-radius: var(--radius-lg);
-  padding: var(--card-padding);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
-}
-
-.card__title {
-  margin: 0 0 18px;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-/* Filter row */
-.filter-row {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-  margin-bottom: 28px;
-}
-
-.filter-row__controls {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.filter-row__caption {
-  margin: 0 0 10px;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.field__label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.9px;
-  color: var(--muted);
-}
-
-.field__select {
-  appearance: none;
-  min-width: 190px;
-  padding: 10px 38px 10px 14px;
-  background-color: var(--surface);
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%238FA3B8' d='M7,10L12,15L17,10H7Z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 18px 18px;
-  color: var(--on-surface);
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-  font: inherit;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.field__select:focus {
-  outline: none;
-  border-color: var(--primary);
-}
-
-/* KPI row */
-.kpi-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--gap);
-  margin-bottom: var(--gap);
-}
-
-.metric-card__label {
-  margin: 0;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--muted);
-}
-
-.metric-card__value {
-  margin: 12px 0 0;
-  font-size: 40px;
-  line-height: 1.1;
-  font-weight: 600;
-  letter-spacing: -0.5px;
-}
-
-.metric-card__trend {
-  margin: 10px 0 0;
-  font-size: 12.5px;
-  color: var(--muted);
-}
-
-/* Chart + roster rows */
-.chart-row {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--gap);
-  margin-bottom: var(--gap);
-}
-
-.trend-row,
-.roster-row {
-  margin-bottom: var(--gap);
-}
-
-.slot {
+   1. Dashed placeholder box — Vuetify has no dashed-border utility. These
+      disappear entirely in Phase 6 when the real charts land. */
+.chart-slot {
   height: 260px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  text-align: center;
-  border: 1px dashed rgba(143, 163, 184, 0.38);
-  border-radius: 10px;
-  background: rgba(79, 163, 209, 0.04);
+  border: 1px dashed rgba(var(--v-theme-muted), 0.38);
+  background: rgba(var(--v-theme-primary), 0.04);
 }
 
-.slot--wide {
+.chart-slot--wide {
   height: 220px;
 }
 
-.slot__name {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--secondary);
-}
-
-.slot__note {
-  margin: 0;
-  font-size: 12.5px;
-  color: var(--muted);
-}
-
-@media (max-width: 1100px) {
-  .kpi-row {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 900px) {
-  .chart-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 700px) {
-  .container {
-    padding: 24px 20px 8px;
-  }
-
-  .kpi-row {
-    grid-template-columns: 1fr;
-  }
+/* 2. Sprite avatar tint — a faint theme-tinted disc behind transparent artwork. */
+.sprite-avatar {
+  background: rgba(var(--v-theme-primary), 0.12);
 }
 </style>

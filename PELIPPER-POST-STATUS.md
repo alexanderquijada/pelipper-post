@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-18 — Phase 2 complete (Vue scaffold + shell); deployment still unverified
+- **Last updated:** 2026-09-18 — Phase 3 complete (Vuetify 3 + themes); deployment still unverified
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -59,7 +59,7 @@ what the capstone document and videos require — nothing more.
 | — | 2.1 | Import repo into Vercel (browser, one time) | 🟡 Imported — live URL still 404s; build queue stalled, see §8 | — |
 | 2a | 2.2 | Vue + Vite + TS + Router scaffold | ✅ Done | `Scaffold Vue project with Vite, TypeScript, and Vue Router` |
 | 2b | 2.2 | Dashboard shell replaces starter content | ✅ Done | `Add dashboard shell` |
-| 3 | 2.3 | Vuetify 3 + MDI, refactor shell | ⬜ Not started | `Add Vuetify 3 and refactor dashboard shell to Vuetify components` |
+| 3 | 2.3 | Vuetify 3 + MDI, refactor shell | ✅ Done | `Add Vuetify 3 and refactor dashboard shell to Vuetify components` |
 | 4 | 2.3 | Custom `MetricCard` component | ⬜ Not started | `Extract reusable MetricCard component with typed props` |
 | 5 | 2.4 | Mock dataset `src/data/metrics.json` | ⬜ Not started | `Add realistic mock metrics dataset and TypeScript types` |
 | 6 | 2.4 | Full dashboard — charts, filters, roster | ⬜ Not started | `Build full dashboard with charts, filters, and courier roster` |
@@ -72,16 +72,17 @@ what the capstone document and videos require — nothing more.
 
 ## 4. → NEXT STEP
 
-**Phase 3 — Vuetify 3 + MDI, refactor the shell to Vuetify components.** Paste the Phase 3 prompt
-from `CLAUDE-CODE-PROMPTS.md`. Register `pelipperDark` (default) and `pelipperLight` in `main.ts`
-using the palette in `BRIEF.md` §6, then rebuild the shell with `v-app` / `v-app-bar` /
-`v-container` / `v-row` / `v-col`. Watch for Vuetify overriding the hand-written CSS — fix with
-Vuetify props and spacing utilities, not `!important` (§8, and `CLAUDE.md` rule 8).
+**Phase 4 — extract the custom `MetricCard` component.** Paste the Phase 4 prompt from
+`CLAUDE-CODE-PROMPTS.md`. The four KPI tiles in `HomeView.vue` are currently an inline
+`v-for` over a list of labels; Phase 4 pulls them into `src/components/MetricCard.vue` with typed
+props. This is the capstone's "custom reusable component" requirement, so the props interface
+matters as much as the markup.
 
-Two things Phase 3 should clean up while it's in there: the inline MDI **SVG paths** in `App.vue`
-become real `<v-icon>`s once `@mdi/font` is installed, and the **theme toggle** becomes functional.
+**One decision waiting for Alex —** see the bundle-size note in §8. Vuetify is currently registered
+with every component imported, which works but ships ~638 kB of JS. `vite-plugin-vuetify` would
+tree-shake it. Not done, because it's outside what the Phase 3 prompt asked for.
 
-**Deployment is still unverified** — see §8. Judge Phase 3 on `npm run dev` and `npm run build`
+**Deployment is still unverified** — see §8. Judge Phase 4 on `npm run dev` and `npm run build`
 locally; the live URL will confirm separately once Vercel's build queue clears.
 
 **If the queue is still wedged when the dashboard is finished,** §8 records a Vercel CLI fallback
@@ -250,6 +251,68 @@ Append here as the build goes. Date, what came up, what was decided.
   `outputDirectory: dist`, plus the SPA rewrite. The `{ "outputDirectory": "." }` value from the
   static deploy is gone; it would have served the repo root and shipped nothing.
 
+- **2026-09-18 — Phase 3.** Vuetify 3.13.4 + `@mdi/font` 7.4.47 installed, plugin and both named
+  themes registered in `main.ts`, shell rebuilt on Vuetify components. `npm run dev` clean,
+  `npm run build` exit 0 with no `vue-tsc` errors. Theme toggle and MDI rendering verified in a real
+  browser (method below). Deployment still unverified — Vercel queue (§8).
+
+  ⚠️ **`npm install vuetify` installs Vuetify 4, not 3.** Plain `npm install vuetify` resolved to
+  **4.2.1** — the 4.x line is current. `BRIEF.md` §3 and `CLAUDE.md` both specify **Vuetify 3**, so it
+  was reinstalled as `npm install "vuetify@^3"` → **3.13.4**. Anyone re-running the install, or
+  bumping deps later, has to pin the major or the project silently jumps a major version.
+
+  Decisions the phase prompt didn't cover:
+
+  1. **All Vuetify components are registered eagerly** (`import * as components from
+     'vuetify/components'`). Simple and reliable, and it avoids adding a build plugin the prompt
+     didn't ask for — but it's why the bundle is large. See the §8 bundle note; this is Alex's call.
+  2. **`src/utils/sprites.ts` created now, not in Phase 6.** The phase prompt asked for `v-avatar`
+     sprites in the roster, and `BRIEF.md` §2 requires the URL builder to live in exactly one file.
+     Building the roster without it would have meant inlining the CDN path and moving it later.
+  3. **The roster renders real courier data already.** The prompt asked for `v-table` + `v-avatar` +
+     `v-chip`, which needs rows to render. Reused the same seven fabricated couriers from the Phase 1
+     prototype; `src/data/metrics.json` replaces them in Phase 5.
+  4. **Sprite fallback now uses the real `mdi-truck-delivery-outline`** — closes Phase 1 decision #1,
+     which had substituted the filled variant because there was no icon font yet.
+  5. **Filters are bound to local refs**, so the dropdowns open and visibly change. Nothing reads
+     those refs — still non-functional in the sense that matters. Phase 6 wires them.
+  6. **KPI values use Vuetify's `text-h4`** (34px) rather than the prototype's hand-set 40px. Still
+     comfortably the largest type on the page, and it avoids a custom font-size rule fighting
+     Vuetify's typography scale. Revisit in Phase 4 if it reads too small projected.
+
+  **Palette variables — what was deleted and what survived.** All nine colour variables from the
+  Phase 2 `App.vue` block are **gone**: `--background`, `--surface`, `--primary`, `--secondary`,
+  `--accent`, `--success`, `--error`, `--on-surface`, `--muted`. Every one is now a Vuetify theme
+  token, and **the theme in `main.ts` is the only place a hex appears.** Also deleted: `--hairline`
+  (now `border="b"` on `v-app-bar`), `--radius-lg` (now `rounded="lg"` in `VCard` defaults),
+  `--card-padding` (now `pa-6`), `--gap` (now `v-row`/`v-col` gutters).
+
+  Two rules survived, both genuinely outside what Vuetify provides:
+
+  | Survivor | Why it can't be a Vuetify prop |
+  |---|---|
+  | `.v-application { font-family: … }` | Vuetify defaults to Roboto, which this project doesn't load. `BRIEF.md` §6 asks for Inter or a system stack. Changing it properly means overriding an SCSS variable at build time; a one-line CSS rule is the smaller change. |
+  | `.pelipper-width { max-width: 1400px }` | `v-container`'s own maxima are 1185px at `lg` and 1785px at `xl`. Neither is the ~1400px `BRIEF.md` §4 asks for. |
+
+  Two more scoped rules exist in `HomeView.vue` — `.chart-slot` (dashed placeholder; Vuetify has no
+  dashed-border utility, and these are deleted in Phase 6) and `.sprite-avatar` (faint tint behind
+  transparent artwork). **Both read `rgba(var(--v-theme-*), …)` rather than hardcoding a colour**, so
+  they follow the active theme and cannot drift from it.
+
+  **How the toggle and icons were verified** — not by eyeballing a screenshot. Drove headless Chrome
+  over the DevTools Protocol, clicked the real toggle button twice, and read computed styles at each
+  step:
+
+  ```
+  BEFORE : v-theme--pelipperDark   bg rgb(14, 22, 33)     -> #0E1621 ✓
+  AFTER  : v-theme--pelipperLight  bg rgb(244, 247, 250)  -> #F4F7FA ✓
+  BACK   : v-theme--pelipperDark   bg rgb(14, 22, 33)     -> #0E1621 ✓
+  ```
+
+  Both directions, and both background values match `BRIEF.md` §6 exactly. For the icons, the app-bar
+  `v-icon` computes `font-family: "Material Design Icons"` and measures **30px wide** — a glyph that
+  failed to load renders zero-width, so this rules out the empty-box failure mode.
+
 ---
 
 ## 8. Known issues / watch list
@@ -388,6 +451,24 @@ Append here as the build goes. Date, what came up, what was decided.
 - **Nested-folder trap.** `npm create vue@latest` will try to scaffold into a subfolder. Phase 2's
   prompt handles it, but check the file tree after Phase 2 — a stray subfolder is the single most
   common way this build goes sideways (it happened twice in the capstone videos).
+- 🟡 **Bundle size — Vuetify is registered without tree-shaking. Alex's call.** `main.ts` does
+  `import * as components from 'vuetify/components'`, so every component ships whether used or not:
+
+  | Asset | Size | gzip |
+  |---|---|---|
+  | `index.js` | 637.90 kB | 202.37 kB |
+  | `index.css` | 833.29 kB | 117.99 kB |
+  | MDI webfonts (woff2/woff/ttf/eot) | ~3.6 MB total | — |
+
+  Vite prints a chunk-size warning because of it. **Nothing is broken** — it builds, deploys and runs
+  fine, and for a single-page capstone dashboard it's cosmetic. The fix is `vite-plugin-vuetify`,
+  which auto-imports only the components actually used and typically cuts this by more than half.
+  Not done in Phase 3 because the prompt didn't ask for a build plugin and `CLAUDE.md` rule 1 says
+  don't invent scope. Say the word and it's a ten-minute change.
+
+  The four MDI font formats come from `@mdi/font`'s stock CSS; only `woff2` is needed by any browser
+  this will ever run in. Same call, same reasoning.
+
 - **Vuetify overrides custom CSS.** Both Video 203 and 204 lost time to this. When layout fixes
   "don't take", the cause is Vuetify's own styles, not missing CSS. Fix with Vuetify props and
   spacing utilities, not `!important`.

@@ -2,9 +2,75 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
-// Vuetify plugin + theme registration land here in Phase 3.
+// Explicit imports — neither of these is pulled in automatically.
+import 'vuetify/styles'
+import '@mdi/font/css/materialdesignicons.css'
+
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+
+// Palette from BRIEF.md §6. These theme values are the SINGLE SOURCE OF TRUTH
+// for colour — do not re-declare any of these hexes in component CSS.
+const pelipperDark = {
+  dark: true,
+  colors: {
+    background: '#0E1621',
+    surface: '#16202E',
+    primary: '#4FA3D1',
+    secondary: '#7FD1E8',
+    accent: '#F2A65A',
+    success: '#5FBF8F',
+    error: '#E8705A',
+    'on-background': '#E6EDF3',
+    'on-surface': '#E6EDF3',
+    // custom token -> gives us text-muted / bg-muted utility classes
+    muted: '#8FA3B8',
+  },
+}
+
+const pelipperLight = {
+  dark: false,
+  colors: {
+    background: '#F4F7FA',
+    surface: '#FFFFFF',
+    primary: '#2E6E92',
+    secondary: '#4FA3D1',
+    accent: '#E08A3C',
+    success: '#3E9E70',
+    error: '#D1523C',
+    'on-background': '#16202E',
+    'on-surface': '#16202E',
+    muted: '#5C7186',
+  },
+}
+
+const vuetify = createVuetify({
+  components,
+  directives,
+  icons: {
+    defaultSet: 'mdi',
+  },
+  theme: {
+    defaultTheme: 'pelipperDark',
+    themes: { pelipperDark, pelipperLight },
+  },
+  defaults: {
+    VCard: {
+      rounded: 'lg',
+      elevation: 1,
+    },
+    VSelect: {
+      variant: 'outlined',
+      density: 'comfortable',
+      hideDetails: true,
+    },
+  },
+})
+
 const app = createApp(App)
 
 app.use(router)
+app.use(vuetify)
 
 app.mount('#app')
