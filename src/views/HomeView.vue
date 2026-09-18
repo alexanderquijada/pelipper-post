@@ -121,11 +121,19 @@ function onSpriteError(dexId: number) {
     </v-row>
 
     <!-- 3. KPI row -->
-    <v-row class="mb-2">
+    <v-row>
       <v-col v-for="card in KPI_CARDS" :key="card.label" cols="12" sm="6" lg="3">
         <MetricCard v-bind="card" />
       </v-col>
     </v-row>
+
+    <!--
+      One caption for all four cards. Deliberately NOT per-card "vs. last month":
+      under "All Months" the trend compares the trailing month to the one before
+      it, so that wording would be wrong on the most-read numbers on the page.
+      Phase 6 makes this string depend on filter state — see §8 of the status doc.
+    -->
+    <p class="text-caption text-muted mb-2">Trends compare to the previous month.</p>
 
     <!-- 4. Chart row -->
     <v-row class="mb-2">

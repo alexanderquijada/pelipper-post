@@ -61,6 +61,19 @@ const trendLabel = computed(() => {
   if (props.trend === null) return ''
   return `${(Math.abs(props.trend) * 100).toFixed(1)}%`
 })
+
+/**
+ * The visible trend is now just an arrow and a percentage — the wording that
+ * used to carry the direction lives in a single caption beside the KPI row.
+ * This keeps the direction available to screen readers, which can't infer it
+ * from the arrow glyph or the colour.
+ */
+const trendAria = computed(() => {
+  if (props.trend === null) return undefined
+  if (direction.value === 'flat') return 'No change from the previous period'
+  const word = direction.value === 'up' ? 'Up' : 'Down'
+  return `${word} ${trendLabel.value} from the previous period`
+})
 </script>
 
 <template>
@@ -72,9 +85,14 @@ const trendLabel = computed(() => {
 
     <div class="text-h4 font-weight-bold mt-2">{{ displayValue }}</div>
 
-    <div v-if="hasTrend" class="d-flex align-center mt-2" :class="`text-${trendColor}`">
-      <v-icon :icon="trendIcon" size="18" />
-      <span class="text-caption ml-1">{{ trendLabel }} vs. last month</span>
+    <div
+      v-if="hasTrend"
+      class="d-flex align-center mt-2"
+      :class="`text-${trendColor}`"
+      :aria-label="trendAria"
+    >
+      <v-icon :icon="trendIcon" size="18" aria-hidden="true" />
+      <span class="text-caption ml-1">{{ trendLabel }}</span>
     </div>
   </v-card>
 </template>

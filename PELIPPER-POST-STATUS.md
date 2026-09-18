@@ -343,9 +343,17 @@ Append here as the build goes. Date, what came up, what was decided.
   2. **`trend: 0` renders a flat grey dash (`mdi-minus`), not a green or red arrow.** Zero change is
      neither good nor bad news, and the brief's colour rule only defines increase/decrease. This is
      distinct from `trend: null`, which omits the indicator entirely.
-  3. **Trend text reads "6.2% vs. last month".** The brief specifies an arrow plus a percentage;
-     the suffix makes the comparison explicit on a card that's read in isolation in a meeting. Easy
-     to drop if it's too wordy.
+  3. ~~**Trend text reads "6.2% vs. last month".**~~ **Reversed same day by Alex — on correctness,
+     not wordiness.** Under `All Months` the brief defines the trend as the *trailing month vs. the
+     one before it*, so "vs. last month" was misleading on the most-read numbers on the page (and
+     four repetitions across four adjacent cards was noise). Cards now show just the arrow and the
+     percentage; one muted caption under the KPI row carries the comparison. **That caption has to
+     become dynamic in Phase 6** — see the 📌 item in §8. Decisions 1 and 2 above were ratified
+     unchanged, as was the two-line label baseline fix.
+
+     Accessibility note: with the words gone, direction was only conveyed by an arrow glyph and a
+     colour. The trend element now carries an `aria-label` ("Up 6.2% from the previous period") and
+     the arrow is `aria-hidden`, so screen readers still get the direction.
   4. **Icons use `color="primary"` at 60% opacity** rather than a different colour per card — the
      brief's "not a rainbow" instruction. They mark the card without competing with the value.
   5. **Fixed a real layout defect found during verification.** "Berry Crates Delivered" wraps to two
@@ -530,6 +538,23 @@ Append here as the build goes. Date, what came up, what was decided.
 - **Vuetify major-version trap.** A bare `npm install vuetify` resolves to **4.x** — installing
   without a pin silently jumps a major version past the 3.x this project requires. Always
   `npm install "vuetify@^3"`. Now stated in `BRIEF.md` §3 and `CLAUDE.md` too.
+
+- 📌 **PHASE 6 TODO — the trend caption must become dynamic.** `HomeView.vue` currently renders one
+  static line under the KPI row: *"Trends compare to the previous month."* **That wording is only
+  correct for some filter states**, which is exactly why the per-card "vs. last month" suffix was
+  removed — see the 2026-09-18 decision-log entry.
+
+  Per `BRIEF.md` §5, the comparison the trend actually makes depends on the Month filter:
+
+  | Month filter | What the trend compares | Caption should say |
+  |---|---|---|
+  | `All Months` | trailing month vs. the one before it | e.g. *"Trends compare Sep 2026 to Aug 2026."* |
+  | A specific month | that month vs. the month before it | e.g. *"Trends compare Apr 2026 to Mar 2026."* |
+  | The **earliest** month (Oct 2025) | nothing — no prior month exists | **no caption at all**, and every card gets `trend: null` |
+
+  That last row is the one to get right: the brief says *"Never show a trend arrow when there is no
+  prior month to compare against."* `MetricCard` already handles it — `trend: null` omits the
+  indicator — so Phase 6 only has to pass `null` and hide the caption.
 
 - **Vuetify overrides custom CSS.** Both Video 203 and 204 lost time to this. When layout fixes
   "don't take", the cause is Vuetify's own styles, not missing CSS. Fix with Vuetify props and
