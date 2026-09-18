@@ -8,7 +8,9 @@ const theme = useTheme()
 const isDark = computed(() => theme.global.name.value === 'pelipperDark')
 
 function toggleTheme() {
-  theme.global.name.value = isDark.value ? 'pelipperLight' : 'pelipperDark'
+  // theme.change(), not `theme.global.name.value = …` — the latter is deprecated
+  // in Vuetify 3.13 and logs a warning on every toggle.
+  theme.change(isDark.value ? 'pelipperLight' : 'pelipperDark')
 }
 </script>
 

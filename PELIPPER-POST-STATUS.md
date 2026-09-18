@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-18 — Phase 5 complete (dataset validated green); deployment still unverified
+- **Last updated:** 2026-09-18 — **Phase 6 complete: the dashboard is BUILT.** Deployment still unverified
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -62,7 +62,7 @@ what the capstone document and videos require — nothing more.
 | 3 | 2.3 | Vuetify 3 + MDI, refactor shell | ✅ Done | `Add Vuetify 3 and refactor dashboard shell to Vuetify components` |
 | 4 | 2.3 | Custom `MetricCard` component | ✅ Done | `Extract reusable MetricCard component with typed props` |
 | 5 | 2.4 | Mock dataset `src/data/metrics.json` | ✅ Done | `Add realistic mock metrics dataset and TypeScript types` |
-| 6 | 2.4 | Full dashboard — charts, filters, roster | ⬜ Not started | `Build full dashboard with charts, filters, and courier roster` |
+| 6 | 2.4 | Full dashboard — charts, filters, roster | ✅ Done | `Build full dashboard with charts, filters, and courier roster` |
 | 7 | — | Final pass: cleanup, README | ⬜ Not started | `Final pass: cleanup, README, and documentation` |
 | 8 | — | Submit repo + live URL on Workday | ⬜ Not started | — |
 
@@ -72,30 +72,23 @@ what the capstone document and videos require — nothing more.
 
 ## 4. → NEXT STEP
 
-**Phase 6 — the full dashboard: charts, filters, courier roster.** Paste the Phase 6 prompt from
-`CLAUDE-CODE-PROMPTS.md`. The data and its types are ready and validated; this phase wires them up.
+**The dashboard is built and working locally. The only thing standing between this project and
+submission is the Vercel deployment.**
 
-What Phase 6 has to replace — both are still hardcoded inline in `HomeView.vue`:
-- `KPI_CARDS` → the four KPI values, computed from `metrics.json` through the filters
-- `COURIERS` → the roster, read from `metrics.json` and filtered by region
+**1. Get the live URL serving.** This is the blocker and it is not a repo problem — see the red item
+in §8. The build queue stalled on an account-wide single build slot. If it's still wedged, §8 also
+records the Vercel CLI fallback (`vercel build` + `vercel deploy --prebuilt`), which bypasses
+Vercel's build system entirely. It's a last resort and unverified — read the caveats first.
 
-Three things already written down that Phase 6 must not rediscover:
-1. **Import the JSON with one assertion** — `raw as MetricsDataset`. The reason is documented at the
-   top of `src/types/metrics.ts`; don't loosen the types to avoid it.
-2. **The trend caption has to become dynamic** — 📌 item in §8, including the Oct 2025 edge case
-   where no prior month exists and every card must get `trend: null`.
-3. **`onTimeRate` is stored 0–1**, which is exactly what `MetricCard`'s `format="percent"` expects.
-   No conversion.
+**2. Then confirm the deployed site actually works** — not just that it returns 200. Load it, toggle
+the theme, change both filters, and check a sprite renders. Only then put the URL on the Workday form.
 
-Re-run `node scripts/validate-data.mjs` if the data is ever touched again.
+**3. Phase 7 — final pass: cleanup and README.** The README should cover what the project is, how to
+run it, and the Pokémon trademark / fan-project note required by §9.
 
-**Deployment is still unverified** — see §8. Judge Phase 6 on `npm run dev` and `npm run build`
-locally; the live URL will confirm separately once Vercel's build queue clears.
-
-**If the queue is still wedged when the dashboard is finished,** §8 records a Vercel CLI fallback
-(`vercel build` + `vercel deploy --prebuilt`) that builds locally and uploads the output, bypassing
-Vercel's build system. It's a **last resort and unverified** — read the caveats in §8 before using
-it. The normal git-push deploy is what the capstone is teaching.
+**Two open items Alex may want to decide before then**, both recorded in §8:
+- 🟡 the chunk-size warning is back (Chart.js pushes the bundle to 534 kB)
+- 🟡 the brief's chart palette fails the categorical colour-contrast check
 
 ---
 
@@ -471,6 +464,52 @@ Append here as the build goes. Date, what came up, what was decided.
 
   Validator green after the change: exit 0, zero problems, zero notes. `npm run build` exit 0.
 
+- **2026-09-18 — Phase 6. The dashboard is built.** `chart.js` 4.5.1 + `vue-chartjs` 5.3.4.
+  New: `src/composables/useMetrics.ts` (all filtering and aggregation), three chart components,
+  `CourierRoster.vue`, plus `charts/chartTheme.ts` for shared series colours and theme-aware axes.
+  `HomeView.vue` is now pure presentation — no arithmetic, no hardcoded arrays.
+
+  **Verified in a real browser, driving the actual UI over the DevTools Protocol** (synthetic
+  `.click()` doesn't open a Vuetify menu — it needs real dispatched mouse input):
+
+  | Check | Result |
+  |---|---|
+  | dev server | clean, **0 console errors or warnings** |
+  | `vue-tsc` / `npm run build` | **exit 0**, no TypeScript errors |
+  | sprites | 7/7 loaded, first `naturalWidth` **475px** |
+  | sprite fallback | forced an error → avatar swapped to **`mdi-truck-delivery-outline`** |
+  | filters compose | Hoenn + Aug 2026 → **3,242 / 342 / 38 / 5**, matching `metrics.json` exactly |
+  | inverted trend | All Months: fainted **20 → 12**, shown as a **green** down-arrow |
+  | no prior month | Oct 2025 → **no arrows, no caption**, values still render |
+  | theme toggle | both directions, charts restyle with it |
+  | NaN / undefined | none anywhere, in any filter state |
+
+  Decisions the phase prompt didn't cover:
+
+  1. **The trend chart is two aligned panels, not a dual-axis chart.** Parcels Delivered runs in the
+     tens of thousands, Gym Supply Runs in the tens — a ~200× gap. On shared scales the smaller
+     series flatlines and the crossover point becomes an artefact of the scales chosen rather than
+     anything real. Two single-axis panels share one time axis (y-gutters pinned to 54px so they
+     line up). It reads as one chart in one card, which is what `BRIEF.md` §4 asks for.
+     **If you'd rather have a literal dual-axis chart, it's a small change — say so.**
+  2. **Both axes start at zero** on the trend panels. The seasonality is subtler that way, but these
+     are *area* charts and a truncated baseline on a filled area misstates magnitude.
+  3. **The Cargo Mix legend carries values and percentages**, not just colour swatches — see the
+     palette item in §8 for why that matters here specifically.
+  4. **`Fainted Couriers` for a single month can show `0.0%`** (Hoenn Jul→Aug is 5→5). That renders
+     as the neutral grey dash from Phase 4, not a green or red arrow. Correct: no change is neither
+     good nor bad news.
+  5. **Charts are theme-aware.** Axis, gridline and tooltip colours are read live from the Vuetify
+     theme, so the toggle restyles the charts instead of leaving dark axes on a light card.
+  6. **`v-img` lazy-loads.** Sprites below the fold don't create an `<img>` until scrolled into view.
+     Normal Vuetify behaviour, worth knowing if a future check reports "0 sprites" — scroll first.
+
+  Deleted as part of this phase: the `KPI_CARDS` and `COURIERS` hardcoded arrays, the `.chart-slot`
+  dashed placeholder styling, and every "Phase 6" placeholder label. Verified by grep.
+
+  Also fixed: the theme toggle used `theme.global.name.value = …`, deprecated in Vuetify 3.13, which
+  logged a warning on every toggle. Now `theme.change()`. That's what took console output to zero.
+
 ---
 
 ## 8. Known issues / watch list
@@ -628,6 +667,38 @@ Append here as the build goes. Date, what came up, what was decided.
 
   **The CSS barely moved because most of it is `@mdi/font`**, not Vuetify — that stylesheet declares
   a class for every icon in the set.
+
+- 🟡 **The chunk-size warning is back — Chart.js. Alex's call.** Adding `chart.js` + `vue-chartjs`
+  took the JS bundle from 325.70 kB to **534.43 kB** (gzip 180.89 kB), past Vite's default 500 kB
+  warning threshold. **The build still exits 0** — this is a warning, not an error, and the app works.
+  Options, in order of preference: lazy-load the chart components with `defineAsyncComponent` so
+  Chart.js lands in its own chunk; or accept it and raise `build.chunkSizeWarningLimit`. Not done,
+  because the Phase 6 prompt didn't ask for code-splitting. **Do not silently raise the threshold** —
+  that hides the number rather than improving it.
+
+- 🟡 **The brief's chart palette fails the categorical colour-contrast check. Alex's call.**
+  `BRIEF.md` §6 fixes the series colours as `#4FA3D1, #7FD1E8, #F2A65A, #9BB8D3, #2E6E92`. Run
+  through a perceptual-contrast validator against the dark surface `#16202E`, the five-colour
+  categorical palette fails:
+
+  | Check | Result |
+  |---|---|
+  | Normal-vision separation | **FAIL** — `#7FD1E8` ↔ `#4FA3D1` ΔE **13.9**, below the 15 floor |
+  | Chroma floor | FAIL — `#7FD1E8`, `#9BB8D3`, `#2E6E92` read close to grey |
+  | Contrast vs surface | WARN — `#2E6E92` at 2.94:1, under 3:1 |
+  | CVD separation | PASS — ΔE 13.8 protan / 12.8 tritan |
+
+  In plain terms: **Poké Balls and Berries are adjacent doughnut segments in two blues that are hard
+  to tell apart even with full colour vision**, and Evolution Stones is dim against the card.
+
+  **The brief wins — the colours are used exactly as specified** (`CLAUDE.md` rule 1). The relief
+  applied instead: a 2px surface-coloured gap between every segment, and an HTML legend carrying the
+  **label, the value and the share** for each segment, so identity never depends on colour alone.
+  That's a mitigation, not a fix.
+
+  **If Alex wants the real fix**, the cheapest version keeps the brief's five hues but re-orders them
+  so the two similar blues are never adjacent, and darkens `#7FD1E8` a step. That is a change to
+  `BRIEF.md` §6 and is his decision, not one to make silently.
 
 - ⛔️ **CONSIDERED AND DECLINED — trimming the extra `@mdi/font` webfont formats. Do not re-raise.**
   `dist/` carries four formats (`woff2` 403 kB, `woff` 588 kB, `ttf` 1.31 MB, `eot` 1.31 MB) because
