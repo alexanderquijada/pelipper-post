@@ -1,16 +1,45 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import MetricCard, { type MetricCardProps } from '@/components/MetricCard.vue'
 import { spriteUrl, SPRITE_FALLBACK_ICON } from '@/utils/sprites'
 
-// Phase 3 = Vuetify refactor. Filters are still inert and the three charts are
-// still placeholders; Phase 5 adds the dataset and Phase 6 wires both up.
+// Filters are still inert and the three charts are still placeholders;
+// Phase 5 adds the dataset and Phase 6 wires both up.
 
-const KPI_SLOTS = [
-  'Poké Balls Shipped',
-  'Berry Crates Delivered',
-  'Gym Supply Runs',
-  'Fainted Couriers',
-] as const
+// Hardcoded until src/data/metrics.json lands in Phase 5. Values carried over
+// from the Phase 1 prototype so the numbers stay consistent across phases.
+const KPI_CARDS: MetricCardProps[] = [
+  {
+    label: 'Poké Balls Shipped',
+    value: 387412,
+    format: 'number',
+    trend: 0.062,
+    icon: 'mdi-circle-slice-8',
+  },
+  {
+    label: 'Berry Crates Delivered',
+    value: 31208,
+    format: 'number',
+    trend: -0.038,
+    icon: 'mdi-food-apple',
+  },
+  {
+    label: 'Gym Supply Runs',
+    value: 3417,
+    format: 'number',
+    trend: 0.024,
+    icon: 'mdi-dumbbell',
+  },
+  {
+    // Inverted: this decrease is good news, so the arrow is green.
+    label: 'Fainted Couriers',
+    value: 187,
+    format: 'number',
+    trend: -0.185,
+    invertTrend: true,
+    icon: 'mdi-alert-circle-outline',
+  },
+]
 
 const MONTHS = [
   'All Months',
@@ -91,14 +120,10 @@ function onSpriteError(dexId: number) {
       </v-col>
     </v-row>
 
-    <!-- 3. KPI row — MetricCard replaces these in Phase 4 -->
+    <!-- 3. KPI row -->
     <v-row class="mb-2">
-      <v-col v-for="label in KPI_SLOTS" :key="label" cols="12" sm="6" lg="3">
-        <v-card class="pa-6" height="100%">
-          <div class="text-overline text-muted">{{ label }}</div>
-          <div class="text-h4 font-weight-bold mt-2">—</div>
-          <div class="text-caption text-muted mt-2">trend in Phase 6</div>
-        </v-card>
+      <v-col v-for="card in KPI_CARDS" :key="card.label" cols="12" sm="6" lg="3">
+        <MetricCard v-bind="card" />
       </v-col>
     </v-row>
 

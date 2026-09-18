@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-18 — Phase 3 complete (Vuetify 3 + themes); deployment still unverified
+- **Last updated:** 2026-09-18 — Phase 4 complete (MetricCard extracted); deployment still unverified
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -60,7 +60,7 @@ what the capstone document and videos require — nothing more.
 | 2a | 2.2 | Vue + Vite + TS + Router scaffold | ✅ Done | `Scaffold Vue project with Vite, TypeScript, and Vue Router` |
 | 2b | 2.2 | Dashboard shell replaces starter content | ✅ Done | `Add dashboard shell` |
 | 3 | 2.3 | Vuetify 3 + MDI, refactor shell | ✅ Done | `Add Vuetify 3 and refactor dashboard shell to Vuetify components` |
-| 4 | 2.3 | Custom `MetricCard` component | ⬜ Not started | `Extract reusable MetricCard component with typed props` |
+| 4 | 2.3 | Custom `MetricCard` component | ✅ Done | `Extract reusable MetricCard component with typed props` |
 | 5 | 2.4 | Mock dataset `src/data/metrics.json` | ⬜ Not started | `Add realistic mock metrics dataset and TypeScript types` |
 | 6 | 2.4 | Full dashboard — charts, filters, roster | ⬜ Not started | `Build full dashboard with charts, filters, and courier roster` |
 | 7 | — | Final pass: cleanup, README | ⬜ Not started | `Final pass: cleanup, README, and documentation` |
@@ -72,13 +72,19 @@ what the capstone document and videos require — nothing more.
 
 ## 4. → NEXT STEP
 
-**Phase 4 — extract the custom `MetricCard` component.** Paste the Phase 4 prompt from
-`CLAUDE-CODE-PROMPTS.md`. The four KPI tiles in `HomeView.vue` are currently an inline
-`v-for` over a list of labels; Phase 4 pulls them into `src/components/MetricCard.vue` with typed
-props. This is the capstone's "custom reusable component" requirement, so the props interface
-matters as much as the markup.
+**Phase 5 — the mock dataset, `src/data/metrics.json`.** Paste the Phase 5 prompt from
+`CLAUDE-CODE-PROMPTS.md`. Twelve months × six regions = **72 region records**, built to the shape and
+the valid ranges in `BRIEF.md` §2, including the seasonality rules (Gym Season Mar–May, the December
+berry rush, the Jul–Aug storm dip) and the six per-region personalities.
 
-**Deployment is still unverified** — see §8. Judge Phase 4 on `npm run dev` and `npm run build`
+**Run `node scripts/validate-data.mjs` before building anything on the data** — it checks all 72
+records against the ranges and every seasonality rule. `BRIEF.md` §2 says to, and the script is
+already in the repo from Phase 0.
+
+Phase 5 also replaces two sets of hardcoded placeholders: `KPI_CARDS` and `COURIERS`, both currently
+inline in `HomeView.vue`.
+
+**Deployment is still unverified** — see §8. Judge Phase 5 on `npm run dev` and `npm run build`
 locally; the live URL will confirm separately once Vercel's build queue clears.
 
 **If the queue is still wedged when the dashboard is finished,** §8 records a Vercel CLI fallback
@@ -321,6 +327,40 @@ Append here as the build goes. Date, what came up, what was decided.
      is the first change to either document since they were written — made on Alex's explicit
      instruction, because a bare `npm install vuetify` now resolves to 4.x and would quietly break
      the stated tech constraint.
+
+- **2026-09-18 — Phase 4.** `src/components/MetricCard.vue` extracted, with a typed
+  `MetricCardProps` interface via `withDefaults(defineProps<MetricCardProps>(), …)`. `HomeView.vue`
+  now renders four `<MetricCard>` instances from a `KPI_CARDS: MetricCardProps[]` array — the array
+  is typed against the component's own exported interface, so a bad prop is a build error rather
+  than a runtime surprise. `npm run build` exit 0, no `vue-tsc` errors, no chunk-size warning.
+
+  Decisions the phase prompt didn't cover:
+
+  1. **For `format: 'percent'`, `value` is a FRACTION.** `0.942` renders `94.2%`. The prompt defined
+     `trend` as a fraction but left `value` ambiguous; matching them means one rule for the whole
+     component instead of two. Documented in the prop's doc comment. **If Phase 5 feeds
+     `onTimeRate` straight from the JSON this is already correct** — the brief stores it 0–1.
+  2. **`trend: 0` renders a flat grey dash (`mdi-minus`), not a green or red arrow.** Zero change is
+     neither good nor bad news, and the brief's colour rule only defines increase/decrease. This is
+     distinct from `trend: null`, which omits the indicator entirely.
+  3. **Trend text reads "6.2% vs. last month".** The brief specifies an arrow plus a percentage;
+     the suffix makes the comparison explicit on a card that's read in isolation in a meeting. Easy
+     to drop if it's too wordy.
+  4. **Icons use `color="primary"` at 60% opacity** rather than a different colour per card — the
+     brief's "not a rainbow" instruction. They mark the card without competing with the value.
+  5. **Fixed a real layout defect found during verification.** "Berry Crates Delivered" wraps to two
+     lines; its value was landing lower than the other three and the KPI row read as misaligned.
+     The label now reserves two lines via `min-height: 2.4em`, so all four values sit on a common
+     baseline whether or not a label wraps. This is the kind of thing that only shows up on screen —
+     it was not visible in the markup.
+
+  **How the props were verified.** Two of the five prop behaviours aren't exercised by the four live
+  cards, so they were probed deliberately: one card temporarily set to `format: 'percent'` with
+  `value: 0.942`, another to `trend: null`. Screenshotted, confirmed **`94.2%`** and **no trend
+  indicator at all**, then reverted — `grep` confirms no probe residue in the committed file. The
+  inverted case needs no probe: `Fainted Couriers` ships with `trend: -0.185, invertTrend: true` and
+  renders a **green down-arrow**, while `Berry Crates` renders a **red down-arrow** on a similar
+  decrease. Both visible side by side in the committed state.
 
 ---
 
