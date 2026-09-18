@@ -6,9 +6,9 @@ import router from './router'
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
 
+// Components are auto-imported by vite-plugin-vuetify (see vite.config.ts), so
+// there is no eager `import * as components` here — that is the tree-shaking.
 import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
 
 // Palette from BRIEF.md §6. These theme values are the SINGLE SOURCE OF TRUTH
 // for colour — do not re-declare any of these hexes in component CSS.
@@ -46,8 +46,6 @@ const pelipperLight = {
 }
 
 const vuetify = createVuetify({
-  components,
-  directives,
   icons: {
     defaultSet: 'mdi',
   },
