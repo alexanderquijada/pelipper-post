@@ -40,7 +40,7 @@ Full spec: **`BRIEF.md`**. Build rules: **`CLAUDE.md`**. Phase prompts: **`CLAUD
 | Charts | Chart.js + vue-chartjs | Matches Video 204 |
 | State | A single composable, `useMetrics.ts`. **No Pinia.** | Capstone says no Pinia |
 | Data source | Static `src/data/metrics.json`, no backend | Required by capstone step 2.4 |
-| Theme | Dark by default, light toggle. Pelipper blue/orange palette. | Style section of `BRIEF.md` |
+| Theme | **Light (daylight sky) by default, dark on the toggle.** Pelipper blue/orange palette. | Style section of `BRIEF.md` — switched from dark-default in the 2026-09-18 theming extension |
 | Deploy | Vercel, auto-deploy on push to `main` via GitHub integration | Fewer moving parts than the Vercel CLI |
 | Git automation | Claude Code commits + pushes at the end of every phase, without asking | Allowed by `.claude/settings.local.json` |
 
