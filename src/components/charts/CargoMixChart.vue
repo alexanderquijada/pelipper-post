@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { Doughnut } from 'vue-chartjs'
 import { ArcElement, Chart as ChartJS, Tooltip, type ChartOptions } from 'chart.js'
 import { fullNumber, useChartTheme } from './chartTheme'
+import { cargoItemUrl } from '@/utils/sprites'
 
 ChartJS.register(ArcElement, Tooltip)
 
@@ -12,6 +13,9 @@ const props = defineProps<{ labels: string[]; values: number[] }>()
 const { grid, surface, ink, categorical } = useChartTheme()
 
 const total = computed(() => props.values.reduce((a, b) => a + b, 0))
+
+// A missing item sprite must never render as a broken image.
+const failedSprites = ref(new Set<string>())
 
 const data = computed(() => ({
   labels: props.labels,
@@ -60,6 +64,7 @@ const legend = computed(() =>
       label,
       value,
       color: categorical.value[i % categorical.value.length]!,
+      sprite: cargoItemUrl(label),
       pct: total.value > 0 ? ((value / total.value) * 100).toFixed(1) : '0.0',
     }
   }),
@@ -75,6 +80,16 @@ const legend = computed(() =>
     <!-- Legend carries label AND value AND share, not just a colour swatch. -->
     <ul class="legend mt-4">
       <li v-for="item in legend" :key="item.label" class="legend__row">
+        <img
+          v-if="item.sprite && !failedSprites.has(item.label)"
+          :src="item.sprite"
+          alt=""
+          class="legend__sprite"
+          width="30"
+          height="30"
+          @error="failedSprites = new Set(failedSprites).add(item.label)"
+        />
+        <span v-else class="legend__sprite legend__sprite--empty" />
         <span class="legend__swatch" :style="{ background: item.color }" />
         <span class="legend__label text-body-2">{{ item.label }}</span>
         <span class="legend__value text-body-2 text-muted">
@@ -102,7 +117,20 @@ const legend = computed(() =>
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 3px 0;
+  padding: 1px 0;
+}
+
+.legend__sprite {
+  /* 30x30 pixel art — must not be smoothed. */
+  image-rendering: pixelated;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  object-fit: contain;
+}
+
+.legend__sprite--empty {
+  display: inline-block;
 }
 
 .legend__swatch {

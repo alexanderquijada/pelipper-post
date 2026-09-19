@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-18 — **BUILD COMPLETE (Phases 0–7).** Only the Vercel deployment is outstanding.
+- **Last updated:** 2026-09-18 — **BUILD COMPLETE + theming extension.** Only the Vercel deployment is outstanding.
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -64,6 +64,7 @@ what the capstone document and videos require — nothing more.
 | 5 | 2.4 | Mock dataset `src/data/metrics.json` | ✅ Done | `Add realistic mock metrics dataset and TypeScript types` |
 | 6 | 2.4 | Full dashboard — charts, filters, roster | ✅ Done | `Build full dashboard with charts, filters, and courier roster` |
 | 7 | — | Final pass: cleanup, README | ✅ Done | `Final pass: cleanup, README, and documentation` |
+| 7b | — | Extension: Pokémon theming, delivery map, light default | ✅ Done | `Add Pokémon theming, delivery map, and light default` |
 | 8 | — | Submit repo + live URL on Workday | ⬜ Not started | — |
 
 **Status key:** ⬜ Not started · 🟡 In progress · ✅ Done
@@ -590,6 +591,44 @@ Append here as the build goes. Date, what came up, what was decided.
   recommends the Vue language plugin and genuinely helps anyone cloning the repo. `SETUP.md` and
   `CLAUDE-CODE-PROMPTS.md` are kept as the capstone process record — the workflow *is* the
   deliverable here. Say the word if any of those should go.
+
+- **2026-09-18 — Extension: Pokémon theming, delivery map, light default.** Implemented the approved
+  `BRIEF.md` §2 / §4 / §6 changes. `npm run build` **exit 0**, **0 console errors or warnings**.
+
+  | Verified | Result |
+  |---|---|
+  | Five cargo item sprites in the legend | **5/5 loaded** — `poke-ball`, `oran-berry`, `potion`, `tm-normal`, `fire-stone`; computed `image-rendering: pixelated` |
+  | App bar icon | Pelipper `pokemon/279.png`, loaded, natural **96×96**, pixelated, `mdi-mail` fallback wired |
+  | Favicon | `<link rel="icon" type="image/png">` → the same hotlinked 279 sprite |
+  | Default theme on first load | **`v-theme--pelipperLight`** |
+  | Sky | gradient present, opacity **1** in light / **0** in dark; 3 cloud layers at **210s / 135s / 90s** |
+  | Delivery map | 6 dots, 6 labels (Kanto…Galar), 4 dashed arcs (`6px, 7px`), Pelipper **moving** (position changed over 2.5s) |
+  | Reduced motion | cloud animations **`none`**, `animateMotion` **not rendered**, sprite **parked** (identical position over 3s), arcs/labels/dots still drawn |
+  | Theme toggle | light → dark → light, sky follows |
+
+  **Light-variant chart colours vs the card surface, which is still `#FFFFFF`:**
+
+  | Colour | | Contrast |
+  |---|---|---|
+  | `#0072B2` | Poké Balls | 5.19:1 ✅ |
+  | `#D55E00` | Berries | 3.87:1 ✅ |
+  | `#009E73` | Potions | 3.42:1 ✅ |
+  | `#CC79A7` | TMs | **3.06:1** ✅ |
+  | `#6B4E00` | Evolution Stones | 7.74:1 ✅ |
+
+  All ≥ 3:1. **Unchanged from before the extension, because the card surface was deliberately not
+  touched** — the §6 warning table holds. The new `muted` `#4E6174` measures **5.22:1** on the sky
+  base and **4.90:1** on the deepest gradient stop, both above the 4.5:1 text floor.
+
+  Two implementation notes worth keeping:
+
+  1. **SMIL `<animateMotion>` cannot be disabled by a CSS media query.** Reduced motion is read via
+     `window.matchMedia` with a `change` listener, and the animation element is simply not rendered;
+     the sprite is placed at a node instead. A CSS-only approach would have silently kept animating.
+  2. **A scoped `:global(.v-theme--pelipperLight) .sky` selector did not match** — the sky rendered at
+     `opacity: 0` in light mode on the first attempt. Caught by measuring computed opacity rather than
+     by eye. Replaced with a template-bound class (`:class="{ 'sky--visible': !isDark }"`), which
+     doesn't depend on how scoped CSS rewrites `:global()`.
 
 ---
 

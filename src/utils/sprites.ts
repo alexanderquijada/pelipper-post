@@ -1,16 +1,52 @@
-// dexId -> sprite URL. BRIEF.md §2 requires this to live in exactly one place so
-// the CDN path can be swapped in a single edit.
-//
-// This pattern was verified HTTP 200 for all seven courier dexIds on 2026-09-18
-// (see PELIPPER-POST-STATUS.md §8). If it ever 404s, the documented fallback is
-// https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{dexId}.png
-// — change SPRITE_BASE below and nothing else.
-const SPRITE_BASE =
-  'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork'
+// Every sprite URL in the app is built here. BRIEF.md §2 requires one place, so
+// the CDN can be swapped in a single edit. Nothing is stored in this repo.
+
+const SPRITE_ROOT = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites'
+
+// --- courier avatars ---------------------------------------------------------
+// Official artwork: 475x475, worth the bytes at avatar size.
+// Verified HTTP 200 for all seven courier dexIds (PELIPPER-POST-STATUS.md §8).
+// If this path ever 404s, the documented fallback is `${SPRITE_ROOT}/pokemon/{dexId}.png`.
+const COURIER_BASE = `${SPRITE_ROOT}/pokemon/other/official-artwork`
 
 export function spriteUrl(dexId: number): string {
-  return `${SPRITE_BASE}/${dexId}.png`
+  return `${COURIER_BASE}/${dexId}.png`
 }
 
-// Shown inside the avatar when a sprite fails to load.
+/** Shown inside the avatar when a courier sprite fails to load. */
 export const SPRITE_FALLBACK_ICON = 'mdi-truck-delivery-outline'
+
+// --- brand mark --------------------------------------------------------------
+/**
+ * Pelipper (dexId 279) as the app bar icon and the favicon.
+ *
+ * Deliberately the 96x96 PIXEL sprite, not the official artwork: it is 840 bytes
+ * against 130 kB and visibly sharper at 30px. Verified HTTP 200 on 2026-09-18.
+ */
+export const PELIPPER_DEX_ID = 279
+export const BRAND_SPRITE_URL = `${SPRITE_ROOT}/pokemon/${PELIPPER_DEX_ID}.png`
+
+/** Fallback for the app bar if the CDN is unreachable — never leave a gap in the wordmark. */
+export const BRAND_FALLBACK_ICON = 'mdi-mail'
+
+// --- cargo item sprites ------------------------------------------------------
+/**
+ * 30x30 pixel art, one per cargo type. All five curl-verified HTTP 200 on
+ * 2026-09-18. Anything rendering these MUST set `image-rendering: pixelated`
+ * or the browser smooths them into mush on scale-up.
+ */
+const ITEM_BASE = `${SPRITE_ROOT}/items`
+
+const CARGO_ITEM_FILES: Record<string, string> = {
+  'Poké Balls': 'poke-ball',
+  Berries: 'oran-berry',
+  Potions: 'potion',
+  TMs: 'tm-normal',
+  'Evolution Stones': 'fire-stone',
+}
+
+/** Item sprite for a cargo type, or null if the type has no mapping. */
+export function cargoItemUrl(cargoType: string): string | null {
+  const file = CARGO_ITEM_FILES[cargoType]
+  return file ? `${ITEM_BASE}/${file}.png` : null
+}

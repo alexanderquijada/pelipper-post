@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import MetricCard, { type MetricCardProps } from '@/components/MetricCard.vue'
 import CourierRoster from '@/components/CourierRoster.vue'
+import DeliveryNetwork from '@/components/DeliveryNetwork.vue'
 import RegionBarChart from '@/components/charts/RegionBarChart.vue'
 import CargoMixChart from '@/components/charts/CargoMixChart.vue'
 import DeliveryTrendChart from '@/components/charts/DeliveryTrendChart.vue'
@@ -139,7 +140,14 @@ const kpiCards = computed<MetricCardProps[]>(() => [
         </v-col>
       </v-row>
 
-      <!-- 6. Courier roster -->
+      <!-- 6. Delivery Network — decorative, not wired to the filters -->
+      <v-row class="mb-2">
+        <v-col cols="12">
+          <DeliveryNetwork />
+        </v-col>
+      </v-row>
+
+      <!-- 7. Courier roster -->
       <v-row>
         <v-col cols="12">
           <v-card class="pa-6">

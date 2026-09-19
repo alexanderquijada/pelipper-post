@@ -32,7 +32,8 @@ const pelipperDark = {
 const pelipperLight = {
   dark: false,
   colors: {
-    background: '#F4F7FA',
+    // Sky blue, and the fallback beneath the gradient in App.vue.
+    background: '#DCEAF7',
     surface: '#FFFFFF',
     primary: '#2E6E92',
     secondary: '#4FA3D1',
@@ -41,7 +42,9 @@ const pelipperLight = {
     error: '#D1523C',
     'on-background': '#16202E',
     'on-surface': '#16202E',
-    muted: '#5C7186',
+    // Darkened from #5C7186: the tagline and footer sit on the SKY, not a card,
+    // where the old value measured 3.87:1 — under the 4.5:1 text floor.
+    muted: '#4E6174',
   },
 }
 
@@ -50,7 +53,7 @@ const vuetify = createVuetify({
     defaultSet: 'mdi',
   },
   theme: {
-    defaultTheme: 'pelipperDark',
+    defaultTheme: 'pelipperLight',
     themes: { pelipperDark, pelipperLight },
   },
   defaults: {
