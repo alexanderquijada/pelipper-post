@@ -3,8 +3,8 @@
 > **TL;DR** — A single-page internal analytics dashboard for the Regional Operations Director
 > of Pelipper Post & Freight, a Pokémon-powered air-and-sea parcel carrier. She pulls it up in
 > leadership meetings to answer one question: *are we getting packages where they need to go?*
-> Dark theme by default, Vue 3 + Vuetify 3, mock data from a local JSON file, two filters that
-> update every number and chart on the page.
+> Light (daylight sky) theme by default with a dark toggle, Vue 3 + Vuetify 3, mock data from a
+> local JSON file, and two filters that update every number and chart on the page.
 
 *Fan-made learning project. Pokémon names and sprites are trademarks of Nintendo / Creatures Inc. /
 GAME FREAK. No client or Slalom data appears anywhere in this project.*
@@ -177,6 +177,58 @@ Requirements:
   `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{dexId}.png` instead
   and update the one utility.
 
+#### Cargo item sprites
+
+The five cargo types each get an item sprite, from the same CDN and under the **same
+hotlink-never-store rule**:
+
+```
+https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/{name}.png
+```
+
+| Cargo type | File | Verified |
+|---|---|---|
+| Poké Balls | `poke-ball.png` | HTTP 200 · 30×30 · 256 B |
+| Berries | `oran-berry.png` | HTTP 200 · 30×30 · 275 B |
+| Potions | `potion.png` | HTTP 200 · 30×30 · 300 B |
+| TMs | `tm-normal.png` | HTTP 200 · 30×30 · 369 B |
+| Evolution Stones | `fire-stone.png` | HTTP 200 · 30×30 · 330 B |
+
+All five were curl-verified on 2026-09-18 — every one returned **HTTP 200**, so no substitutions
+were needed. Add the item-URL builder to `src/utils/sprites.ts` alongside the courier one; same
+rule, one place.
+
+**These are 30×30 pixel art.** Any element displaying them must set:
+
+```css
+image-rendering: pixelated;
+```
+
+Without it the browser smooths them on scale-up and they turn to mush. Scale by whole-number
+multiples where practical (30 → 60) so the pixel grid stays square. The same `@error` fallback
+applies — a missing item sprite must never render as a broken image.
+
+Use them where a cargo type is named: the Cargo Mix legend rows, and the chart tooltip if it reads
+well. They supplement the colour swatch, they don't replace it — the legend must keep its label,
+value and share (see §6).
+
+#### App bar icon and favicon
+
+Both become the **Pelipper sprite, dexId 279**, replacing `mdi-mail`:
+
+```
+https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/279.png
+```
+
+Use the **96×96 pixel sprite** above, not the official artwork — verified HTTP 200, 840 bytes, and
+at app-bar and favicon sizes the pixel version is sharper and ~155× smaller than the 475×475
+artwork. `image-rendering: pixelated` applies here too. Keep the official-artwork path for the
+courier roster avatars, which render large enough to want it.
+
+The favicon is set by pointing `<link rel="icon">` at that URL — still hotlinked, still nothing
+stored in the repo. **Keep a fallback for the app bar icon** (`mdi-mail` is fine) so a CDN outage
+degrades to an icon rather than a gap in the wordmark.
+
 ---
 
 ## 3. Tech
@@ -251,10 +303,37 @@ Top to bottom, one page, no scrolling required at 1440×900 beyond the courier t
    The card always shows all twelve months (it's the trend view) but respects the region filter,
    and highlights the currently selected month with a marker on both panels when one is selected.
 
-6. **Courier roster** — full-width Vuetify table: circular sprite avatar, courier name, species,
+6. **Delivery Network** — full-width card, between the trend chart and the courier roster.
+   A stylized map of the six-region network with a Pelipper flying between them.
+
+   **This is decorative.** It is the one piece of the page that exists for character rather than
+   analysis. It has no click behaviour and is not wired into the filters — it does not change when
+   Month or Region changes.
+
+   - **Six labelled nodes, one per region** — Kanto, Johto, Hoenn, Sinnoh, Unova, Galar.
+   - **The layout is INVENTED and must stay invented.** Do not reproduce, trace, or approximate the
+     official Pokémon region maps or their real geographic relationships. Place the six nodes in a
+     balanced abstract arrangement that reads as a route network — a loose ring or scatter across
+     the card. This is a made-up carrier's route diagram, not a map of anywhere.
+   - **Dashed arc flight paths** connecting the nodes. Curved, not straight — these are flight
+     routes. Low-opacity strokes so the arcs recede behind the nodes and labels.
+   - **The Pelipper sprite animates along the paths on a continuous loop**, using the same
+     hotlinked 279 sprite and `image-rendering: pixelated`.
+   - **Pure CSS and inline SVG. No new dependencies.** SVG `<path>` for the arcs; animate along them
+     with CSS `offset-path`/`offset-distance`, or SVG `<animateMotion>`. Either is fine; both are
+     native.
+   - Node dots and labels use existing theme tokens, not new colours.
+
+   **Reduced motion is a hard requirement.** Under `@media (prefers-reduced-motion: reduce)` the
+   Pelipper must **not** drift: park it at a node, keep the arcs and labels fully visible, and
+   remove the animation rather than merely slowing it. The card must still read as a complete
+   network diagram when nothing is moving — the motion is a flourish on top of a static image that
+   already works.
+
+7. **Courier roster** — full-width Vuetify table: circular sprite avatar, courier name, species,
    home region, total runs, on-time rate, and status as a colored chip. Respects the region filter.
 
-7. **Footer** — small muted line: *"Made with coffee and Claude Code · mock data, not a real carrier."*
+8. **Footer** — small muted line: *"Made with coffee and Claude Code · mock data, not a real carrier."*
 
 **Grid:** use `v-container` / `v-row` / `v-col` with responsive breakpoints. Centered, max width
 ~1400px, generous gutters. Do not let content jam against the left edge.
@@ -272,7 +351,9 @@ Top to bottom, one page, no scrolling required at 1440×900 beyond the courier t
   plus a percentage. Green for good, red for bad. **`Fainted Couriers` is inverted** — fewer is
   better, so a decrease is green. When `All Months` is selected, compare the trailing month to the
   one before it. Never show a trend arrow when there is no prior month to compare against.
-- **Theme toggle** — switches Vuetify between the dark and light themes. Dark is the default.
+- **Theme toggle** — switches Vuetify between the light and dark themes. **Light is the default**
+  (see §6). The sky gradient and drifting clouds belong to the light theme only; toggling to dark
+  replaces them with the flat dark background rather than layering them.
 - **Loading / empty states** — if a filter combination yields no data, show a short centered message
   rather than blank charts or `NaN`.
 - Everything is reactive and instant. No page reloads, no spinners.
@@ -281,21 +362,84 @@ Top to bottom, one page, no scrolling required at 1440×900 beyond the courier t
 
 ## 6. Style
 
-**Dark by default.** Register two named Vuetify themes, `pelipperDark` (default) and `pelipperLight`.
+**Light by default.** Register two named Vuetify themes, `pelipperLight` (**default**) and
+`pelipperDark`. Dark stays available on the toggle — it is no longer the starting state.
+
+The reason for the switch is thematic: this is a carrier whose couriers fly. A daylight sky is the
+right backdrop for that, and it lets the delivery-network card in §4 read as something airborne.
 
 Cohesive palette drawn from Pelipper — white body, blue wings, orange beak. **Not a rainbow.**
 
-| Token | Dark | Light |
+| Token | Light (**default**) | Dark |
 |---|---|---|
-| background | `#0E1621` | `#F4F7FA` |
-| surface (cards) | `#16202E` | `#FFFFFF` |
-| primary | `#4FA3D1` | `#2E6E92` |
-| secondary | `#7FD1E8` | `#4FA3D1` |
-| accent | `#F2A65A` | `#E08A3C` |
-| success | `#5FBF8F` | `#3E9E70` |
-| error | `#E8705A` | `#D1523C` |
-| on-surface text | `#E6EDF3` | `#16202E` |
-| muted text | `#8FA3B8` | `#5C7186` |
+| background | `#DCEAF7` ⟵ *new, sky* | `#0E1621` |
+| surface (cards) | `#FFFFFF` — **unchanged, do not tint** | `#16202E` |
+| primary | `#2E6E92` | `#4FA3D1` |
+| secondary | `#4FA3D1` | `#7FD1E8` |
+| accent | `#E08A3C` | `#F2A65A` |
+| success | `#3E9E70` | `#5FBF8F` |
+| error | `#D1523C` | `#E8705A` |
+| on-surface text | `#16202E` | `#E6EDF3` |
+| muted text | `#4E6174` ⟵ *new, darkened* | `#8FA3B8` |
+
+Two tokens change, and both changes are forced by measurement rather than taste:
+
+**`background` `#F4F7FA` → `#DCEAF7`.** A soft sky blue instead of a near-white grey. This is the
+base colour *and* the fallback beneath the gradient below.
+
+**`muted` `#5C7186` → `#4E6174`.** The app-bar tagline and the footer line sit on the page
+background, not on a card. Against the deepest gradient stop the old value measured **3.87:1** —
+under the 4.5:1 body-text floor. `#4E6174` is the lightest value tested that clears it on both
+surfaces: **4.90:1 on the sky, 6.39:1 on a white card.**
+
+> ### ⚠️ `surface` stays `#FFFFFF`. Do not tint the cards.
+>
+> This is a hard constraint, not a preference. The five light-variant chart colours below were
+> verified against `#FFFFFF` specifically, and **TMs `#CC79A7` measures 3.06:1 — only 0.06 above the
+> 3:1 floor.** Any tint at all pushes it under:
+>
+> | Card surface | TMs `#CC79A7` |
+> |---|---|
+> | `#FFFFFF` | **3.06** ✅ |
+> | `#FAFCFF` (barely perceptible tint) | 2.98 ❌ |
+> | `#F6FAFE` | 2.92 ❌ |
+> | `#F0F7FD` | 2.83 ❌ |
+> | `#E8F2FB` | 2.70 ❌ |
+>
+> The sky must therefore live **behind** the cards, never in them. Opaque white cards on a sky
+> background is the design — not translucent cards, not tinted ones. If a future change really needs
+> a tinted card surface, the chart palette has to be re-derived first; do not adjust one without the
+> other.
+
+### Sky background — gradient and clouds
+
+The page background (`pelipperLight` only) is a soft daylight sky, built entirely from **original
+CSS and inline SVG. No external image files, no new dependencies.**
+
+**Gradient** — deeper at the top, paler toward the horizon:
+
+```css
+linear-gradient(180deg, #CFE4F7 0%, #E3F0FA 45%, #F2F8FD 100%)
+```
+
+Fixed to the viewport so it doesn't visibly slide as the page scrolls.
+
+**Clouds** — 2–3 layers drifting horizontally at **different speeds**, slowest layer furthest
+"back". The speed difference is what creates depth; identical speeds just read as one moving
+texture. Shapes should be soft overlapping ellipses or blurred SVG blobs at low opacity — suggestive
+of cloud, not photographic. Very slow: a full traverse should take on the order of a minute or more.
+This is ambient, and anything fast enough to notice is too fast to sit behind a dashboard someone
+reads in a meeting.
+
+**Cards stay fully opaque** so no cloud ever passes behind text or a chart. Everything in §4 sits on
+`surface`, above the sky.
+
+**Reduced motion:** under `@media (prefers-reduced-motion: reduce)` the drift **stops**. Keep the
+gradient and keep the clouds visible in a static position — remove the animation, not the artwork.
+
+**Dark theme keeps its flat `#0E1621` background.** No sky, no clouds. The sky is the light theme's
+character; the dark theme's is calm and recessive, and dropping clouds into it would fight the
+palette for no gain.
 
 ### Chart colors — two palettes, because there are two different jobs
 
@@ -368,8 +512,21 @@ Only after everything above works and is committed:
 - [ ] All four KPI cards, three charts, and the courier roster render with real values from the JSON
 - [ ] Both filters work, and work together
 - [ ] At least one Pokémon sprite visibly renders in the courier roster
-- [ ] Theme toggle works both directions
+- [ ] Theme toggle works both directions, **starting from light**
 - [ ] Nothing is left over from the Vue starter template (no `HelloWorld.vue`, no Vue logo,
       no starter CSS, no `AboutView.vue`)
 - [ ] Committed and pushed to GitHub
 - [ ] Live Vercel URL loads and works
+
+Added with the §2 / §4 / §6 extension:
+
+- [ ] All five cargo item sprites render, hotlinked, with `image-rendering: pixelated`
+- [ ] The app bar icon and the favicon are the Pelipper sprite, with an icon fallback
+- [ ] The Delivery Network card renders six labelled nodes and dashed arcs, with the Pelipper
+      animating along the paths
+- [ ] The network layout is **invented** — it does not reproduce any official Pokémon region map
+- [ ] Light is the default theme on first load
+- [ ] The sky gradient and 2–3 cloud layers drift at different speeds, and cards stay fully opaque
+- [ ] **`prefers-reduced-motion: reduce` stops both** the cloud drift and the Pelipper's flight,
+      and both the sky and the network card still read correctly when static
+- [ ] The card surface is still `#FFFFFF` and the chart palettes are **unchanged**
