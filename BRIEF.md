@@ -244,6 +244,10 @@ degrades to an icon rather than a gap in the wordmark.
 - Single page — everything renders in `src/views/HomeView.vue`
 - Deploys to Vercel as a static Vite build
 
+`src/assets/` exists again as of the map work — it holds **original artwork authored for this
+project**, and nothing else. It is not for third-party images: the Pokémon sprite rule in §2 is
+unchanged, and those stay hotlinked and uncommitted. Anything that lands in `assets/` must be ours.
+
 **Structure:**
 
 ```
@@ -255,9 +259,13 @@ src/
   components/
     MetricCard.vue           custom reusable KPI card
     CourierRoster.vue        courier table with sprites
+    DeliveryNetwork.vue      the illustrated map card
     charts/RegionBarChart.vue
     charts/CargoMixChart.vue
     charts/DeliveryTrendChart.vue
+  assets/
+    delivery-map.svg         ORIGINAL illustrated world map, drawn for this
+                             project — inlined, not <img>. See §4 item 6.
   data/metrics.json          mock dataset
   utils/sprites.ts           dexId -> sprite URL
   composables/useMetrics.ts  filtering + aggregation logic
@@ -304,31 +312,52 @@ Top to bottom, one page, no scrolling required at 1440×900 beyond the courier t
    and highlights the currently selected month with a marker on both panels when one is selected.
 
 6. **Delivery Network** — full-width card, between the trend chart and the courier roster.
-   A stylized map of the six-region network with a Pelipper flying between them.
+   An **illustrated world map** of the carrier's network, with a Pelipper flying its delivery loop.
 
    **This is decorative.** It is the one piece of the page that exists for character rather than
    analysis. It has no click behaviour and is not wired into the filters — it does not change when
    Month or Region changes.
 
-   - **Six labelled nodes, one per region** — Kanto, Johto, Hoenn, Sinnoh, Unova, Galar.
-   - **The layout is INVENTED and must stay invented.** Do not reproduce, trace, or approximate the
-     official Pokémon region maps or their real geographic relationships. Place the six nodes in a
-     balanced abstract arrangement that reads as a route network — a loose ring or scatter across
-     the card. This is a made-up carrier's route diagram, not a map of anywhere.
-   - **Dashed arc flight paths** connecting the nodes. Curved, not straight — these are flight
-     routes. Low-opacity strokes so the arcs recede behind the nodes and labels.
-   - **The Pelipper sprite animates along the paths on a continuous loop**, using the same
-     hotlinked 279 sprite and `image-rendering: pixelated`.
-   - **Pure CSS and inline SVG. No new dependencies.** SVG `<path>` for the arcs; animate along them
-     with CSS `offset-path`/`offset-distance`, or SVG `<animateMotion>`. Either is fine; both are
-     native.
-   - Node dots and labels use existing theme tokens, not new colours.
+   The artwork is **`src/assets/delivery-map.svg`**, drawn for this project. It is **original** —
+   an invented world, not a reproduction, trace or approximation of the official Pokémon region maps
+   or their geography. What the file already contains:
 
-   **Reduced motion is a hard requirement.** Under `@media (prefers-reduced-motion: reduce)` the
-   Pelipper must **not** drift: park it at a node, keep the arcs and labels fully visible, and
-   remove the animation rather than merely slowing it. The card must still read as a complete
-   network diagram when nothing is moving — the motion is a flourish on top of a static image that
-   already works.
+   - an ocean gradient, **7 landmasses** and **8 islets**
+   - an orange right-angle **route network** with **30 waypoint squares** (`class="pp-wp"`, each
+     carrying a `data-wp` index)
+   - **6 hub squares** labelled Kanto, Johto, Hoenn, Sinnoh, Unova and Galar
+   - **52 decorative wave strokes**
+   - an invisible **`<path id="pp-flight-route">`** — the courier's closed loop through all six hubs
+   - **13 CSS custom properties**, each with a light-theme fallback baked in:
+     `--ppmap-sea-1` `--ppmap-sea-2` `--ppmap-land` `--ppmap-inland` `--ppmap-highland`
+     `--ppmap-route` `--ppmap-stop` `--ppmap-stop-edge` `--ppmap-hub` `--ppmap-label`
+     `--ppmap-label-halo` `--ppmap-wave` `--ppmap-shore`
+
+   **Implementation requirements:**
+
+   - **Inline the SVG** — `import map from '@/assets/delivery-map.svg?raw'` and render it into the
+     DOM. **Do not use `<img>`**: an external image is an isolated document, so neither the CSS
+     custom properties nor the flight animation can reach inside it.
+   - **Full bleed inside the card** — no padding inset around the artwork, and a fixed aspect ratio
+     so it never letterboxes. The heading and the *"illustrative, invented"* caption stay above it.
+   - **Animate the Pelipper along `#pp-flight-route`**, using `<animateMotion>` with
+     `<mpath href="#pp-flight-route"/>`. **Reference the existing path — do not duplicate its data**,
+     or the two copies will drift apart. Slow loop, **40–60s**. Same hotlinked 279 sprite,
+     `image-rendering: pixelated`.
+   - **Flip the sprite horizontally on right-to-left legs** so it never flies backwards.
+   - **Pulse each waypoint once as the courier passes it** — a brief scale and opacity bump.
+     **Stagger the pulses off the flight's own timeline**; do not run 30 independent loops.
+   - **Define dark-theme values for all 13 `--ppmap-*` variables** — deeper ocean, muted land — and
+     confirm the labels stay legible against the darker fills.
+
+   **Reduced motion is a hard requirement.** Under `prefers-reduced-motion: reduce`: **no flight, no
+   waypoint pulses, no wave motion.** Park the sprite at a hub. The map must still read as a
+   complete, finished illustration when nothing is moving — the motion is a flourish on top of a
+   static image that already works.
+
+   > **On the labels:** they use `paint-order="stroke"` to put a white halo behind dark text. That is
+   > correct and renders properly in browsers. If a preview tool shows them as solid white blocks,
+   > that tool is ignoring `paint-order` — it is not a defect in the file.
 
 7. **Courier roster** — full-width Vuetify table: circular sprite avatar, courier name, species,
    home region, total runs, on-time rate, and status as a colored chip. Respects the region filter.
@@ -522,9 +551,10 @@ Added with the §2 / §4 / §6 extension:
 
 - [ ] All five cargo item sprites render, hotlinked, with `image-rendering: pixelated`
 - [ ] The app bar icon and the favicon are the Pelipper sprite, with an icon fallback
-- [ ] The Delivery Network card renders six labelled nodes and dashed arcs, with the Pelipper
-      animating along the paths
-- [ ] The network layout is **invented** — it does not reproduce any official Pokémon region map
+- [ ] The Delivery Network card renders the inlined `delivery-map.svg` full-bleed, with the Pelipper
+      flying `#pp-flight-route` and waypoints pulsing as it passes
+- [ ] All 13 `--ppmap-*` variables have dark-theme values and the labels stay legible in both themes
+- [ ] The map is **original** — it does not reproduce any official Pokémon region map
 - [ ] Light is the default theme on first load
 - [ ] The sky gradient and 2–3 cloud layers drift at different speeds, and cards stay fully opaque
 - [ ] **`prefers-reduced-motion: reduce` stops both** the cloud drift and the Pelipper's flight,
