@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-18 — **BUILD COMPLETE + theming extension.** Only the Vercel deployment is outstanding.
+- **Last updated:** 2026-09-18 — **BUILD COMPLETE + illustrated delivery map.** Only the Vercel deployment is outstanding.
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -65,6 +65,7 @@ what the capstone document and videos require — nothing more.
 | 6 | 2.4 | Full dashboard — charts, filters, roster | ✅ Done | `Build full dashboard with charts, filters, and courier roster` |
 | 7 | — | Final pass: cleanup, README | ✅ Done | `Final pass: cleanup, README, and documentation` |
 | 7b | — | Extension: Pokémon theming, delivery map, light default | ✅ Done | `Add Pokémon theming, delivery map, and light default` |
+| 7c | — | Illustrated delivery map replaces the abstract diagram | ✅ Done | `Add Pokémon theming, delivery map, and light default` |
 | 8 | — | Submit repo + live URL on Workday | ⬜ Not started | — |
 
 **Status key:** ⬜ Not started · 🟡 In progress · ✅ Done
@@ -629,6 +630,41 @@ Append here as the build goes. Date, what came up, what was decided.
      `opacity: 0` in light mode on the first attempt. Caught by measuring computed opacity rather than
      by eye. Replaced with a template-bound class (`:class="{ 'sky--visible': !isDark }"`), which
      doesn't depend on how scoped CSS rewrites `:global()`.
+
+- **2026-09-18 — Illustrated delivery map.** Alex supplied `src/assets/delivery-map.svg`, an original
+  illustrated world map, replacing the abstract node diagram. `src/assets/` exists again as a result
+  (it was removed in Phase 2); `BRIEF.md` §3 now documents it as **original artwork only** — the
+  hotlink-never-store rule for Pokémon sprites is unchanged. Brief change and implementation were
+  committed separately.
+
+  | Verified | Result |
+  |---|---|
+  | Inlined, not `<img>` | `inlined: true`, `isImgTag: false` — CSS vars and SMIL reach inside |
+  | Artwork intact | 30 waypoints, 52 waves, 6 labels (Kanto…Galar), `#pp-flight-route` present |
+  | Path not duplicated | `<mpath href="#pp-flight-route">` — references the existing path |
+  | Full bleed | card 1152px / map 1152px, **0px inset** both sides; ratio **1.600** (16/10 viewBox) |
+  | Flight | sprite position advances continuously; 52s loop (brief asks 40–60s) |
+  | Flip | mirrors at **29.03s**; true path apex is **28.94s** → within **0.09s** |
+  | Waypoint pulses | 30 markers, 28 distinct negative delays on one shared 52s timeline |
+  | Dark theme | all 13 `--ppmap-*` resolve to dark values; labels `#e6edf3` on `#0e1621` halo |
+  | Reduced motion | no `animateMotion`, no flip, waypoint + wave `animation-name: none`, sprite parked; 30/52/6 elements still drawn |
+  | Frame rate | **60.0–60.4 fps** sustained during the loop |
+  | Build / console | `npm run build` exit 0, no TS errors, **0 console errors or warnings** |
+
+  Two bugs found by measuring rather than looking — both would have passed a screenshot review:
+
+  1. **`<animate attributeName="transform" type="scale">` is silently ignored.** `type` belongs to
+     `<animateTransform>`, and values must be numeric `"1 1"` / `"-1 1"` pairs, not `scale(...)`
+     strings. The element existed and looked right in the DOM while the sprite never mirrored —
+     caught by sampling the image's screen CTM against travel direction, not by eye.
+  2. **Scoped `:global(.v-theme--pelipperDark) .pp-map` didn't match**, so the entire dark palette was
+     inert and the map stayed in light colours under the dark theme. Same failure as the sky layer in
+     the previous extension; same fix — bind the class from the template (`'pp-map--dark': isDark`).
+     **This selector pattern has now failed twice in this codebase. Don't reach for it again.**
+
+  The flip point and each waypoint's pulse timing are both **measured from the path at runtime**
+  (`getPointAtLength` sampling) rather than hardcoded, so they stay correct if the route is ever
+  redrawn.
 
 ---
 
