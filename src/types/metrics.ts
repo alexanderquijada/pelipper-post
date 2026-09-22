@@ -33,6 +33,14 @@ export type CargoType = 'Poké Balls' | 'Berries' | 'Potions' | 'TMs' | 'Evoluti
 /** A courier is in exactly one of these states. */
 export type CourierStatus = 'On Route' | 'Resting' | 'Grounded'
 
+/** Why a delivery exception happened. Every exception has exactly one cause. */
+export type ExceptionCause =
+  | 'Storm grounding'
+  | 'Recipient absent'
+  | 'Cargo damaged'
+  | 'Courier fainted'
+  | 'Route blocked'
+
 /**
  * Parcels delivered per cargo type. Sums EXACTLY to the record's
  * `parcelsDelivered` — the validator fails the build if it doesn't.
@@ -54,8 +62,35 @@ export interface RegionMetrics {
   onTimeRate: number
   /** Total parcels of all types. Range 6,000–21,000. */
   parcelsDelivered: number
+  /** Share of parcels delivered on the first attempt, 0–1. Range 0.78–0.94. */
+  firstAttemptRate: number
+  /** Average days in transit. Dips in Gym Season, spikes in storms. Range 1.4–4.2. */
+  avgTransitDays: number
+  /** Parcels damaged in transit — roughly 0.4–1.8% of `parcelsDelivered`. */
+  damagedParcels: number
+  /** Parcels that never landed and came back. */
+  returnedParcels: number
+  /** Cost to move one parcel, in Pokédollars. Rises in storm season. Range 180–420. */
+  costPerParcel: number
+  /** Load factor, 0–1. Range 0.55–0.92. */
+  capacityUtilization: number
+  /**
+   * Exceptions split by cause. Sums EXACTLY to
+   * `faintedCouriers + returnedParcels` — enforced by the validator.
+   */
+  exceptionsByCause: Record<ExceptionCause, number>
   /** Breakdown of `parcelsDelivered` by cargo type. */
   cargoMix: CargoMix
+}
+
+/** Physical and commercial properties of a cargo type. */
+export interface CargoProperties {
+  avgWeightKg: number
+  /** Share damaged in transit, 0–1. Berries are the most perishable. */
+  damageRate: number
+  avgTransitDays: number
+  /** Revenue per parcel in Pokédollars. Evolution Stones are the most valuable. */
+  revenuePerParcel: number
 }
 
 /** One month, containing all six regions. */
@@ -78,6 +113,14 @@ export interface Courier {
   /** Fraction 0–1, same convention as `RegionMetrics.onTimeRate`. */
   onTimeRate: number
   status: CourierStatus
+  /** Average delivery stops made per run. */
+  stopsPerRun: number
+  /** Share delivered on the first attempt, 0–1. */
+  firstAttemptRate: number
+  /** Rest days taken across their tenure — fleet welfare. */
+  restDaysTaken: number
+  /** How long they have flown for the carrier, in months. */
+  tenureMonths: number
 }
 
 /** The whole dataset — the default export of metrics.json. */
@@ -86,6 +129,8 @@ export interface MetricsDataset {
   tagline: string
   regions: RegionName[]
   cargoTypes: CargoType[]
+  /** Per cargo type: weight, damage rate, transit time, revenue. */
+  cargoProperties: Record<CargoType, CargoProperties>
   months: MonthMetrics[]
   couriers: Courier[]
 }

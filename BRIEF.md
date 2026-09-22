@@ -53,6 +53,23 @@ No API calls, no backend. The app imports the JSON directly.
 | `onTimeRate` | Share of parcels delivered on time, 0–1 | 0.86 – 0.97 |
 | `parcelsDelivered` | Total parcels of all types | 6,000 – 21,000 |
 | `cargoMix` | Object: parcels per cargo type, sums **exactly** to `parcelsDelivered` | — |
+| `firstAttemptRate` | Share delivered on the first attempt, 0–1 | 0.78 – 0.94 |
+| `avgTransitDays` | Average days in transit. **Dips in Gym Season, spikes in storms.** | 1.4 – 4.2 |
+| `damagedParcels` | Parcels damaged in transit | ~0.4–1.8% of `parcelsDelivered` |
+| `returnedParcels` | Parcels that never landed and came back | — |
+| `costPerParcel` | Cost to move one parcel, in Pokédollars. **Rises in storm season.** | 180 – 420 |
+| `capacityUtilization` | Load factor, 0–1 | 0.55 – 0.92 |
+| `exceptionsByCause` | Object: exceptions per cause, sums **exactly** to `faintedCouriers + returnedParcels`. Causes: Storm grounding · Recipient absent · Cargo damaged · Courier fainted · Route blocked. **Storm grounding must dominate in Jul–Aug.** | — |
+
+### Cargo properties (new top-level block)
+
+`cargoProperties`, keyed by cargo type: `avgWeightKg` · `damageRate` · `avgTransitDays` ·
+`revenuePerParcel`. **Evolution Stones are the heaviest and most valuable; Berries the most
+perishable (highest damage rate); TMs the lightest.** All enforced by the validator.
+
+### Courier operations
+
+Each courier also carries `stopsPerRun` · `firstAttemptRate` · `restDaysTaken` · `tenureMonths`.
 
 These ranges are wide on purpose — they have to hold for *both* the smallest region in its
 slowest month *and* the largest region at the peak of Gym Season. A small region like Galar will sit
@@ -339,6 +356,28 @@ was wrong. These values are the specification, not suggestions:
 | Content max-width | **1440px** |
 
 **Row order on Overview:** KPI strip / trend + region bars / the three derived cards / courier roster.
+
+### Governing rule — one dimension per page, one home per metric
+
+**Each page owns one dimension**, and **a metric's HEADLINE value appears on exactly one card in the
+whole app.** A different *cut* of the same metric is allowed only when that cut is the page's own
+dimension.
+
+| Page | Dimension it owns |
+|---|---|
+| Overview | the headline figures, every card linking out |
+| Trends | **when** — time series only |
+| Signals | **what's wrong** — exceptions and breaches |
+| Cargo | **what** — cargo properties, not volume repeated |
+| Network | **where** — regional comparison |
+| Couriers | **who** — the fleet |
+
+So *parcels delivered over twelve months* belongs on Trends (its dimension is time) and *parcels
+delivered by region* belongs on Network (its dimension is place) — but the **headline total** appears
+once, on Overview, and nowhere else.
+
+**This rule exists because it was broken:** parcels-delivered appeared on five separate cards at
+once. Before adding a card, check where that metric already lives.
 
 ### The six pages
 

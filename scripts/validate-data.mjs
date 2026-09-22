@@ -39,7 +39,15 @@ const RANGES = {
   faintedCouriers: [0, 8],
   onTimeRate: [0.86, 0.97],
   parcelsDelivered: [6000, 21000],
+  // delivery quality + cost, added 2026-09-22
+  firstAttemptRate: [0.78, 0.94],
+  avgTransitDays: [1.4, 4.2],
+  costPerParcel: [180, 420],
+  capacityUtilization: [0.55, 0.92],
 };
+const EXPECTED_CAUSES = ['Storm grounding', 'Recipient absent', 'Cargo damaged', 'Courier fainted', 'Route blocked'];
+const CARGO_PROP_FIELDS = ['avgWeightKg', 'damageRate', 'avgTransitDays', 'revenuePerParcel'];
+const COURIER_OPS_FIELDS = { stopsPerRun: [5, 80], firstAttemptRate: [0.7, 1], restDaysTaken: [0, 200], tenureMonths: [1, 240] };
 
 // ---------- structure ----------
 if (data.company !== 'Pelipper Post & Freight') fail(`company should be "Pelipper Post & Freight", got "${data.company}"`);
@@ -86,6 +94,31 @@ for (const m of data.months ?? []) {
     const sum = Object.values(mix).reduce((a, b) => a + (Number(b) || 0), 0);
     if (sum !== r.parcelsDelivered) {
       fail(`${m.key} / ${r.region}: cargoMix sums to ${sum} but parcelsDelivered is ${r.parcelsDelivered} (off by ${sum - r.parcelsDelivered})`);
+    }
+
+    // damagedParcels should sit at roughly 0.4-1.8% of parcelsDelivered
+    if (typeof r.damagedParcels !== 'number') {
+      fail(`${m.key} / ${r.region}: damagedParcels is missing`);
+    } else {
+      const share = r.parcelsDelivered > 0 ? r.damagedParcels / r.parcelsDelivered : 0;
+      if (share < 0.003 || share > 0.02) {
+        fail(`${m.key} / ${r.region}: damagedParcels is ${(share * 100).toFixed(2)}% of parcels, outside the expected 0.4-1.8%`);
+      }
+    }
+    if (typeof r.returnedParcels !== 'number' || r.returnedParcels < 0) {
+      fail(`${m.key} / ${r.region}: returnedParcels is missing or negative`);
+    }
+
+    // exceptionsByCause must carry every cause and sum EXACTLY to
+    // faintedCouriers + returnedParcels — every exception has one cause.
+    const causes = r.exceptionsByCause ?? {};
+    for (const c of EXPECTED_CAUSES) {
+      if (typeof causes[c] !== 'number') fail(`${m.key} / ${r.region}: exceptionsByCause missing "${c}"`);
+    }
+    const causeSum = Object.values(causes).reduce((a, b) => a + (Number(b) || 0), 0);
+    const expectedSum = (r.faintedCouriers ?? 0) + (r.returnedParcels ?? 0);
+    if (causeSum !== expectedSum) {
+      fail(`${m.key} / ${r.region}: exceptionsByCause sums to ${causeSum} but faintedCouriers + returnedParcels is ${expectedSum} (off by ${causeSum - expectedSum}). Every exception must have exactly one cause.`);
     }
 
     // pokeBallsShipped and cargoMix["Poké Balls"] are ONE measure, so they must
@@ -174,6 +207,58 @@ for (const [region, recs] of Object.entries(byRegion)) {
   if (avg(deltas) < 0.02) note(`${region}: month-over-month volume barely moves (avg ${(avg(deltas) * 100).toFixed(1)}%). The brief asks for ±3–15%.`);
 }
 
+// ---------- new-field seasonality ----------
+const stormTransit = pick([7, 8], 'avgTransitDays');
+const calmTransit = pick([1, 2, 6, 9, 10, 11], 'avgTransitDays');
+if (stormTransit <= calmTransit) {
+  fail(`Storm season should SLOW transit: avg avgTransitDays ${stormTransit.toFixed(2)} in Jul-Aug vs ${calmTransit.toFixed(2)} otherwise.`);
+}
+const gymTransit = pick([3, 4, 5], 'avgTransitDays');
+if (gymTransit >= calmTransit) {
+  fail(`Gym Season should SPEED transit: avg avgTransitDays ${gymTransit.toFixed(2)} in Mar-May vs ${calmTransit.toFixed(2)} baseline.`);
+}
+const stormCost = pick([7, 8], 'costPerParcel');
+const calmCost = pick([1, 2, 6, 9, 10, 11], 'costPerParcel');
+if (stormCost <= calmCost) {
+  fail(`Storm season should RAISE cost: avg costPerParcel ${stormCost.toFixed(0)} in Jul-Aug vs ${calmCost.toFixed(0)} otherwise.`);
+}
+const stormFirst = pick([7, 8], 'firstAttemptRate');
+const calmFirst = pick([1, 2, 6, 9, 10, 11], 'firstAttemptRate');
+if (stormFirst >= calmFirst) {
+  fail(`Storm season should HURT first-attempt rate: ${(stormFirst * 100).toFixed(1)}% in Jul-Aug vs ${(calmFirst * 100).toFixed(1)}% otherwise.`);
+}
+
+// Storm grounding must be the dominant cause in Jul-Aug.
+const stormCauseTotals = {};
+for (const rec of allRecords.filter((r) => [7, 8].includes(monthNum(r.month)))) {
+  for (const [cause, v] of Object.entries(rec.exceptionsByCause ?? {})) {
+    stormCauseTotals[cause] = (stormCauseTotals[cause] ?? 0) + (Number(v) || 0);
+  }
+}
+const topStormCause = Object.entries(stormCauseTotals).sort((a, b) => b[1] - a[1])[0]?.[0];
+if (topStormCause !== 'Storm grounding') {
+  fail(`"Storm grounding" should be the biggest exception cause in Jul-Aug. Biggest was "${topStormCause}".`);
+}
+
+// ---------- cargo properties ----------
+const props = data.cargoProperties ?? {};
+for (const c of EXPECTED_CARGO) {
+  if (!props[c]) { fail(`cargoProperties missing "${c}"`); continue; }
+  for (const f of CARGO_PROP_FIELDS) {
+    if (typeof props[c][f] !== 'number') fail(`cargoProperties["${c}"].${f} is missing or not a number`);
+  }
+}
+if (Object.keys(props).length) {
+  const heaviest = Object.entries(props).sort((a, b) => (b[1].avgWeightKg ?? 0) - (a[1].avgWeightKg ?? 0))[0]?.[0];
+  if (heaviest !== 'Evolution Stones') fail(`Evolution Stones should be the heaviest cargo type. Heaviest was "${heaviest}".`);
+  const lightest = Object.entries(props).sort((a, b) => (a[1].avgWeightKg ?? 0) - (b[1].avgWeightKg ?? 0))[0]?.[0];
+  if (lightest !== 'TMs') fail(`TMs should be the lightest cargo type. Lightest was "${lightest}".`);
+  const priciest = Object.entries(props).sort((a, b) => (b[1].revenuePerParcel ?? 0) - (a[1].revenuePerParcel ?? 0))[0]?.[0];
+  if (priciest !== 'Evolution Stones') fail(`Evolution Stones should have the highest revenuePerParcel. Highest was "${priciest}".`);
+  const mostDamaged = Object.entries(props).sort((a, b) => (b[1].damageRate ?? 0) - (a[1].damageRate ?? 0))[0]?.[0];
+  if (mostDamaged !== 'Berries') fail(`Berries should have the highest damageRate — most perishable. Highest was "${mostDamaged}".`);
+}
+
 // ---------- couriers ----------
 const EXPECTED_COURIERS = [
   ['Skyler', 'Pelipper', 279, 'Hoenn'], ['Gale', 'Pidgeot', 18, 'Kanto'],
@@ -192,6 +277,11 @@ for (const [name, species, dexId, homeRegion] of EXPECTED_COURIERS) {
   if (!VALID_STATUS.includes(c.status)) fail(`${name}: status "${c.status}" must be one of ${VALID_STATUS.join(' / ')}`);
   if (typeof c.runs !== 'number' || c.runs <= 0) fail(`${name}: runs must be a positive number`);
   if (typeof c.onTimeRate !== 'number' || c.onTimeRate < 0.7 || c.onTimeRate > 1) fail(`${name}: onTimeRate ${c.onTimeRate} looks wrong`);
+  for (const [f, [lo, hi]] of Object.entries(COURIER_OPS_FIELDS)) {
+    const v = c[f];
+    if (typeof v !== 'number') { fail(`${name}: ${f} is missing`); continue; }
+    if (v < lo || v > hi) fail(`${name}: ${f} = ${v}, outside the expected ${lo}-${hi}`);
+  }
 }
 
 // ---------- report ----------
@@ -219,6 +309,11 @@ console.log(`    Gym Season lift      ${((gymSeason / gymBaseline - 1) * 100).to
 console.log(`    Dec berry multiple   ${(decBerries / otherBerries).toFixed(2)}×  ${D}(want ~2×)${X}`);
 console.log(`    Storm fainted        ${stormFainted.toFixed(2)} vs ${calmFainted.toFixed(2)}  ${D}(want higher)${X}`);
 console.log(`    Worst storm hit      ${worstHit}  ${D}(want Hoenn)${X}`);
+console.log(`    Storm transit        ${stormTransit.toFixed(2)}d vs ${calmTransit.toFixed(2)}d  ${D}(want slower)${X}`);
+console.log(`    Gym Season transit   ${gymTransit.toFixed(2)}d vs ${calmTransit.toFixed(2)}d  ${D}(want faster)${X}`);
+console.log(`    Storm cost/parcel    ${stormCost.toFixed(0)} vs ${calmCost.toFixed(0)}  ${D}(want higher)${X}`);
+console.log(`    Storm first-attempt  ${(stormFirst * 100).toFixed(1)}% vs ${(calmFirst * 100).toFixed(1)}%  ${D}(want lower)${X}`);
+console.log(`    Top storm cause      ${topStormCause}  ${D}(want Storm grounding)${X}`);
 
 if (notes.length) {
   console.log(`\n${Y}  ${notes.length} thing(s) worth a look:${X}`);

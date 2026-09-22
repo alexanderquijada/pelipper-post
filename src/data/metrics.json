@@ -16,6 +16,38 @@
     "TMs",
     "Evolution Stones"
   ],
+  "cargoProperties": {
+    "Poké Balls": {
+      "avgWeightKg": 0.34,
+      "damageRate": 0.008,
+      "avgTransitDays": 2.3,
+      "revenuePerParcel": 340
+    },
+    "Berries": {
+      "avgWeightKg": 0.61,
+      "damageRate": 0.027,
+      "avgTransitDays": 1.8,
+      "revenuePerParcel": 210
+    },
+    "Potions": {
+      "avgWeightKg": 0.47,
+      "damageRate": 0.013,
+      "avgTransitDays": 2.6,
+      "revenuePerParcel": 385
+    },
+    "TMs": {
+      "avgWeightKg": 0.07,
+      "damageRate": 0.004,
+      "avgTransitDays": 2.1,
+      "revenuePerParcel": 455
+    },
+    "Evolution Stones": {
+      "avgWeightKg": 1.42,
+      "damageRate": 0.011,
+      "avgTransitDays": 3.2,
+      "revenuePerParcel": 1260
+    }
+  },
   "months": [
     {
       "key": "2025-10",
@@ -29,92 +61,170 @@
           "faintedCouriers": 0,
           "onTimeRate": 0.959,
           "parcelsDelivered": 14664,
+          "firstAttemptRate": 0.909,
+          "avgTransitDays": 1.97,
+          "damagedParcels": 248,
+          "returnedParcels": 58,
+          "costPerParcel": 234,
+          "capacityUtilization": 0.794,
+          "exceptionsByCause": {
+            "Storm grounding": 8,
+            "Recipient absent": 26,
+            "Cargo damaged": 12,
+            "Courier fainted": 0,
+            "Route blocked": 12
+          },
           "cargoMix": {
             "Poké Balls": 4420,
-            "Berries": 3235,
-            "Potions": 3117,
-            "TMs": 2283,
-            "Evolution Stones": 1609
+            "Berries": 3447,
+            "Potions": 3149,
+            "TMs": 2371,
+            "Evolution Stones": 1277
           }
         },
         {
           "region": "Johto",
-          "pokeBallsShipped": 3845,
-          "berryCrates": 359,
+          "pokeBallsShipped": 3872,
+          "berryCrates": 384,
           "gymSupplyRuns": 50,
-          "faintedCouriers": 2,
-          "onTimeRate": 0.953,
-          "parcelsDelivered": 12450,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.948,
+          "parcelsDelivered": 12618,
+          "firstAttemptRate": 0.903,
+          "avgTransitDays": 2.05,
+          "damagedParcels": 105,
+          "returnedParcels": 66,
+          "costPerParcel": 243,
+          "capacityUtilization": 0.788,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 29,
+            "Cargo damaged": 14,
+            "Courier fainted": 1,
+            "Route blocked": 14
+          },
           "cargoMix": {
-            "Poké Balls": 3845,
-            "Berries": 2788,
-            "Potions": 2583,
-            "TMs": 1941,
-            "Evolution Stones": 1293
+            "Poké Balls": 3872,
+            "Berries": 2774,
+            "Potions": 2537,
+            "TMs": 2007,
+            "Evolution Stones": 1428
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 3423,
-          "berryCrates": 316,
-          "gymSupplyRuns": 43,
+          "pokeBallsShipped": 3239,
+          "berryCrates": 326,
+          "gymSupplyRuns": 40,
           "faintedCouriers": 2,
-          "onTimeRate": 0.939,
-          "parcelsDelivered": 11212,
+          "onTimeRate": 0.943,
+          "parcelsDelivered": 10517,
+          "firstAttemptRate": 0.879,
+          "avgTransitDays": 2.66,
+          "damagedParcels": 93,
+          "returnedParcels": 58,
+          "costPerParcel": 264,
+          "capacityUtilization": 0.758,
+          "exceptionsByCause": {
+            "Storm grounding": 8,
+            "Recipient absent": 26,
+            "Cargo damaged": 12,
+            "Courier fainted": 2,
+            "Route blocked": 12
+          },
           "cargoMix": {
-            "Poké Balls": 3423,
-            "Berries": 2616,
-            "Potions": 2246,
-            "TMs": 1759,
-            "Evolution Stones": 1168
+            "Poké Balls": 3239,
+            "Berries": 2335,
+            "Potions": 2068,
+            "TMs": 1644,
+            "Evolution Stones": 1231
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 2865,
-          "berryCrates": 283,
+          "pokeBallsShipped": 2927,
+          "berryCrates": 281,
           "gymSupplyRuns": 33,
           "faintedCouriers": 3,
-          "onTimeRate": 0.911,
-          "parcelsDelivered": 9432,
+          "onTimeRate": 0.906,
+          "parcelsDelivered": 9462,
+          "firstAttemptRate": 0.845,
+          "avgTransitDays": 3.16,
+          "damagedParcels": 95,
+          "returnedParcels": 79,
+          "costPerParcel": 303,
+          "capacityUtilization": 0.69,
+          "exceptionsByCause": {
+            "Storm grounding": 11,
+            "Recipient absent": 35,
+            "Cargo damaged": 17,
+            "Courier fainted": 3,
+            "Route blocked": 16
+          },
           "cargoMix": {
-            "Poké Balls": 2865,
-            "Berries": 2040,
-            "Potions": 1967,
-            "TMs": 1420,
-            "Evolution Stones": 1140
+            "Poké Balls": 2927,
+            "Berries": 2171,
+            "Potions": 1969,
+            "TMs": 1446,
+            "Evolution Stones": 949
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 2621,
-          "berryCrates": 288,
-          "gymSupplyRuns": 35,
+          "pokeBallsShipped": 2748,
+          "berryCrates": 307,
+          "gymSupplyRuns": 34,
           "faintedCouriers": 1,
-          "onTimeRate": 0.934,
-          "parcelsDelivered": 8532,
+          "onTimeRate": 0.941,
+          "parcelsDelivered": 9086,
+          "firstAttemptRate": 0.879,
+          "avgTransitDays": 2.25,
+          "damagedParcels": 107,
+          "returnedParcels": 47,
+          "costPerParcel": 254,
+          "capacityUtilization": 0.699,
+          "exceptionsByCause": {
+            "Storm grounding": 7,
+            "Recipient absent": 21,
+            "Cargo damaged": 10,
+            "Courier fainted": 1,
+            "Route blocked": 9
+          },
           "cargoMix": {
-            "Poké Balls": 2621,
-            "Berries": 1896,
-            "Potions": 1680,
-            "TMs": 1336,
-            "Evolution Stones": 999
+            "Poké Balls": 2748,
+            "Berries": 2113,
+            "Potions": 1812,
+            "TMs": 1413,
+            "Evolution Stones": 1000
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 2256,
-          "berryCrates": 218,
-          "gymSupplyRuns": 24,
+          "pokeBallsShipped": 2202,
+          "berryCrates": 217,
+          "gymSupplyRuns": 26,
           "faintedCouriers": 2,
           "onTimeRate": 0.919,
-          "parcelsDelivered": 7294,
+          "parcelsDelivered": 7209,
+          "firstAttemptRate": 0.86,
+          "avgTransitDays": 2.7,
+          "damagedParcels": 32,
+          "returnedParcels": 45,
+          "costPerParcel": 279,
+          "capacityUtilization": 0.632,
+          "exceptionsByCause": {
+            "Storm grounding": 6,
+            "Recipient absent": 20,
+            "Cargo damaged": 9,
+            "Courier fainted": 2,
+            "Route blocked": 10
+          },
           "cargoMix": {
-            "Poké Balls": 2256,
-            "Berries": 1652,
-            "Potions": 1418,
-            "TMs": 1072,
-            "Evolution Stones": 896
+            "Poké Balls": 2202,
+            "Berries": 1630,
+            "Potions": 1433,
+            "TMs": 1142,
+            "Evolution Stones": 802
           }
         }
       ]
@@ -125,98 +235,176 @@
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 4909,
-          "berryCrates": 520,
-          "gymSupplyRuns": 57,
+          "pokeBallsShipped": 4680,
+          "berryCrates": 484,
+          "gymSupplyRuns": 58,
           "faintedCouriers": 1,
-          "onTimeRate": 0.96,
-          "parcelsDelivered": 16131,
+          "onTimeRate": 0.957,
+          "parcelsDelivered": 15268,
+          "firstAttemptRate": 0.904,
+          "avgTransitDays": 1.87,
+          "damagedParcels": 149,
+          "returnedParcels": 59,
+          "costPerParcel": 241,
+          "capacityUtilization": 0.805,
+          "exceptionsByCause": {
+            "Storm grounding": 8,
+            "Recipient absent": 26,
+            "Cargo damaged": 12,
+            "Courier fainted": 1,
+            "Route blocked": 13
+          },
           "cargoMix": {
-            "Poké Balls": 4909,
-            "Berries": 3809,
-            "Potions": 3207,
-            "TMs": 2544,
-            "Evolution Stones": 1662
+            "Poké Balls": 4680,
+            "Berries": 3340,
+            "Potions": 3238,
+            "TMs": 2307,
+            "Evolution Stones": 1703
           }
         },
         {
           "region": "Johto",
-          "pokeBallsShipped": 4167,
-          "berryCrates": 461,
-          "gymSupplyRuns": 48,
-          "faintedCouriers": 1,
-          "onTimeRate": 0.946,
-          "parcelsDelivered": 13470,
+          "pokeBallsShipped": 3913,
+          "berryCrates": 447,
+          "gymSupplyRuns": 47,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.944,
+          "parcelsDelivered": 12972,
+          "firstAttemptRate": 0.907,
+          "avgTransitDays": 2.09,
+          "damagedParcels": 105,
+          "returnedParcels": 71,
+          "costPerParcel": 242,
+          "capacityUtilization": 0.77,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 31,
+            "Cargo damaged": 15,
+            "Courier fainted": 2,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 4167,
-            "Berries": 2935,
-            "Potions": 2751,
-            "TMs": 1990,
-            "Evolution Stones": 1627
+            "Poké Balls": 3913,
+            "Berries": 2822,
+            "Potions": 2695,
+            "TMs": 1942,
+            "Evolution Stones": 1600
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 3574,
-          "berryCrates": 429,
-          "gymSupplyRuns": 41,
+          "pokeBallsShipped": 3462,
+          "berryCrates": 408,
+          "gymSupplyRuns": 40,
           "faintedCouriers": 2,
           "onTimeRate": 0.941,
-          "parcelsDelivered": 11817,
+          "parcelsDelivered": 11373,
+          "firstAttemptRate": 0.882,
+          "avgTransitDays": 2.5,
+          "damagedParcels": 65,
+          "returnedParcels": 60,
+          "costPerParcel": 267,
+          "capacityUtilization": 0.742,
+          "exceptionsByCause": {
+            "Storm grounding": 8,
+            "Recipient absent": 26,
+            "Cargo damaged": 13,
+            "Courier fainted": 2,
+            "Route blocked": 13
+          },
           "cargoMix": {
-            "Poké Balls": 3574,
-            "Berries": 2735,
-            "Potions": 2386,
-            "TMs": 1905,
-            "Evolution Stones": 1217
+            "Poké Balls": 3462,
+            "Berries": 2547,
+            "Potions": 2341,
+            "TMs": 1801,
+            "Evolution Stones": 1222
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 3051,
-          "berryCrates": 318,
-          "gymSupplyRuns": 34,
+          "pokeBallsShipped": 3067,
+          "berryCrates": 339,
+          "gymSupplyRuns": 36,
           "faintedCouriers": 3,
-          "onTimeRate": 0.903,
-          "parcelsDelivered": 10114,
+          "onTimeRate": 0.904,
+          "parcelsDelivered": 10173,
+          "firstAttemptRate": 0.844,
+          "avgTransitDays": 3.46,
+          "damagedParcels": 143,
+          "returnedParcels": 85,
+          "costPerParcel": 314,
+          "capacityUtilization": 0.665,
+          "exceptionsByCause": {
+            "Storm grounding": 12,
+            "Recipient absent": 37,
+            "Cargo damaged": 18,
+            "Courier fainted": 3,
+            "Route blocked": 18
+          },
           "cargoMix": {
-            "Poké Balls": 3051,
-            "Berries": 2299,
-            "Potions": 2022,
-            "TMs": 1612,
-            "Evolution Stones": 1130
+            "Poké Balls": 3067,
+            "Berries": 2296,
+            "Potions": 2171,
+            "TMs": 1598,
+            "Evolution Stones": 1041
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 2779,
-          "berryCrates": 367,
-          "gymSupplyRuns": 35,
+          "pokeBallsShipped": 2920,
+          "berryCrates": 402,
+          "gymSupplyRuns": 34,
           "faintedCouriers": 2,
-          "onTimeRate": 0.935,
-          "parcelsDelivered": 9067,
+          "onTimeRate": 0.941,
+          "parcelsDelivered": 9617,
+          "firstAttemptRate": 0.871,
+          "avgTransitDays": 2.25,
+          "damagedParcels": 125,
+          "returnedParcels": 56,
+          "costPerParcel": 255,
+          "capacityUtilization": 0.698,
+          "exceptionsByCause": {
+            "Storm grounding": 8,
+            "Recipient absent": 25,
+            "Cargo damaged": 12,
+            "Courier fainted": 2,
+            "Route blocked": 11
+          },
           "cargoMix": {
-            "Poké Balls": 2779,
-            "Berries": 1944,
-            "Potions": 1817,
-            "TMs": 1456,
-            "Evolution Stones": 1071
+            "Poké Balls": 2920,
+            "Berries": 2273,
+            "Potions": 1927,
+            "TMs": 1486,
+            "Evolution Stones": 1011
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 2423,
-          "berryCrates": 249,
+          "pokeBallsShipped": 2433,
+          "berryCrates": 277,
           "gymSupplyRuns": 25,
           "faintedCouriers": 2,
-          "onTimeRate": 0.925,
-          "parcelsDelivered": 7964,
+          "onTimeRate": 0.916,
+          "parcelsDelivered": 8055,
+          "firstAttemptRate": 0.853,
+          "avgTransitDays": 2.72,
+          "damagedParcels": 88,
+          "returnedParcels": 48,
+          "costPerParcel": 295,
+          "capacityUtilization": 0.653,
+          "exceptionsByCause": {
+            "Storm grounding": 7,
+            "Recipient absent": 21,
+            "Cargo damaged": 10,
+            "Courier fainted": 2,
+            "Route blocked": 10
+          },
           "cargoMix": {
-            "Poké Balls": 2423,
-            "Berries": 1742,
-            "Potions": 1570,
-            "TMs": 1183,
-            "Evolution Stones": 1046
+            "Poké Balls": 2433,
+            "Berries": 1854,
+            "Potions": 1672,
+            "TMs": 1222,
+            "Evolution Stones": 874
           }
         }
       ]
@@ -227,98 +415,176 @@
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 5016,
-          "berryCrates": 850,
-          "gymSupplyRuns": 55,
-          "faintedCouriers": 2,
-          "onTimeRate": 0.919,
-          "parcelsDelivered": 16371,
+          "pokeBallsShipped": 5209,
+          "berryCrates": 774,
+          "gymSupplyRuns": 53,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.918,
+          "parcelsDelivered": 16748,
+          "firstAttemptRate": 0.871,
+          "avgTransitDays": 2.12,
+          "damagedParcels": 124,
+          "returnedParcels": 94,
+          "costPerParcel": 248,
+          "capacityUtilization": 0.891,
+          "exceptionsByCause": {
+            "Storm grounding": 13,
+            "Recipient absent": 41,
+            "Cargo damaged": 20,
+            "Courier fainted": 1,
+            "Route blocked": 20
+          },
           "cargoMix": {
-            "Poké Balls": 5016,
-            "Berries": 4170,
-            "Potions": 3308,
-            "TMs": 2211,
-            "Evolution Stones": 1666
+            "Poké Balls": 5209,
+            "Berries": 4155,
+            "Potions": 3095,
+            "TMs": 2277,
+            "Evolution Stones": 2012
           }
         },
         {
           "region": "Johto",
-          "pokeBallsShipped": 4357,
-          "berryCrates": 758,
-          "gymSupplyRuns": 46,
+          "pokeBallsShipped": 4547,
+          "berryCrates": 824,
+          "gymSupplyRuns": 47,
           "faintedCouriers": 2,
-          "onTimeRate": 0.908,
-          "parcelsDelivered": 14174,
+          "onTimeRate": 0.916,
+          "parcelsDelivered": 14537,
+          "firstAttemptRate": 0.859,
+          "avgTransitDays": 2.25,
+          "damagedParcels": 168,
+          "returnedParcels": 89,
+          "costPerParcel": 277,
+          "capacityUtilization": 0.824,
+          "exceptionsByCause": {
+            "Storm grounding": 12,
+            "Recipient absent": 39,
+            "Cargo damaged": 19,
+            "Courier fainted": 2,
+            "Route blocked": 19
+          },
           "cargoMix": {
-            "Poké Balls": 4357,
-            "Berries": 3685,
-            "Potions": 2704,
-            "TMs": 1910,
-            "Evolution Stones": 1518
+            "Poké Balls": 4547,
+            "Berries": 3696,
+            "Potions": 2767,
+            "TMs": 2036,
+            "Evolution Stones": 1491
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 3746,
-          "berryCrates": 659,
-          "gymSupplyRuns": 38,
+          "pokeBallsShipped": 3781,
+          "berryCrates": 713,
+          "gymSupplyRuns": 41,
           "faintedCouriers": 3,
-          "onTimeRate": 0.904,
-          "parcelsDelivered": 12067,
+          "onTimeRate": 0.905,
+          "parcelsDelivered": 12248,
+          "firstAttemptRate": 0.841,
+          "avgTransitDays": 2.87,
+          "damagedParcels": 97,
+          "returnedParcels": 89,
+          "costPerParcel": 289,
+          "capacityUtilization": 0.802,
+          "exceptionsByCause": {
+            "Storm grounding": 12,
+            "Recipient absent": 39,
+            "Cargo damaged": 19,
+            "Courier fainted": 3,
+            "Route blocked": 19
+          },
           "cargoMix": {
-            "Poké Balls": 3746,
-            "Berries": 3131,
-            "Potions": 2223,
-            "TMs": 1689,
-            "Evolution Stones": 1278
+            "Poké Balls": 3781,
+            "Berries": 3176,
+            "Potions": 2246,
+            "TMs": 1712,
+            "Evolution Stones": 1333
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 3352,
+          "pokeBallsShipped": 3149,
           "berryCrates": 527,
-          "gymSupplyRuns": 34,
-          "faintedCouriers": 3,
-          "onTimeRate": 0.864,
-          "parcelsDelivered": 10932,
+          "gymSupplyRuns": 32,
+          "faintedCouriers": 4,
+          "onTimeRate": 0.865,
+          "parcelsDelivered": 10306,
+          "firstAttemptRate": 0.812,
+          "avgTransitDays": 3.86,
+          "damagedParcels": 146,
+          "returnedParcels": 102,
+          "costPerParcel": 351,
+          "capacityUtilization": 0.735,
+          "exceptionsByCause": {
+            "Storm grounding": 14,
+            "Recipient absent": 45,
+            "Cargo damaged": 21,
+            "Courier fainted": 4,
+            "Route blocked": 22
+          },
           "cargoMix": {
-            "Poké Balls": 3352,
-            "Berries": 2906,
-            "Potions": 2171,
-            "TMs": 1531,
-            "Evolution Stones": 972
+            "Poké Balls": 3149,
+            "Berries": 2560,
+            "Potions": 1894,
+            "TMs": 1488,
+            "Evolution Stones": 1215
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 3258,
-          "berryCrates": 665,
+          "pokeBallsShipped": 3039,
+          "berryCrates": 632,
           "gymSupplyRuns": 32,
-          "faintedCouriers": 3,
-          "onTimeRate": 0.893,
-          "parcelsDelivered": 10448,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.891,
+          "parcelsDelivered": 9843,
+          "firstAttemptRate": 0.839,
+          "avgTransitDays": 2.46,
+          "damagedParcels": 117,
+          "returnedParcels": 74,
+          "costPerParcel": 277,
+          "capacityUtilization": 0.769,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 33,
+            "Cargo damaged": 16,
+            "Courier fainted": 2,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 3258,
-            "Berries": 2824,
-            "Potions": 1932,
-            "TMs": 1421,
-            "Evolution Stones": 1013
+            "Poké Balls": 3039,
+            "Berries": 2490,
+            "Potions": 1896,
+            "TMs": 1390,
+            "Evolution Stones": 1028
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 2569,
-          "berryCrates": 448,
-          "gymSupplyRuns": 25,
+          "pokeBallsShipped": 2533,
+          "berryCrates": 412,
+          "gymSupplyRuns": 24,
           "faintedCouriers": 3,
-          "onTimeRate": 0.874,
-          "parcelsDelivered": 8354,
+          "onTimeRate": 0.886,
+          "parcelsDelivered": 8211,
+          "firstAttemptRate": 0.834,
+          "avgTransitDays": 3.11,
+          "damagedParcels": 129,
+          "returnedParcels": 71,
+          "costPerParcel": 315,
+          "capacityUtilization": 0.713,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 31,
+            "Cargo damaged": 15,
+            "Courier fainted": 3,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 2569,
-            "Berries": 2221,
-            "Potions": 1556,
-            "TMs": 1210,
-            "Evolution Stones": 798
+            "Poké Balls": 2533,
+            "Berries": 2048,
+            "Potions": 1619,
+            "TMs": 1161,
+            "Evolution Stones": 850
           }
         }
       ]
@@ -329,98 +595,176 @@
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 4279,
-          "berryCrates": 351,
+          "pokeBallsShipped": 4621,
+          "berryCrates": 337,
           "gymSupplyRuns": 53,
           "faintedCouriers": 1,
           "onTimeRate": 0.955,
-          "parcelsDelivered": 14228,
+          "parcelsDelivered": 14952,
+          "firstAttemptRate": 0.925,
+          "avgTransitDays": 1.81,
+          "damagedParcels": 248,
+          "returnedParcels": 62,
+          "costPerParcel": 235,
+          "capacityUtilization": 0.818,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 27,
+            "Cargo damaged": 13,
+            "Courier fainted": 1,
+            "Route blocked": 13
+          },
           "cargoMix": {
-            "Poké Balls": 4279,
-            "Berries": 3324,
-            "Potions": 2925,
-            "TMs": 2091,
-            "Evolution Stones": 1609
+            "Poké Balls": 4621,
+            "Berries": 3492,
+            "Potions": 3003,
+            "TMs": 2320,
+            "Evolution Stones": 1516
           }
         },
         {
           "region": "Johto",
-          "pokeBallsShipped": 3835,
-          "berryCrates": 315,
-          "gymSupplyRuns": 49,
+          "pokeBallsShipped": 3702,
+          "berryCrates": 340,
+          "gymSupplyRuns": 47,
           "faintedCouriers": 1,
-          "onTimeRate": 0.949,
-          "parcelsDelivered": 12532,
+          "onTimeRate": 0.951,
+          "parcelsDelivered": 12046,
+          "firstAttemptRate": 0.902,
+          "avgTransitDays": 2,
+          "damagedParcels": 146,
+          "returnedParcels": 61,
+          "costPerParcel": 239,
+          "capacityUtilization": 0.782,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 27,
+            "Cargo damaged": 13,
+            "Courier fainted": 1,
+            "Route blocked": 12
+          },
           "cargoMix": {
-            "Poké Balls": 3835,
-            "Berries": 2834,
-            "Potions": 2516,
-            "TMs": 1845,
-            "Evolution Stones": 1502
+            "Poké Balls": 3702,
+            "Berries": 2822,
+            "Potions": 2337,
+            "TMs": 1815,
+            "Evolution Stones": 1370
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 3126,
-          "berryCrates": 289,
-          "gymSupplyRuns": 41,
+          "pokeBallsShipped": 3264,
+          "berryCrates": 283,
+          "gymSupplyRuns": 42,
           "faintedCouriers": 2,
           "onTimeRate": 0.943,
-          "parcelsDelivered": 10365,
+          "parcelsDelivered": 10827,
+          "firstAttemptRate": 0.881,
+          "avgTransitDays": 2.69,
+          "damagedParcels": 51,
+          "returnedParcels": 64,
+          "costPerParcel": 257,
+          "capacityUtilization": 0.756,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 28,
+            "Cargo damaged": 13,
+            "Courier fainted": 2,
+            "Route blocked": 14
+          },
           "cargoMix": {
-            "Poké Balls": 3126,
-            "Berries": 2423,
-            "Potions": 2045,
-            "TMs": 1542,
-            "Evolution Stones": 1229
+            "Poké Balls": 3264,
+            "Berries": 2463,
+            "Potions": 2216,
+            "TMs": 1707,
+            "Evolution Stones": 1177
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 2834,
-          "berryCrates": 242,
+          "pokeBallsShipped": 2796,
+          "berryCrates": 235,
           "gymSupplyRuns": 38,
-          "faintedCouriers": 3,
-          "onTimeRate": 0.91,
-          "parcelsDelivered": 9180,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.907,
+          "parcelsDelivered": 9138,
+          "firstAttemptRate": 0.833,
+          "avgTransitDays": 3.43,
+          "damagedParcels": 95,
+          "returnedParcels": 78,
+          "costPerParcel": 324,
+          "capacityUtilization": 0.695,
+          "exceptionsByCause": {
+            "Storm grounding": 11,
+            "Recipient absent": 34,
+            "Cargo damaged": 16,
+            "Courier fainted": 2,
+            "Route blocked": 17
+          },
           "cargoMix": {
-            "Poké Balls": 2834,
-            "Berries": 2120,
-            "Potions": 1793,
-            "TMs": 1377,
-            "Evolution Stones": 1056
+            "Poké Balls": 2796,
+            "Berries": 2105,
+            "Potions": 1923,
+            "TMs": 1388,
+            "Evolution Stones": 926
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 2682,
-          "berryCrates": 256,
-          "gymSupplyRuns": 36,
+          "pokeBallsShipped": 2869,
+          "berryCrates": 264,
+          "gymSupplyRuns": 35,
           "faintedCouriers": 1,
-          "onTimeRate": 0.935,
-          "parcelsDelivered": 8684,
+          "onTimeRate": 0.938,
+          "parcelsDelivered": 9385,
+          "firstAttemptRate": 0.889,
+          "avgTransitDays": 2.21,
+          "damagedParcels": 58,
+          "returnedParcels": 56,
+          "costPerParcel": 266,
+          "capacityUtilization": 0.713,
+          "exceptionsByCause": {
+            "Storm grounding": 8,
+            "Recipient absent": 25,
+            "Cargo damaged": 12,
+            "Courier fainted": 1,
+            "Route blocked": 11
+          },
           "cargoMix": {
-            "Poké Balls": 2682,
-            "Berries": 1936,
-            "Potions": 1779,
-            "TMs": 1341,
-            "Evolution Stones": 946
+            "Poké Balls": 2869,
+            "Berries": 2198,
+            "Potions": 1996,
+            "TMs": 1424,
+            "Evolution Stones": 898
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 2249,
-          "berryCrates": 188,
-          "gymSupplyRuns": 26,
+          "pokeBallsShipped": 2267,
+          "berryCrates": 187,
+          "gymSupplyRuns": 28,
           "faintedCouriers": 2,
-          "onTimeRate": 0.924,
-          "parcelsDelivered": 7336,
+          "onTimeRate": 0.921,
+          "parcelsDelivered": 7361,
+          "firstAttemptRate": 0.867,
+          "avgTransitDays": 2.9,
+          "damagedParcels": 65,
+          "returnedParcels": 48,
+          "costPerParcel": 291,
+          "capacityUtilization": 0.64,
+          "exceptionsByCause": {
+            "Storm grounding": 7,
+            "Recipient absent": 21,
+            "Cargo damaged": 10,
+            "Courier fainted": 2,
+            "Route blocked": 10
+          },
           "cargoMix": {
-            "Poké Balls": 2249,
-            "Berries": 1592,
-            "Potions": 1472,
-            "TMs": 1093,
-            "Evolution Stones": 930
+            "Poké Balls": 2267,
+            "Berries": 1716,
+            "Potions": 1495,
+            "TMs": 1119,
+            "Evolution Stones": 764
           }
         }
       ]
@@ -431,98 +775,176 @@
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 4454,
-          "berryCrates": 406,
-          "gymSupplyRuns": 56,
+          "pokeBallsShipped": 4780,
+          "berryCrates": 419,
+          "gymSupplyRuns": 53,
           "faintedCouriers": 1,
-          "onTimeRate": 0.953,
-          "parcelsDelivered": 14701,
+          "onTimeRate": 0.962,
+          "parcelsDelivered": 15599,
+          "firstAttemptRate": 0.913,
+          "avgTransitDays": 1.97,
+          "damagedParcels": 238,
+          "returnedParcels": 60,
+          "costPerParcel": 241,
+          "capacityUtilization": 0.777,
+          "exceptionsByCause": {
+            "Storm grounding": 8,
+            "Recipient absent": 26,
+            "Cargo damaged": 13,
+            "Courier fainted": 1,
+            "Route blocked": 13
+          },
           "cargoMix": {
-            "Poké Balls": 4454,
-            "Berries": 3183,
-            "Potions": 2871,
-            "TMs": 2178,
-            "Evolution Stones": 2015
+            "Poké Balls": 4780,
+            "Berries": 3661,
+            "Potions": 3083,
+            "TMs": 2327,
+            "Evolution Stones": 1748
           }
         },
         {
           "region": "Johto",
-          "pokeBallsShipped": 3788,
-          "berryCrates": 371,
-          "gymSupplyRuns": 51,
+          "pokeBallsShipped": 3833,
+          "berryCrates": 385,
+          "gymSupplyRuns": 47,
           "faintedCouriers": 2,
-          "onTimeRate": 0.95,
-          "parcelsDelivered": 12331,
+          "onTimeRate": 0.947,
+          "parcelsDelivered": 12619,
+          "firstAttemptRate": 0.904,
+          "avgTransitDays": 2.04,
+          "damagedParcels": 169,
+          "returnedParcels": 67,
+          "costPerParcel": 241,
+          "capacityUtilization": 0.776,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 29,
+            "Cargo damaged": 14,
+            "Courier fainted": 2,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 3788,
-            "Berries": 2839,
-            "Potions": 2438,
-            "TMs": 1927,
-            "Evolution Stones": 1339
+            "Poké Balls": 3833,
+            "Berries": 2745,
+            "Potions": 2692,
+            "TMs": 1874,
+            "Evolution Stones": 1475
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 3307,
-          "berryCrates": 320,
-          "gymSupplyRuns": 44,
-          "faintedCouriers": 2,
+          "pokeBallsShipped": 3224,
+          "berryCrates": 346,
+          "gymSupplyRuns": 40,
+          "faintedCouriers": 1,
           "onTimeRate": 0.938,
-          "parcelsDelivered": 10995,
+          "parcelsDelivered": 10686,
+          "firstAttemptRate": 0.886,
+          "avgTransitDays": 2.53,
+          "damagedParcels": 167,
+          "returnedParcels": 60,
+          "costPerParcel": 272,
+          "capacityUtilization": 0.722,
+          "exceptionsByCause": {
+            "Storm grounding": 8,
+            "Recipient absent": 26,
+            "Cargo damaged": 13,
+            "Courier fainted": 1,
+            "Route blocked": 13
+          },
           "cargoMix": {
-            "Poké Balls": 3307,
-            "Berries": 2465,
-            "Potions": 2214,
-            "TMs": 1768,
-            "Evolution Stones": 1241
+            "Poké Balls": 3224,
+            "Berries": 2521,
+            "Potions": 2225,
+            "TMs": 1624,
+            "Evolution Stones": 1092
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 2914,
-          "berryCrates": 267,
-          "gymSupplyRuns": 34,
+          "pokeBallsShipped": 2924,
+          "berryCrates": 291,
+          "gymSupplyRuns": 37,
           "faintedCouriers": 3,
-          "onTimeRate": 0.906,
-          "parcelsDelivered": 9618,
+          "onTimeRate": 0.911,
+          "parcelsDelivered": 9505,
+          "firstAttemptRate": 0.848,
+          "avgTransitDays": 3.42,
+          "damagedParcels": 117,
+          "returnedParcels": 80,
+          "costPerParcel": 308,
+          "capacityUtilization": 0.671,
+          "exceptionsByCause": {
+            "Storm grounding": 11,
+            "Recipient absent": 35,
+            "Cargo damaged": 17,
+            "Courier fainted": 3,
+            "Route blocked": 17
+          },
           "cargoMix": {
-            "Poké Balls": 2914,
-            "Berries": 2182,
-            "Potions": 2057,
-            "TMs": 1443,
-            "Evolution Stones": 1022
+            "Poké Balls": 2924,
+            "Berries": 2131,
+            "Potions": 1957,
+            "TMs": 1390,
+            "Evolution Stones": 1103
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 2940,
-          "berryCrates": 319,
+          "pokeBallsShipped": 2813,
+          "berryCrates": 348,
           "gymSupplyRuns": 36,
           "faintedCouriers": 1,
-          "onTimeRate": 0.931,
-          "parcelsDelivered": 9610,
+          "onTimeRate": 0.939,
+          "parcelsDelivered": 9340,
+          "firstAttemptRate": 0.883,
+          "avgTransitDays": 2.35,
+          "damagedParcels": 135,
+          "returnedParcels": 49,
+          "costPerParcel": 256,
+          "capacityUtilization": 0.694,
+          "exceptionsByCause": {
+            "Storm grounding": 7,
+            "Recipient absent": 22,
+            "Cargo damaged": 10,
+            "Courier fainted": 1,
+            "Route blocked": 10
+          },
           "cargoMix": {
-            "Poké Balls": 2940,
-            "Berries": 2087,
-            "Potions": 1950,
-            "TMs": 1513,
-            "Evolution Stones": 1120
+            "Poké Balls": 2813,
+            "Berries": 2135,
+            "Potions": 1853,
+            "TMs": 1427,
+            "Evolution Stones": 1112
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 2434,
-          "berryCrates": 218,
-          "gymSupplyRuns": 27,
+          "pokeBallsShipped": 2288,
+          "berryCrates": 231,
+          "gymSupplyRuns": 26,
           "faintedCouriers": 2,
-          "onTimeRate": 0.924,
-          "parcelsDelivered": 8003,
+          "onTimeRate": 0.92,
+          "parcelsDelivered": 7475,
+          "firstAttemptRate": 0.855,
+          "avgTransitDays": 2.7,
+          "damagedParcels": 107,
+          "returnedParcels": 49,
+          "costPerParcel": 293,
+          "capacityUtilization": 0.632,
+          "exceptionsByCause": {
+            "Storm grounding": 7,
+            "Recipient absent": 22,
+            "Cargo damaged": 10,
+            "Courier fainted": 2,
+            "Route blocked": 10
+          },
           "cargoMix": {
-            "Poké Balls": 2434,
-            "Berries": 1733,
-            "Potions": 1681,
-            "TMs": 1242,
-            "Evolution Stones": 913
+            "Poké Balls": 2288,
+            "Berries": 1725,
+            "Potions": 1543,
+            "TMs": 1163,
+            "Evolution Stones": 756
           }
         }
       ]
@@ -533,98 +955,176 @@
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 6078,
-          "berryCrates": 398,
-          "gymSupplyRuns": 70,
+          "pokeBallsShipped": 6070,
+          "berryCrates": 403,
+          "gymSupplyRuns": 74,
           "faintedCouriers": 1,
-          "onTimeRate": 0.955,
-          "parcelsDelivered": 17236,
+          "onTimeRate": 0.963,
+          "parcelsDelivered": 17195,
+          "firstAttemptRate": 0.921,
+          "avgTransitDays": 1.63,
+          "damagedParcels": 253,
+          "returnedParcels": 69,
+          "costPerParcel": 225,
+          "capacityUtilization": 0.92,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 30,
+            "Cargo damaged": 14,
+            "Courier fainted": 1,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 6078,
-            "Berries": 3763,
-            "Potions": 3118,
-            "TMs": 2502,
-            "Evolution Stones": 1775
+            "Poké Balls": 6070,
+            "Berries": 3600,
+            "Potions": 3342,
+            "TMs": 2453,
+            "Evolution Stones": 1730
           }
         },
         {
           "region": "Johto",
-          "pokeBallsShipped": 5200,
-          "berryCrates": 381,
-          "gymSupplyRuns": 68,
+          "pokeBallsShipped": 5004,
+          "berryCrates": 402,
+          "gymSupplyRuns": 61,
           "faintedCouriers": 1,
-          "onTimeRate": 0.947,
-          "parcelsDelivered": 14767,
+          "onTimeRate": 0.953,
+          "parcelsDelivered": 14419,
+          "firstAttemptRate": 0.904,
+          "avgTransitDays": 1.84,
+          "damagedParcels": 144,
+          "returnedParcels": 76,
+          "costPerParcel": 239,
+          "capacityUtilization": 0.878,
+          "exceptionsByCause": {
+            "Storm grounding": 11,
+            "Recipient absent": 33,
+            "Cargo damaged": 16,
+            "Courier fainted": 1,
+            "Route blocked": 16
+          },
           "cargoMix": {
-            "Poké Balls": 5200,
-            "Berries": 3020,
-            "Potions": 2886,
-            "TMs": 2197,
-            "Evolution Stones": 1464
+            "Poké Balls": 5004,
+            "Berries": 2959,
+            "Potions": 2665,
+            "TMs": 2023,
+            "Evolution Stones": 1768
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 4177,
-          "berryCrates": 325,
-          "gymSupplyRuns": 57,
-          "faintedCouriers": 2,
-          "onTimeRate": 0.936,
-          "parcelsDelivered": 11909,
+          "pokeBallsShipped": 4164,
+          "berryCrates": 337,
+          "gymSupplyRuns": 54,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.945,
+          "parcelsDelivered": 11863,
+          "firstAttemptRate": 0.877,
+          "avgTransitDays": 2.19,
+          "damagedParcels": 188,
+          "returnedParcels": 69,
+          "costPerParcel": 249,
+          "capacityUtilization": 0.841,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 30,
+            "Cargo damaged": 14,
+            "Courier fainted": 1,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 4177,
-            "Berries": 2566,
-            "Potions": 2292,
-            "TMs": 1711,
-            "Evolution Stones": 1163
+            "Poké Balls": 4164,
+            "Berries": 2460,
+            "Potions": 2351,
+            "TMs": 1694,
+            "Evolution Stones": 1194
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 3885,
-          "berryCrates": 271,
-          "gymSupplyRuns": 48,
+          "pokeBallsShipped": 3729,
+          "berryCrates": 265,
+          "gymSupplyRuns": 47,
           "faintedCouriers": 3,
-          "onTimeRate": 0.904,
-          "parcelsDelivered": 11325,
+          "onTimeRate": 0.911,
+          "parcelsDelivered": 10751,
+          "firstAttemptRate": 0.833,
+          "avgTransitDays": 2.79,
+          "damagedParcels": 112,
+          "returnedParcels": 88,
+          "costPerParcel": 298,
+          "capacityUtilization": 0.784,
+          "exceptionsByCause": {
+            "Storm grounding": 12,
+            "Recipient absent": 39,
+            "Cargo damaged": 18,
+            "Courier fainted": 3,
+            "Route blocked": 19
+          },
           "cargoMix": {
-            "Poké Balls": 3885,
-            "Berries": 2378,
-            "Potions": 2230,
-            "TMs": 1652,
-            "Evolution Stones": 1180
+            "Poké Balls": 3729,
+            "Berries": 2272,
+            "Potions": 1976,
+            "TMs": 1568,
+            "Evolution Stones": 1206
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 3803,
-          "berryCrates": 315,
-          "gymSupplyRuns": 51,
+          "pokeBallsShipped": 3671,
+          "berryCrates": 342,
+          "gymSupplyRuns": 50,
           "faintedCouriers": 2,
-          "onTimeRate": 0.931,
-          "parcelsDelivered": 10815,
+          "onTimeRate": 0.94,
+          "parcelsDelivered": 10697,
+          "firstAttemptRate": 0.874,
+          "avgTransitDays": 2.1,
+          "damagedParcels": 100,
+          "returnedParcels": 63,
+          "costPerParcel": 240,
+          "capacityUtilization": 0.794,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 28,
+            "Cargo damaged": 13,
+            "Courier fainted": 2,
+            "Route blocked": 13
+          },
           "cargoMix": {
-            "Poké Balls": 3803,
-            "Berries": 2284,
-            "Potions": 2055,
-            "TMs": 1583,
-            "Evolution Stones": 1090
+            "Poké Balls": 3671,
+            "Berries": 2345,
+            "Potions": 1980,
+            "TMs": 1608,
+            "Evolution Stones": 1093
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 2982,
-          "berryCrates": 227,
-          "gymSupplyRuns": 37,
-          "faintedCouriers": 1,
-          "onTimeRate": 0.92,
-          "parcelsDelivered": 8540,
+          "pokeBallsShipped": 3062,
+          "berryCrates": 213,
+          "gymSupplyRuns": 36,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.923,
+          "parcelsDelivered": 8740,
+          "firstAttemptRate": 0.86,
+          "avgTransitDays": 2.37,
+          "damagedParcels": 48,
+          "returnedParcels": 54,
+          "costPerParcel": 276,
+          "capacityUtilization": 0.725,
+          "exceptionsByCause": {
+            "Storm grounding": 8,
+            "Recipient absent": 24,
+            "Cargo damaged": 11,
+            "Courier fainted": 2,
+            "Route blocked": 11
+          },
           "cargoMix": {
-            "Poké Balls": 2982,
-            "Berries": 1729,
-            "Potions": 1700,
-            "TMs": 1285,
-            "Evolution Stones": 844
+            "Poké Balls": 3062,
+            "Berries": 1796,
+            "Potions": 1705,
+            "TMs": 1290,
+            "Evolution Stones": 887
           }
         }
       ]
@@ -635,98 +1135,176 @@
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 6401,
-          "berryCrates": 432,
-          "gymSupplyRuns": 79,
+          "pokeBallsShipped": 5983,
+          "berryCrates": 389,
+          "gymSupplyRuns": 72,
           "faintedCouriers": 1,
-          "onTimeRate": 0.961,
-          "parcelsDelivered": 18312,
+          "onTimeRate": 0.959,
+          "parcelsDelivered": 17095,
+          "firstAttemptRate": 0.922,
+          "avgTransitDays": 1.63,
+          "damagedParcels": 168,
+          "returnedParcels": 67,
+          "costPerParcel": 220,
+          "capacityUtilization": 0.92,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 29,
+            "Cargo damaged": 14,
+            "Courier fainted": 1,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 6401,
-            "Berries": 4013,
-            "Potions": 3528,
-            "TMs": 2572,
-            "Evolution Stones": 1798
+            "Poké Balls": 5983,
+            "Berries": 3746,
+            "Potions": 3288,
+            "TMs": 2345,
+            "Evolution Stones": 1733
           }
         },
         {
           "region": "Johto",
-          "pokeBallsShipped": 5189,
-          "berryCrates": 369,
-          "gymSupplyRuns": 71,
-          "faintedCouriers": 2,
-          "onTimeRate": 0.944,
-          "parcelsDelivered": 14757,
+          "pokeBallsShipped": 5218,
+          "berryCrates": 365,
+          "gymSupplyRuns": 65,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.953,
+          "parcelsDelivered": 14875,
+          "firstAttemptRate": 0.891,
+          "avgTransitDays": 1.92,
+          "damagedParcels": 251,
+          "returnedParcels": 82,
+          "costPerParcel": 227,
+          "capacityUtilization": 0.875,
+          "exceptionsByCause": {
+            "Storm grounding": 11,
+            "Recipient absent": 36,
+            "Cargo damaged": 17,
+            "Courier fainted": 1,
+            "Route blocked": 18
+          },
           "cargoMix": {
-            "Poké Balls": 5189,
-            "Berries": 3118,
-            "Potions": 2717,
-            "TMs": 2190,
-            "Evolution Stones": 1543
+            "Poké Balls": 5218,
+            "Berries": 3160,
+            "Potions": 2710,
+            "TMs": 2098,
+            "Evolution Stones": 1689
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 4794,
-          "berryCrates": 342,
-          "gymSupplyRuns": 58,
+          "pokeBallsShipped": 4489,
+          "berryCrates": 341,
+          "gymSupplyRuns": 60,
           "faintedCouriers": 2,
-          "onTimeRate": 0.944,
-          "parcelsDelivered": 13527,
+          "onTimeRate": 0.939,
+          "parcelsDelivered": 12986,
+          "firstAttemptRate": 0.883,
+          "avgTransitDays": 2.34,
+          "damagedParcels": 158,
+          "returnedParcels": 74,
+          "costPerParcel": 262,
+          "capacityUtilization": 0.824,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 33,
+            "Cargo damaged": 16,
+            "Courier fainted": 2,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 4794,
-            "Berries": 2950,
-            "Potions": 2568,
-            "TMs": 1929,
-            "Evolution Stones": 1286
+            "Poké Balls": 4489,
+            "Berries": 2658,
+            "Potions": 2589,
+            "TMs": 1836,
+            "Evolution Stones": 1414
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 4177,
-          "berryCrates": 284,
-          "gymSupplyRuns": 49,
+          "pokeBallsShipped": 4139,
+          "berryCrates": 290,
+          "gymSupplyRuns": 47,
           "faintedCouriers": 3,
-          "onTimeRate": 0.906,
-          "parcelsDelivered": 11810,
+          "onTimeRate": 0.908,
+          "parcelsDelivered": 11708,
+          "firstAttemptRate": 0.844,
+          "avgTransitDays": 2.98,
+          "damagedParcels": 146,
+          "returnedParcels": 93,
+          "costPerParcel": 289,
+          "capacityUtilization": 0.773,
+          "exceptionsByCause": {
+            "Storm grounding": 13,
+            "Recipient absent": 41,
+            "Cargo damaged": 20,
+            "Courier fainted": 3,
+            "Route blocked": 19
+          },
           "cargoMix": {
-            "Poké Balls": 4177,
-            "Berries": 2571,
-            "Potions": 2240,
-            "TMs": 1677,
-            "Evolution Stones": 1145
+            "Poké Balls": 4139,
+            "Berries": 2546,
+            "Potions": 2124,
+            "TMs": 1710,
+            "Evolution Stones": 1189
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 4322,
-          "berryCrates": 359,
-          "gymSupplyRuns": 50,
+          "pokeBallsShipped": 4302,
+          "berryCrates": 344,
+          "gymSupplyRuns": 52,
           "faintedCouriers": 2,
-          "onTimeRate": 0.94,
-          "parcelsDelivered": 12290,
+          "onTimeRate": 0.932,
+          "parcelsDelivered": 12168,
+          "firstAttemptRate": 0.88,
+          "avgTransitDays": 2,
+          "damagedParcels": 83,
+          "returnedParcels": 64,
+          "costPerParcel": 247,
+          "capacityUtilization": 0.833,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 28,
+            "Cargo damaged": 13,
+            "Courier fainted": 2,
+            "Route blocked": 14
+          },
           "cargoMix": {
-            "Poké Balls": 4322,
-            "Berries": 2554,
-            "Potions": 2432,
-            "TMs": 1842,
-            "Evolution Stones": 1140
+            "Poké Balls": 4302,
+            "Berries": 2627,
+            "Potions": 2408,
+            "TMs": 1776,
+            "Evolution Stones": 1055
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 3170,
-          "berryCrates": 214,
-          "gymSupplyRuns": 39,
-          "faintedCouriers": 1,
-          "onTimeRate": 0.918,
-          "parcelsDelivered": 8974,
+          "pokeBallsShipped": 3148,
+          "berryCrates": 222,
+          "gymSupplyRuns": 37,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.921,
+          "parcelsDelivered": 9061,
+          "firstAttemptRate": 0.856,
+          "avgTransitDays": 2.4,
+          "damagedParcels": 135,
+          "returnedParcels": 64,
+          "costPerParcel": 286,
+          "capacityUtilization": 0.746,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 28,
+            "Cargo damaged": 13,
+            "Courier fainted": 2,
+            "Route blocked": 14
+          },
           "cargoMix": {
-            "Poké Balls": 3170,
-            "Berries": 1852,
-            "Potions": 1684,
-            "TMs": 1290,
-            "Evolution Stones": 978
+            "Poké Balls": 3148,
+            "Berries": 1970,
+            "Potions": 1689,
+            "TMs": 1352,
+            "Evolution Stones": 902
           }
         }
       ]
@@ -737,98 +1315,176 @@
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 5681,
-          "berryCrates": 436,
-          "gymSupplyRuns": 76,
+          "pokeBallsShipped": 5632,
+          "berryCrates": 403,
+          "gymSupplyRuns": 71,
           "faintedCouriers": 1,
-          "onTimeRate": 0.955,
-          "parcelsDelivered": 16470,
+          "onTimeRate": 0.956,
+          "parcelsDelivered": 16494,
+          "firstAttemptRate": 0.911,
+          "avgTransitDays": 1.75,
+          "damagedParcels": 84,
+          "returnedParcels": 69,
+          "costPerParcel": 221,
+          "capacityUtilization": 0.9,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 30,
+            "Cargo damaged": 14,
+            "Courier fainted": 1,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 5681,
-            "Berries": 3533,
-            "Potions": 3226,
-            "TMs": 2460,
-            "Evolution Stones": 1570
+            "Poké Balls": 5632,
+            "Berries": 3537,
+            "Potions": 3095,
+            "TMs": 2395,
+            "Evolution Stones": 1835
           }
         },
         {
           "region": "Johto",
-          "pokeBallsShipped": 4996,
-          "berryCrates": 370,
-          "gymSupplyRuns": 63,
+          "pokeBallsShipped": 5061,
+          "berryCrates": 383,
+          "gymSupplyRuns": 66,
           "faintedCouriers": 1,
-          "onTimeRate": 0.944,
-          "parcelsDelivered": 14261,
+          "onTimeRate": 0.95,
+          "parcelsDelivered": 14449,
+          "firstAttemptRate": 0.89,
+          "avgTransitDays": 1.84,
+          "damagedParcels": 156,
+          "returnedParcels": 70,
+          "costPerParcel": 240,
+          "capacityUtilization": 0.871,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 31,
+            "Cargo damaged": 15,
+            "Courier fainted": 1,
+            "Route blocked": 14
+          },
           "cargoMix": {
-            "Poké Balls": 4996,
-            "Berries": 2852,
-            "Potions": 2645,
-            "TMs": 1969,
-            "Evolution Stones": 1799
+            "Poké Balls": 5061,
+            "Berries": 2992,
+            "Potions": 2892,
+            "TMs": 2082,
+            "Evolution Stones": 1422
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 4367,
-          "berryCrates": 357,
-          "gymSupplyRuns": 54,
+          "pokeBallsShipped": 4413,
+          "berryCrates": 324,
+          "gymSupplyRuns": 59,
           "faintedCouriers": 2,
-          "onTimeRate": 0.944,
-          "parcelsDelivered": 12721,
+          "onTimeRate": 0.936,
+          "parcelsDelivered": 12652,
+          "firstAttemptRate": 0.895,
+          "avgTransitDays": 2.36,
+          "damagedParcels": 88,
+          "returnedParcels": 71,
+          "costPerParcel": 262,
+          "capacityUtilization": 0.847,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 31,
+            "Cargo damaged": 15,
+            "Courier fainted": 2,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 4367,
-            "Berries": 2822,
-            "Potions": 2491,
-            "TMs": 1818,
-            "Evolution Stones": 1223
+            "Poké Balls": 4413,
+            "Berries": 2634,
+            "Potions": 2389,
+            "TMs": 1874,
+            "Evolution Stones": 1342
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 3820,
-          "berryCrates": 296,
-          "gymSupplyRuns": 49,
+          "pokeBallsShipped": 4056,
+          "berryCrates": 293,
+          "gymSupplyRuns": 50,
           "faintedCouriers": 3,
-          "onTimeRate": 0.911,
-          "parcelsDelivered": 10948,
+          "onTimeRate": 0.91,
+          "parcelsDelivered": 11590,
+          "firstAttemptRate": 0.837,
+          "avgTransitDays": 3,
+          "damagedParcels": 70,
+          "returnedParcels": 97,
+          "costPerParcel": 308,
+          "capacityUtilization": 0.788,
+          "exceptionsByCause": {
+            "Storm grounding": 14,
+            "Recipient absent": 43,
+            "Cargo damaged": 20,
+            "Courier fainted": 3,
+            "Route blocked": 20
+          },
           "cargoMix": {
-            "Poké Balls": 3820,
-            "Berries": 2361,
-            "Potions": 2175,
-            "TMs": 1549,
-            "Evolution Stones": 1043
+            "Poké Balls": 4056,
+            "Berries": 2413,
+            "Potions": 2217,
+            "TMs": 1645,
+            "Evolution Stones": 1259
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 3992,
-          "berryCrates": 373,
-          "gymSupplyRuns": 52,
+          "pokeBallsShipped": 4027,
+          "berryCrates": 370,
+          "gymSupplyRuns": 50,
           "faintedCouriers": 1,
           "onTimeRate": 0.937,
-          "parcelsDelivered": 11505,
+          "parcelsDelivered": 11761,
+          "firstAttemptRate": 0.869,
+          "avgTransitDays": 2.09,
+          "damagedParcels": 75,
+          "returnedParcels": 59,
+          "costPerParcel": 244,
+          "capacityUtilization": 0.786,
+          "exceptionsByCause": {
+            "Storm grounding": 8,
+            "Recipient absent": 26,
+            "Cargo damaged": 12,
+            "Courier fainted": 1,
+            "Route blocked": 13
+          },
           "cargoMix": {
-            "Poké Balls": 3992,
-            "Berries": 2362,
-            "Potions": 2116,
-            "TMs": 1726,
-            "Evolution Stones": 1309
+            "Poké Balls": 4027,
+            "Berries": 2619,
+            "Potions": 2382,
+            "TMs": 1687,
+            "Evolution Stones": 1046
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 3131,
-          "berryCrates": 225,
-          "gymSupplyRuns": 37,
+          "pokeBallsShipped": 3276,
+          "berryCrates": 227,
+          "gymSupplyRuns": 36,
           "faintedCouriers": 2,
-          "onTimeRate": 0.923,
-          "parcelsDelivered": 8975,
+          "onTimeRate": 0.921,
+          "parcelsDelivered": 9380,
+          "firstAttemptRate": 0.857,
+          "avgTransitDays": 2.36,
+          "damagedParcels": 61,
+          "returnedParcels": 66,
+          "costPerParcel": 272,
+          "capacityUtilization": 0.716,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 29,
+            "Cargo damaged": 14,
+            "Courier fainted": 2,
+            "Route blocked": 14
+          },
           "cargoMix": {
-            "Poké Balls": 3131,
-            "Berries": 1818,
-            "Potions": 1761,
-            "TMs": 1265,
-            "Evolution Stones": 1000
+            "Poké Balls": 3276,
+            "Berries": 2049,
+            "Potions": 1832,
+            "TMs": 1335,
+            "Evolution Stones": 888
           }
         }
       ]
@@ -839,98 +1495,176 @@
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 4871,
-          "berryCrates": 405,
-          "gymSupplyRuns": 53,
+          "pokeBallsShipped": 4771,
+          "berryCrates": 387,
+          "gymSupplyRuns": 55,
           "faintedCouriers": 1,
-          "onTimeRate": 0.959,
-          "parcelsDelivered": 16141,
+          "onTimeRate": 0.96,
+          "parcelsDelivered": 15848,
+          "firstAttemptRate": 0.922,
+          "avgTransitDays": 1.97,
+          "damagedParcels": 109,
+          "returnedParcels": 62,
+          "costPerParcel": 229,
+          "capacityUtilization": 0.778,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 27,
+            "Cargo damaged": 13,
+            "Courier fainted": 1,
+            "Route blocked": 13
+          },
           "cargoMix": {
-            "Poké Balls": 4871,
-            "Berries": 3600,
-            "Potions": 3287,
-            "TMs": 2564,
-            "Evolution Stones": 1819
+            "Poké Balls": 4771,
+            "Berries": 3459,
+            "Potions": 3362,
+            "TMs": 2528,
+            "Evolution Stones": 1728
           }
         },
         {
           "region": "Johto",
-          "pokeBallsShipped": 4058,
-          "berryCrates": 401,
-          "gymSupplyRuns": 49,
+          "pokeBallsShipped": 4328,
+          "berryCrates": 415,
+          "gymSupplyRuns": 50,
           "faintedCouriers": 1,
-          "onTimeRate": 0.95,
-          "parcelsDelivered": 13454,
+          "onTimeRate": 0.949,
+          "parcelsDelivered": 14053,
+          "firstAttemptRate": 0.897,
+          "avgTransitDays": 2.01,
+          "damagedParcels": 168,
+          "returnedParcels": 73,
+          "costPerParcel": 253,
+          "capacityUtilization": 0.777,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 32,
+            "Cargo damaged": 15,
+            "Courier fainted": 1,
+            "Route blocked": 16
+          },
           "cargoMix": {
-            "Poké Balls": 4058,
-            "Berries": 3125,
-            "Potions": 2796,
-            "TMs": 2106,
-            "Evolution Stones": 1369
+            "Poké Balls": 4328,
+            "Berries": 3204,
+            "Potions": 2876,
+            "TMs": 2061,
+            "Evolution Stones": 1584
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 3747,
-          "berryCrates": 347,
-          "gymSupplyRuns": 45,
-          "faintedCouriers": 3,
-          "onTimeRate": 0.946,
-          "parcelsDelivered": 12111,
+          "pokeBallsShipped": 3599,
+          "berryCrates": 348,
+          "gymSupplyRuns": 42,
+          "faintedCouriers": 2,
+          "onTimeRate": 0.939,
+          "parcelsDelivered": 11836,
+          "firstAttemptRate": 0.874,
+          "avgTransitDays": 2.66,
+          "damagedParcels": 131,
+          "returnedParcels": 65,
+          "costPerParcel": 262,
+          "capacityUtilization": 0.718,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 29,
+            "Cargo damaged": 14,
+            "Courier fainted": 2,
+            "Route blocked": 13
+          },
           "cargoMix": {
-            "Poké Balls": 3747,
-            "Berries": 2769,
-            "Potions": 2405,
-            "TMs": 1869,
-            "Evolution Stones": 1321
+            "Poké Balls": 3599,
+            "Berries": 2604,
+            "Potions": 2511,
+            "TMs": 1826,
+            "Evolution Stones": 1296
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 3275,
-          "berryCrates": 273,
+          "pokeBallsShipped": 3152,
+          "berryCrates": 288,
           "gymSupplyRuns": 37,
           "faintedCouriers": 3,
-          "onTimeRate": 0.91,
-          "parcelsDelivered": 10654,
+          "onTimeRate": 0.911,
+          "parcelsDelivered": 10243,
+          "firstAttemptRate": 0.851,
+          "avgTransitDays": 3.14,
+          "damagedParcels": 50,
+          "returnedParcels": 85,
+          "costPerParcel": 303,
+          "capacityUtilization": 0.664,
+          "exceptionsByCause": {
+            "Storm grounding": 12,
+            "Recipient absent": 37,
+            "Cargo damaged": 18,
+            "Courier fainted": 3,
+            "Route blocked": 18
+          },
           "cargoMix": {
-            "Poké Balls": 3275,
-            "Berries": 2413,
-            "Potions": 2150,
-            "TMs": 1684,
-            "Evolution Stones": 1132
+            "Poké Balls": 3152,
+            "Berries": 2250,
+            "Potions": 2075,
+            "TMs": 1615,
+            "Evolution Stones": 1151
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 3328,
-          "berryCrates": 354,
-          "gymSupplyRuns": 42,
-          "faintedCouriers": 2,
-          "onTimeRate": 0.936,
-          "parcelsDelivered": 10758,
+          "pokeBallsShipped": 3391,
+          "berryCrates": 377,
+          "gymSupplyRuns": 41,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.933,
+          "parcelsDelivered": 11248,
+          "firstAttemptRate": 0.889,
+          "avgTransitDays": 2.28,
+          "damagedParcels": 128,
+          "returnedParcels": 67,
+          "costPerParcel": 264,
+          "capacityUtilization": 0.703,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 29,
+            "Cargo damaged": 14,
+            "Courier fainted": 1,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 3328,
-            "Berries": 2406,
-            "Potions": 2169,
-            "TMs": 1678,
-            "Evolution Stones": 1177
+            "Poké Balls": 3391,
+            "Berries": 2579,
+            "Potions": 2411,
+            "TMs": 1691,
+            "Evolution Stones": 1176
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 2547,
-          "berryCrates": 226,
-          "gymSupplyRuns": 27,
+          "pokeBallsShipped": 2590,
+          "berryCrates": 220,
+          "gymSupplyRuns": 29,
           "faintedCouriers": 2,
           "onTimeRate": 0.924,
-          "parcelsDelivered": 8447,
+          "parcelsDelivered": 8617,
+          "firstAttemptRate": 0.85,
+          "avgTransitDays": 2.76,
+          "damagedParcels": 129,
+          "returnedParcels": 61,
+          "costPerParcel": 290,
+          "capacityUtilization": 0.637,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 27,
+            "Cargo damaged": 13,
+            "Courier fainted": 2,
+            "Route blocked": 12
+          },
           "cargoMix": {
-            "Poké Balls": 2547,
-            "Berries": 1840,
-            "Potions": 1806,
-            "TMs": 1248,
-            "Evolution Stones": 1006
+            "Poké Balls": 2590,
+            "Berries": 1894,
+            "Potions": 1717,
+            "TMs": 1272,
+            "Evolution Stones": 1144
           }
         }
       ]
@@ -941,98 +1675,176 @@
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 4340,
-          "berryCrates": 387,
-          "gymSupplyRuns": 52,
+          "pokeBallsShipped": 4413,
+          "berryCrates": 390,
+          "gymSupplyRuns": 51,
           "faintedCouriers": 2,
-          "onTimeRate": 0.948,
-          "parcelsDelivered": 14405,
+          "onTimeRate": 0.94,
+          "parcelsDelivered": 14334,
+          "firstAttemptRate": 0.887,
+          "avgTransitDays": 2.47,
+          "damagedParcels": 182,
+          "returnedParcels": 94,
+          "costPerParcel": 274,
+          "capacityUtilization": 0.745,
+          "exceptionsByCause": {
+            "Storm grounding": 49,
+            "Recipient absent": 23,
+            "Cargo damaged": 12,
+            "Courier fainted": 2,
+            "Route blocked": 10
+          },
           "cargoMix": {
-            "Poké Balls": 4340,
-            "Berries": 3216,
-            "Potions": 3073,
-            "TMs": 2215,
-            "Evolution Stones": 1561
+            "Poké Balls": 4413,
+            "Berries": 3271,
+            "Potions": 2872,
+            "TMs": 2139,
+            "Evolution Stones": 1639
           }
         },
         {
           "region": "Johto",
           "pokeBallsShipped": 3835,
-          "berryCrates": 376,
+          "berryCrates": 381,
           "gymSupplyRuns": 47,
           "faintedCouriers": 2,
-          "onTimeRate": 0.933,
-          "parcelsDelivered": 12613,
+          "onTimeRate": 0.931,
+          "parcelsDelivered": 12763,
+          "firstAttemptRate": 0.873,
+          "avgTransitDays": 2.61,
+          "damagedParcels": 82,
+          "returnedParcels": 103,
+          "costPerParcel": 309,
+          "capacityUtilization": 0.732,
+          "exceptionsByCause": {
+            "Storm grounding": 54,
+            "Recipient absent": 25,
+            "Cargo damaged": 13,
+            "Courier fainted": 2,
+            "Route blocked": 11
+          },
           "cargoMix": {
             "Poké Balls": 3835,
-            "Berries": 2735,
-            "Potions": 2483,
-            "TMs": 1927,
-            "Evolution Stones": 1633
+            "Berries": 2744,
+            "Potions": 2721,
+            "TMs": 2057,
+            "Evolution Stones": 1406
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 3388,
-          "berryCrates": 361,
-          "gymSupplyRuns": 40,
+          "pokeBallsShipped": 3463,
+          "berryCrates": 360,
+          "gymSupplyRuns": 42,
           "faintedCouriers": 5,
           "onTimeRate": 0.883,
-          "parcelsDelivered": 11123,
+          "parcelsDelivered": 11237,
+          "firstAttemptRate": 0.792,
+          "avgTransitDays": 3.22,
+          "damagedParcels": 59,
+          "returnedParcels": 98,
+          "costPerParcel": 326,
+          "capacityUtilization": 0.712,
+          "exceptionsByCause": {
+            "Storm grounding": 51,
+            "Recipient absent": 24,
+            "Cargo damaged": 13,
+            "Courier fainted": 5,
+            "Route blocked": 10
+          },
           "cargoMix": {
-            "Poké Balls": 3388,
-            "Berries": 2442,
-            "Potions": 2169,
-            "TMs": 1720,
-            "Evolution Stones": 1404
+            "Poké Balls": 3463,
+            "Berries": 2446,
+            "Potions": 2386,
+            "TMs": 1715,
+            "Evolution Stones": 1227
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 3022,
-          "berryCrates": 292,
+          "pokeBallsShipped": 3011,
+          "berryCrates": 284,
           "gymSupplyRuns": 33,
           "faintedCouriers": 4,
-          "onTimeRate": 0.884,
-          "parcelsDelivered": 9800,
+          "onTimeRate": 0.883,
+          "parcelsDelivered": 9810,
+          "firstAttemptRate": 0.785,
+          "avgTransitDays": 4.1,
+          "damagedParcels": 57,
+          "returnedParcels": 118,
+          "costPerParcel": 376,
+          "capacityUtilization": 0.645,
+          "exceptionsByCause": {
+            "Storm grounding": 61,
+            "Recipient absent": 28,
+            "Cargo damaged": 15,
+            "Courier fainted": 4,
+            "Route blocked": 14
+          },
           "cargoMix": {
-            "Poké Balls": 3022,
-            "Berries": 2125,
-            "Potions": 1970,
-            "TMs": 1546,
-            "Evolution Stones": 1137
+            "Poké Balls": 3011,
+            "Berries": 2098,
+            "Potions": 2029,
+            "TMs": 1471,
+            "Evolution Stones": 1201
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 3289,
-          "berryCrates": 396,
-          "gymSupplyRuns": 38,
-          "faintedCouriers": 2,
-          "onTimeRate": 0.917,
-          "parcelsDelivered": 10919,
+          "pokeBallsShipped": 3261,
+          "berryCrates": 373,
+          "gymSupplyRuns": 37,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.913,
+          "parcelsDelivered": 10840,
+          "firstAttemptRate": 0.856,
+          "avgTransitDays": 2.91,
+          "damagedParcels": 62,
+          "returnedParcels": 92,
+          "costPerParcel": 313,
+          "capacityUtilization": 0.666,
+          "exceptionsByCause": {
+            "Storm grounding": 48,
+            "Recipient absent": 22,
+            "Cargo damaged": 12,
+            "Courier fainted": 3,
+            "Route blocked": 10
+          },
           "cargoMix": {
-            "Poké Balls": 3289,
-            "Berries": 2498,
-            "Potions": 2283,
-            "TMs": 1719,
-            "Evolution Stones": 1130
+            "Poké Balls": 3261,
+            "Berries": 2377,
+            "Potions": 2284,
+            "TMs": 1614,
+            "Evolution Stones": 1304
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 2436,
-          "berryCrates": 237,
-          "gymSupplyRuns": 26,
-          "faintedCouriers": 3,
-          "onTimeRate": 0.893,
-          "parcelsDelivered": 8078,
+          "pokeBallsShipped": 2552,
+          "berryCrates": 226,
+          "gymSupplyRuns": 25,
+          "faintedCouriers": 4,
+          "onTimeRate": 0.896,
+          "parcelsDelivered": 8387,
+          "firstAttemptRate": 0.82,
+          "avgTransitDays": 3.69,
+          "damagedParcels": 87,
+          "returnedParcels": 83,
+          "costPerParcel": 351,
+          "capacityUtilization": 0.619,
+          "exceptionsByCause": {
+            "Storm grounding": 43,
+            "Recipient absent": 20,
+            "Cargo damaged": 11,
+            "Courier fainted": 4,
+            "Route blocked": 9
+          },
           "cargoMix": {
-            "Poké Balls": 2436,
-            "Berries": 1785,
-            "Potions": 1694,
-            "TMs": 1282,
-            "Evolution Stones": 881
+            "Poké Balls": 2552,
+            "Berries": 1871,
+            "Potions": 1727,
+            "TMs": 1281,
+            "Evolution Stones": 956
           }
         }
       ]
@@ -1043,98 +1855,176 @@
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 4276,
-          "berryCrates": 394,
+          "pokeBallsShipped": 4620,
+          "berryCrates": 390,
           "gymSupplyRuns": 48,
-          "faintedCouriers": 2,
-          "onTimeRate": 0.942,
-          "parcelsDelivered": 14020,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.941,
+          "parcelsDelivered": 15088,
+          "firstAttemptRate": 0.89,
+          "avgTransitDays": 2.46,
+          "damagedParcels": 104,
+          "returnedParcels": 102,
+          "costPerParcel": 281,
+          "capacityUtilization": 0.742,
+          "exceptionsByCause": {
+            "Storm grounding": 53,
+            "Recipient absent": 24,
+            "Cargo damaged": 13,
+            "Courier fainted": 1,
+            "Route blocked": 12
+          },
           "cargoMix": {
-            "Poké Balls": 4276,
-            "Berries": 3246,
-            "Potions": 2788,
-            "TMs": 2117,
-            "Evolution Stones": 1593
+            "Poké Balls": 4620,
+            "Berries": 3412,
+            "Potions": 3162,
+            "TMs": 2380,
+            "Evolution Stones": 1514
           }
         },
         {
           "region": "Johto",
-          "pokeBallsShipped": 3902,
-          "berryCrates": 376,
-          "gymSupplyRuns": 48,
-          "faintedCouriers": 2,
-          "onTimeRate": 0.927,
+          "pokeBallsShipped": 3944,
+          "berryCrates": 414,
+          "gymSupplyRuns": 43,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.929,
           "parcelsDelivered": 12827,
+          "firstAttemptRate": 0.857,
+          "avgTransitDays": 2.71,
+          "damagedParcels": 67,
+          "returnedParcels": 108,
+          "costPerParcel": 294,
+          "capacityUtilization": 0.718,
+          "exceptionsByCause": {
+            "Storm grounding": 56,
+            "Recipient absent": 26,
+            "Cargo damaged": 14,
+            "Courier fainted": 3,
+            "Route blocked": 12
+          },
           "cargoMix": {
-            "Poké Balls": 3902,
-            "Berries": 2829,
-            "Potions": 2644,
-            "TMs": 1892,
-            "Evolution Stones": 1560
+            "Poké Balls": 3944,
+            "Berries": 2825,
+            "Potions": 2507,
+            "TMs": 1899,
+            "Evolution Stones": 1652
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 3242,
-          "berryCrates": 342,
-          "gymSupplyRuns": 38,
-          "faintedCouriers": 5,
-          "onTimeRate": 0.882,
-          "parcelsDelivered": 10479,
+          "pokeBallsShipped": 3376,
+          "berryCrates": 368,
+          "gymSupplyRuns": 41,
+          "faintedCouriers": 6,
+          "onTimeRate": 0.878,
+          "parcelsDelivered": 11128,
+          "firstAttemptRate": 0.791,
+          "avgTransitDays": 3.24,
+          "damagedParcels": 148,
+          "returnedParcels": 102,
+          "costPerParcel": 332,
+          "capacityUtilization": 0.683,
+          "exceptionsByCause": {
+            "Storm grounding": 53,
+            "Recipient absent": 24,
+            "Cargo damaged": 13,
+            "Courier fainted": 6,
+            "Route blocked": 12
+          },
           "cargoMix": {
-            "Poké Balls": 3242,
-            "Berries": 2331,
-            "Potions": 2218,
-            "TMs": 1674,
-            "Evolution Stones": 1014
+            "Poké Balls": 3376,
+            "Berries": 2425,
+            "Potions": 2368,
+            "TMs": 1645,
+            "Evolution Stones": 1314
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 2911,
-          "berryCrates": 278,
-          "gymSupplyRuns": 33,
+          "pokeBallsShipped": 2828,
+          "berryCrates": 266,
+          "gymSupplyRuns": 32,
           "faintedCouriers": 5,
           "onTimeRate": 0.872,
-          "parcelsDelivered": 9678,
+          "parcelsDelivered": 9393,
+          "firstAttemptRate": 0.796,
+          "avgTransitDays": 4.14,
+          "damagedParcels": 155,
+          "returnedParcels": 124,
+          "costPerParcel": 367,
+          "capacityUtilization": 0.648,
+          "exceptionsByCause": {
+            "Storm grounding": 64,
+            "Recipient absent": 30,
+            "Cargo damaged": 16,
+            "Courier fainted": 5,
+            "Route blocked": 14
+          },
           "cargoMix": {
-            "Poké Balls": 2911,
-            "Berries": 2232,
-            "Potions": 1952,
-            "TMs": 1452,
-            "Evolution Stones": 1131
+            "Poké Balls": 2828,
+            "Berries": 2148,
+            "Potions": 1835,
+            "TMs": 1423,
+            "Evolution Stones": 1159
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 3270,
-          "berryCrates": 399,
-          "gymSupplyRuns": 37,
+          "pokeBallsShipped": 3140,
+          "berryCrates": 378,
+          "gymSupplyRuns": 41,
           "faintedCouriers": 3,
-          "onTimeRate": 0.912,
-          "parcelsDelivered": 10643,
+          "onTimeRate": 0.913,
+          "parcelsDelivered": 10393,
+          "firstAttemptRate": 0.837,
+          "avgTransitDays": 2.9,
+          "damagedParcels": 138,
+          "returnedParcels": 87,
+          "costPerParcel": 325,
+          "capacityUtilization": 0.665,
+          "exceptionsByCause": {
+            "Storm grounding": 45,
+            "Recipient absent": 21,
+            "Cargo damaged": 11,
+            "Courier fainted": 3,
+            "Route blocked": 10
+          },
           "cargoMix": {
-            "Poké Balls": 3270,
-            "Berries": 2306,
-            "Potions": 2247,
-            "TMs": 1593,
-            "Evolution Stones": 1227
+            "Poké Balls": 3140,
+            "Berries": 2307,
+            "Potions": 2232,
+            "TMs": 1644,
+            "Evolution Stones": 1070
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 2522,
-          "berryCrates": 252,
+          "pokeBallsShipped": 2585,
+          "berryCrates": 225,
           "gymSupplyRuns": 25,
-          "faintedCouriers": 3,
-          "onTimeRate": 0.893,
-          "parcelsDelivered": 8188,
+          "faintedCouriers": 4,
+          "onTimeRate": 0.894,
+          "parcelsDelivered": 8368,
+          "firstAttemptRate": 0.817,
+          "avgTransitDays": 3.54,
+          "damagedParcels": 54,
+          "returnedParcels": 96,
+          "costPerParcel": 351,
+          "capacityUtilization": 0.591,
+          "exceptionsByCause": {
+            "Storm grounding": 50,
+            "Recipient absent": 23,
+            "Cargo damaged": 12,
+            "Courier fainted": 4,
+            "Route blocked": 11
+          },
           "cargoMix": {
-            "Poké Balls": 2522,
-            "Berries": 1845,
-            "Potions": 1712,
-            "TMs": 1195,
-            "Evolution Stones": 914
+            "Poké Balls": 2585,
+            "Berries": 1892,
+            "Potions": 1724,
+            "TMs": 1291,
+            "Evolution Stones": 876
           }
         }
       ]
@@ -1145,98 +2035,176 @@
       "regions": [
         {
           "region": "Kanto",
-          "pokeBallsShipped": 4727,
-          "berryCrates": 414,
-          "gymSupplyRuns": 60,
+          "pokeBallsShipped": 4704,
+          "berryCrates": 426,
+          "gymSupplyRuns": 57,
           "faintedCouriers": 1,
-          "onTimeRate": 0.953,
-          "parcelsDelivered": 15448,
+          "onTimeRate": 0.962,
+          "parcelsDelivered": 15559,
+          "firstAttemptRate": 0.912,
+          "avgTransitDays": 1.83,
+          "damagedParcels": 162,
+          "returnedParcels": 68,
+          "costPerParcel": 224,
+          "capacityUtilization": 0.792,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 30,
+            "Cargo damaged": 14,
+            "Courier fainted": 1,
+            "Route blocked": 14
+          },
           "cargoMix": {
-            "Poké Balls": 4727,
-            "Berries": 3575,
-            "Potions": 3258,
-            "TMs": 2350,
-            "Evolution Stones": 1538
+            "Poké Balls": 4704,
+            "Berries": 3498,
+            "Potions": 3039,
+            "TMs": 2513,
+            "Evolution Stones": 1805
           }
         },
         {
           "region": "Johto",
-          "pokeBallsShipped": 4038,
-          "berryCrates": 418,
-          "gymSupplyRuns": 52,
+          "pokeBallsShipped": 4069,
+          "berryCrates": 401,
+          "gymSupplyRuns": 49,
           "faintedCouriers": 1,
-          "onTimeRate": 0.947,
-          "parcelsDelivered": 13389,
+          "onTimeRate": 0.945,
+          "parcelsDelivered": 13380,
+          "firstAttemptRate": 0.907,
+          "avgTransitDays": 2.18,
+          "damagedParcels": 134,
+          "returnedParcels": 66,
+          "costPerParcel": 245,
+          "capacityUtilization": 0.772,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 29,
+            "Cargo damaged": 14,
+            "Courier fainted": 1,
+            "Route blocked": 14
+          },
           "cargoMix": {
-            "Poké Balls": 4038,
-            "Berries": 3170,
-            "Potions": 2667,
-            "TMs": 2012,
-            "Evolution Stones": 1502
+            "Poké Balls": 4069,
+            "Berries": 3025,
+            "Potions": 2625,
+            "TMs": 2132,
+            "Evolution Stones": 1529
           }
         },
         {
           "region": "Hoenn",
-          "pokeBallsShipped": 3658,
-          "berryCrates": 367,
-          "gymSupplyRuns": 42,
-          "faintedCouriers": 2,
-          "onTimeRate": 0.939,
-          "parcelsDelivered": 11849,
+          "pokeBallsShipped": 3563,
+          "berryCrates": 366,
+          "gymSupplyRuns": 44,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.942,
+          "parcelsDelivered": 11522,
+          "firstAttemptRate": 0.878,
+          "avgTransitDays": 2.5,
+          "damagedParcels": 105,
+          "returnedParcels": 66,
+          "costPerParcel": 268,
+          "capacityUtilization": 0.724,
+          "exceptionsByCause": {
+            "Storm grounding": 9,
+            "Recipient absent": 29,
+            "Cargo damaged": 14,
+            "Courier fainted": 3,
+            "Route blocked": 14
+          },
           "cargoMix": {
-            "Poké Balls": 3658,
-            "Berries": 2625,
-            "Potions": 2410,
-            "TMs": 1864,
-            "Evolution Stones": 1292
+            "Poké Balls": 3563,
+            "Berries": 2470,
+            "Potions": 2432,
+            "TMs": 1768,
+            "Evolution Stones": 1289
           }
         },
         {
           "region": "Sinnoh",
-          "pokeBallsShipped": 3047,
-          "berryCrates": 304,
-          "gymSupplyRuns": 39,
-          "faintedCouriers": 4,
-          "onTimeRate": 0.911,
-          "parcelsDelivered": 10073,
+          "pokeBallsShipped": 2992,
+          "berryCrates": 276,
+          "gymSupplyRuns": 36,
+          "faintedCouriers": 3,
+          "onTimeRate": 0.907,
+          "parcelsDelivered": 9802,
+          "firstAttemptRate": 0.837,
+          "avgTransitDays": 3.36,
+          "damagedParcels": 95,
+          "returnedParcels": 71,
+          "costPerParcel": 301,
+          "capacityUtilization": 0.69,
+          "exceptionsByCause": {
+            "Storm grounding": 10,
+            "Recipient absent": 31,
+            "Cargo damaged": 15,
+            "Courier fainted": 3,
+            "Route blocked": 15
+          },
           "cargoMix": {
-            "Poké Balls": 3047,
-            "Berries": 2341,
-            "Potions": 2007,
-            "TMs": 1606,
-            "Evolution Stones": 1072
+            "Poké Balls": 2992,
+            "Berries": 2182,
+            "Potions": 2006,
+            "TMs": 1490,
+            "Evolution Stones": 1132
           }
         },
         {
           "region": "Unova",
-          "pokeBallsShipped": 3375,
-          "berryCrates": 391,
-          "gymSupplyRuns": 43,
-          "faintedCouriers": 2,
-          "onTimeRate": 0.934,
-          "parcelsDelivered": 11213,
+          "pokeBallsShipped": 3458,
+          "berryCrates": 378,
+          "gymSupplyRuns": 42,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.932,
+          "parcelsDelivered": 11262,
+          "firstAttemptRate": 0.875,
+          "avgTransitDays": 2.36,
+          "damagedParcels": 103,
+          "returnedParcels": 57,
+          "costPerParcel": 248,
+          "capacityUtilization": 0.718,
+          "exceptionsByCause": {
+            "Storm grounding": 8,
+            "Recipient absent": 25,
+            "Cargo damaged": 12,
+            "Courier fainted": 1,
+            "Route blocked": 12
+          },
           "cargoMix": {
-            "Poké Balls": 3375,
-            "Berries": 2495,
-            "Potions": 2406,
-            "TMs": 1714,
-            "Evolution Stones": 1223
+            "Poké Balls": 3458,
+            "Berries": 2627,
+            "Potions": 2218,
+            "TMs": 1651,
+            "Evolution Stones": 1308
           }
         },
         {
           "region": "Galar",
-          "pokeBallsShipped": 2572,
-          "berryCrates": 243,
-          "gymSupplyRuns": 30,
-          "faintedCouriers": 2,
-          "onTimeRate": 0.918,
-          "parcelsDelivered": 8540,
+          "pokeBallsShipped": 2688,
+          "berryCrates": 261,
+          "gymSupplyRuns": 29,
+          "faintedCouriers": 1,
+          "onTimeRate": 0.921,
+          "parcelsDelivered": 8819,
+          "firstAttemptRate": 0.859,
+          "avgTransitDays": 2.92,
+          "damagedParcels": 104,
+          "returnedParcels": 53,
+          "costPerParcel": 278,
+          "capacityUtilization": 0.642,
+          "exceptionsByCause": {
+            "Storm grounding": 7,
+            "Recipient absent": 23,
+            "Cargo damaged": 11,
+            "Courier fainted": 1,
+            "Route blocked": 12
+          },
           "cargoMix": {
-            "Poké Balls": 2572,
-            "Berries": 1892,
-            "Potions": 1827,
-            "TMs": 1305,
-            "Evolution Stones": 944
+            "Poké Balls": 2688,
+            "Berries": 1962,
+            "Potions": 1872,
+            "TMs": 1352,
+            "Evolution Stones": 945
           }
         }
       ]
@@ -1250,7 +2218,11 @@
       "homeRegion": "Hoenn",
       "runs": 2148,
       "onTimeRate": 0.943,
-      "status": "On Route"
+      "status": "On Route",
+      "stopsPerRun": 34,
+      "firstAttemptRate": 0.889,
+      "restDaysTaken": 41,
+      "tenureMonths": 58
     },
     {
       "name": "Gale",
@@ -1259,7 +2231,11 @@
       "homeRegion": "Kanto",
       "runs": 2613,
       "onTimeRate": 0.964,
-      "status": "On Route"
+      "status": "On Route",
+      "stopsPerRun": 41,
+      "firstAttemptRate": 0.921,
+      "restDaysTaken": 29,
+      "tenureMonths": 76
     },
     {
       "name": "Nimbus",
@@ -1268,7 +2244,11 @@
       "homeRegion": "Johto",
       "runs": 2402,
       "onTimeRate": 0.951,
-      "status": "Resting"
+      "status": "Resting",
+      "stopsPerRun": 38,
+      "firstAttemptRate": 0.904,
+      "restDaysTaken": 52,
+      "tenureMonths": 64
     },
     {
       "name": "Tidal",
@@ -1277,7 +2257,11 @@
       "homeRegion": "Sinnoh",
       "runs": 1874,
       "onTimeRate": 0.906,
-      "status": "Grounded"
+      "status": "Grounded",
+      "stopsPerRun": 26,
+      "firstAttemptRate": 0.847,
+      "restDaysTaken": 67,
+      "tenureMonths": 39
     },
     {
       "name": "Brix",
@@ -1286,7 +2270,11 @@
       "homeRegion": "Unova",
       "runs": 1596,
       "onTimeRate": 0.938,
-      "status": "On Route"
+      "status": "On Route",
+      "stopsPerRun": 22,
+      "firstAttemptRate": 0.883,
+      "restDaysTaken": 34,
+      "tenureMonths": 27
     },
     {
       "name": "Dash",
@@ -1295,7 +2283,11 @@
       "homeRegion": "Galar",
       "runs": 1142,
       "onTimeRate": 0.918,
-      "status": "Resting"
+      "status": "Resting",
+      "stopsPerRun": 19,
+      "firstAttemptRate": 0.866,
+      "restDaysTaken": 45,
+      "tenureMonths": 16
     },
     {
       "name": "Emberlyn",
@@ -1304,7 +2296,11 @@
       "homeRegion": "Kanto",
       "runs": 2037,
       "onTimeRate": 0.959,
-      "status": "On Route"
+      "status": "On Route",
+      "stopsPerRun": 36,
+      "firstAttemptRate": 0.913,
+      "restDaysTaken": 31,
+      "tenureMonths": 71
     }
   ]
 }
