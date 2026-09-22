@@ -137,6 +137,8 @@ onBeforeUnmount(() => observer?.disconnect())
 
         <v-spacer />
 
+        <!-- Filters only. The theme toggle lives in the sidebar footer and
+             appears exactly once — BRIEF.md §4. -->
         <div class="topbar__controls">
           <v-select
             v-model="selectedMonth"
@@ -155,14 +157,6 @@ onBeforeUnmount(() => observer?.disconnect())
             hide-details
             variant="outlined"
             class="topbar__select"
-          />
-          <v-btn
-            :icon="isDark ? 'mdi-weather-night' : 'mdi-white-balance-sunny'"
-            variant="text"
-            density="comfortable"
-            color="muted"
-            :aria-label="isDark ? 'Switch to light theme' : 'Switch to dark theme'"
-            @click="toggleTheme"
           />
         </div>
       </div>

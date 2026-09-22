@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-22 — **Restructured into a dense multi-card executive layout.** Only the Vercel deployment is outstanding.
+- **Last updated:** 2026-09-22 — **Layout tightened; redundant cargo doughnut removed.** Only the Vercel deployment is outstanding.
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -710,6 +710,27 @@ Append here as the build goes. Date, what came up, what was decided.
   repo — `grep -rn "DeliveryNetwork" src/` returns nothing, and `src/components/DeliveryNetwork.vue`
   was deleted. Re-inlining it later is a component away; the file is not dead weight by accident.
 
+- **2026-09-22 — Four rulings applied: doughnut removed, layout tightened.**
+
+  1. **RATIFIED — `trendUnit: 'points'`** for On-Time Rate. See the standing rule in §8.
+  2. **Cargo Mix doughnut deleted.** It showed the same data as *Top Cargo Categories*, and the bars
+     carry more (item sprite, absolute value, share). `CargoMixChart.vue` and the now-unused
+     `cargoChart` computed were both removed — no dead code left behind. New row order: KPI strip /
+     trend + region bars (2/3 + 1/3) / three derived cards / full-width roster.
+  3. **`Avg Parcels per Courier Run` → `Avg Monthly Parcel Volume`.** See the declined item in §8.
+  4. **Top-bar theme toggle removed**, sidebar footer one kept. Verified there are now **0** toggles
+     in the top bar and the sidebar one still switches both directions.
+
+  **Fit at 1440×900 — improved but still overruns by 166px.** Page height **1815 → 1409**; the roster
+  now starts at **979** against an 813px usable viewport. Measured budget: top bar 65, KPI section
+  172, trend row 354, three-card row 337, section margins 16 each. **Nothing was shrunk to make the
+  number look better** — chart heights are untouched as instructed, and the options for closing the
+  remaining gap are with Alex.
+
+  Re-verified after the change: validator **exit 0**, `metrics.json` unchanged, chart palettes
+  unchanged, build **exit 0**, **0 console errors**, Hoenn + Aug 2026 still **3,242 / 342 / 38 / 5**,
+  all three derived cards still respond to both filters, both themes work.
+
 ---
 
 ## 8. Known issues / watch list
@@ -926,6 +947,24 @@ Append here as the build goes. Date, what came up, what was decided.
   **If Alex wants the real fix**, the cheapest version keeps the brief's five hues but re-orders them
   so the two similar blues are never adjacent, and darkens `#7FD1E8` a step. That is a change to
   `BRIEF.md` §6 and is his decision, not one to make silently.
+
+- 📏 **STANDING RULE — a delta on a RATE metric is reported in percentage POINTS, never percent.**
+  `MetricCard` takes `trendUnit: 'relative' | 'points'`; any metric whose value is itself a rate must
+  pass `'points'`. On-Time Rate moving 93.0 → 90.2 is **2.8 points**, not "3.1%", and the two get
+  misquoted for each other constantly. This applies to every rate metric added in future, not just
+  this one.
+
+- ⛔️ **CONSIDERED AND DECLINED — per-month courier run counts. Do not re-raise.**
+  `Courier.runs` in `metrics.json` is a lifetime total with no time dimension, which made the old
+  *Avg Parcels per Courier Run* row meaningless under a month filter (61 across the year, 5 for
+  Hoenn in August — a single month's parcels over a whole career's runs).
+
+  **Adding a per-month run count was rejected** because it means regenerating `metrics.json`, and
+  that dataset is validated and the validator is tuned to it — regenerating risks the seasonality
+  rules (Gym Season lift, December berry rush, the Hoenn storm dip) that were expensive to get right.
+  The row was **replaced** with **Avg Monthly Parcel Volume** instead, which is well-defined at every
+  filter combination: parcels in scope ÷ months in scope, coloured against the same region scope's
+  twelve-month average.
 
 - ⛔️ **CONSIDERED AND DECLINED — trimming the extra `@mdi/font` webfont formats. Do not re-raise.**
   `dist/` carries four formats (`woff2` 403 kB, `woff` 588 kB, `ttf` 1.31 MB, `eot` 1.31 MB) because

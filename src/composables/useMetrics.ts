@@ -233,12 +233,6 @@ export function useMetrics() {
     return { labels: [...labels], values }
   })
 
-  /** Cargo mix for the current slice — honours both filters. */
-  const cargoChart = computed(() => ({
-    labels: [...metrics.cargoTypes],
-    values: metrics.cargoTypes.map((c) => current.value.cargoMix[c]),
-  }))
-
   /**
    * The trend chart always shows all twelve months — it is the trend view — but
    * respects the region filter and marks the selected month when there is one.
@@ -323,14 +317,20 @@ export function useMetrics() {
       hint: `Weighted by parcels delivered. Target ${pct(ON_TIME_TARGET)}.`,
     })
 
-    // Avg parcels per courier run — throughput per run.
-    const runs = couriers.reduce((a, c) => a + c.runs, 0)
-    const perRun = runs > 0 ? agg.parcelsDelivered / runs : 0
+    // Avg monthly parcel volume, measured against the same region scope's
+    // twelve-month average. Meaningful at every filter combination, unlike a
+    // ratio against courier `runs` — those are lifetime totals with no month.
+    const monthsInScope = monthsFor(selectedMonth.value).length || 1
+    const perMonth = agg.parcelsDelivered / monthsInScope
+    const baselineRecords = metrics.months.flatMap((m) => regionsFor(m, selectedRegion.value))
+    const baselinePerMonth =
+      baselineRecords.reduce((a, r) => a + r.parcelsDelivered, 0) / metrics.months.length
+    const ratio = baselinePerMonth > 0 ? perMonth / baselinePerMonth : 1
     rows.push({
-      label: 'Avg Parcels per Courier Run',
-      value: runs > 0 ? num(perRun) : '—',
-      health: perRun >= 90 ? 'good' : perRun >= 60 ? 'warn' : 'bad',
-      hint: `${num(agg.parcelsDelivered)} parcels across ${num(runs)} courier runs. Courier run counts are lifetime totals, so this ratio is only comparable at the All Months scope.`,
+      label: 'Avg Monthly Parcel Volume',
+      value: num(perMonth),
+      health: ratio >= 0.98 ? 'good' : ratio >= 0.85 ? 'warn' : 'bad',
+      hint: `${num(agg.parcelsDelivered)} parcels over ${monthsInScope} ${monthsInScope === 1 ? 'month' : 'months'}. The twelve-month average for this region scope is ${num(baselinePerMonth)}.`,
     })
 
     // Fainted couriers per 1k parcels — lower is better.
@@ -531,7 +531,6 @@ export function useMetrics() {
     // charts
     showRegionChart,
     regionChart,
-    cargoChart,
     trendChart,
 
     // roster

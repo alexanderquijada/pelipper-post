@@ -6,7 +6,6 @@ import CriticalSignals from '@/components/CriticalSignals.vue'
 import TopCargoCategories from '@/components/TopCargoCategories.vue'
 import ReliabilityHealth from '@/components/ReliabilityHealth.vue'
 import RegionBarChart from '@/components/charts/RegionBarChart.vue'
-import CargoMixChart from '@/components/charts/CargoMixChart.vue'
 import DeliveryTrendChart from '@/components/charts/DeliveryTrendChart.vue'
 import { useMetrics } from '@/composables/useMetrics'
 
@@ -18,7 +17,6 @@ const {
   trendCaption,
   showRegionChart,
   regionChart,
-  cargoChart,
   trendChart,
   filteredCouriers,
   cargoCategories,
@@ -89,7 +87,7 @@ const kpiCards = computed<MetricCardProps[]>(() => [
         </v-row>
       </section>
 
-      <!-- ---------- Trends ---------- -->
+      <!-- ---------- Trends: chart at 2/3, region bars at 1/3 ---------- -->
       <section id="trends" class="pp-section">
         <v-row dense>
           <v-col cols="12" lg="8">
@@ -108,15 +106,6 @@ const kpiCards = computed<MetricCardProps[]>(() => [
           </v-col>
 
           <v-col cols="12" lg="4">
-            <TopCargoCategories :categories="cargoCategories" />
-          </v-col>
-        </v-row>
-      </section>
-
-      <!-- ---------- Charts ---------- -->
-      <section class="pp-section">
-        <v-row dense>
-          <v-col cols="12" md="7">
             <v-card class="pp-card-pad" height="100%">
               <h2 class="pp-card-title">Parcels by Region</h2>
               <p class="pp-card-subtitle">Total parcels delivered across the selected months.</p>
@@ -134,24 +123,19 @@ const kpiCards = computed<MetricCardProps[]>(() => [
               </div>
             </v-card>
           </v-col>
-
-          <v-col cols="12" md="5">
-            <v-card class="pp-card-pad" height="100%">
-              <h2 class="pp-card-title">Cargo Mix</h2>
-              <p class="pp-card-subtitle">Parcels by cargo type in the current selection.</p>
-              <CargoMixChart :labels="cargoChart.labels" :values="cargoChart.values" />
-            </v-card>
-          </v-col>
         </v-row>
       </section>
 
-      <!-- ---------- Signals + Network ---------- -->
+      <!-- ---------- The three derived cards, one row ---------- -->
       <section id="signals" class="pp-section">
         <v-row dense>
-          <v-col cols="12" lg="7">
+          <v-col cols="12" md="6" lg="4">
             <CriticalSignals :signals="signals" />
           </v-col>
-          <v-col id="network" cols="12" lg="5">
+          <v-col cols="12" md="6" lg="4">
+            <TopCargoCategories :categories="cargoCategories" />
+          </v-col>
+          <v-col id="network" cols="12" lg="4">
             <ReliabilityHealth :rows="reliability" />
           </v-col>
         </v-row>

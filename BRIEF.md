@@ -298,8 +298,9 @@ below 960px**:
   states plainly that every number is fabricated mock data.
 
 **Top bar** — **Pelipper Operations** as the heading, with **"Data through Sep 2026 · mock dataset"**
-beneath it in small muted text. On the right: the **two filters** (Month and Region — they move up
-here, replacing the old standalone filter row) and the **theme toggle**.
+beneath it in small muted text. On the right: the **two filters** only (Month and Region — they move up
+here, replacing the old standalone filter row). **The theme toggle lives in the sidebar footer and
+appears exactly once** — the top bar already carries the filters.
 
 ### Density
 
@@ -323,6 +324,8 @@ was wrong. These values are the specification, not suggestions:
 | Roster row height | **44px**, compact density |
 | Content max-width | **1440px** |
 
+**Row order:** KPI strip / trend + region bars / the three derived cards / courier roster.
+
 ### Sections, top to bottom
 
 1. **KPI strip — five cards**, not four:
@@ -330,11 +333,10 @@ was wrong. These values are the specification, not suggestions:
    (inverted). On-Time Rate uses the existing **weighted-average** logic — weight by
    `parcelsDelivered`, **never average an average**.
 
-2. **Trend row** — the twelve-month chart, as specified below under *Trends*.
+2. **Trend row** — the twelve-month chart (below, under *Trends*) at **two-thirds width**, with
+   **Parcels by Region** beside it at **one-third**.
 
-3. **Chart row** — Parcels by Region, and Cargo Mix.
-
-4. **Critical Delivery Signals** — a list of alert rows. Each row: a **severity dot**
+3. **Critical Delivery Signals** — a list of alert rows. Each row: a **severity dot**
    (red / amber / green), a **one-line finding**, and an **expandable detail line**.
    **Computed from the data, never hardcoded.** Must cover at least:
    - the storm-season exception spike
@@ -347,22 +349,26 @@ was wrong. These values are the specification, not suggestions:
    under the current filters (for example a month-over-month comparison with no prior month) is
    omitted rather than faked.
 
-5. **Top Cargo Categories** — horizontal progress bars, one per cargo type: the **PokeAPI item
+   *Items 3, 4 and 5 share one row — three cards across on desktop.*
+
+4. **Top Cargo Categories** — horizontal progress bars, one per cargo type: the **PokeAPI item
    sprite**, the label, the absolute value and the share. The bar fill uses **that cargo type's
    existing categorical chart colour** (§6 — unchanged). Sorted descending.
 
-6. **Network Reliability & Fulfillment Health** — metric rows, each a **coloured dot + label +
-   right-aligned value**: On-Time Rate, Avg Parcels per Courier Run, Fainted Couriers per 1k
+5. **Network Reliability & Fulfillment Health** — metric rows, each a **coloured dot + label +
+   right-aligned value**: On-Time Rate, **Avg Monthly Parcel Volume**, Fainted Couriers per 1k
    Parcels, Couriers On Route vs Grounded, Busiest Region, Quietest Region. The dot colour reflects
    whether that value is **healthy**, not merely what it is.
 
-7. **Courier roster** — full-width table: circular sprite avatar, courier name, species, home
+6. **Courier roster** — **full width, in its own row** below the three derived cards. Table with: circular sprite avatar, courier name, species, home
    region, total runs, on-time rate, and status as a coloured chip. Respects the region filter.
    Compact density, 44px rows.
 
-8. **Footer** — small muted line: *"Made with coffee and Claude Code · mock data, not a real carrier."*
+7. **Footer** — small muted line: *"Made with coffee and Claude Code · mock data, not a real carrier."*
 
-**Removed:** the Delivery Network map section. `src/assets/delivery-map.svg` is **kept in the repo
+**Removed:** the **Cargo Mix doughnut** — it displayed exactly the same data as *Top Cargo
+Categories*, and the bars carry more (item sprite, absolute value and share). One view of one
+dataset, not two. Also removed: the Delivery Network map section. `src/assets/delivery-map.svg` is **kept in the repo
 but is no longer referenced** by any component — see §8 of `PELIPPER-POST-STATUS.md`.
 
 **Trends (the twelve-month chart)** — one card, **two vertically stacked area panels sharing one
