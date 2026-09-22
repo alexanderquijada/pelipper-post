@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { RouterView } from 'vue-router'
 import { useDisplay, useTheme } from 'vuetify'
 import BrandLockup from '@/components/BrandLockup.vue'
-import { useMetrics } from '@/composables/useMetrics'
+import AccountBlock from '@/components/AccountBlock.vue'
 
 const theme = useTheme()
 const isDark = computed(() => theme.global.name.value === 'pelipperDark')
@@ -13,10 +13,6 @@ function toggleTheme() {
   // in Vuetify 3.13 and logs a warning on every toggle.
   theme.change(isDark.value ? 'pelipperLight' : 'pelipperDark')
 }
-
-// Filters live in the top bar now. Same module-level composable state, so the
-// page and the bar are reading one source.
-const { selectedMonth, selectedRegion, monthOptions, regionOptions } = useMetrics()
 
 // Sidebar collapses to a rail below 960px — still permanent, never a hamburger.
 const { width } = useDisplay()
@@ -85,38 +81,11 @@ const NAV = [
       </template>
     </v-navigation-drawer>
 
-    <!-- ---------- top bar ---------- -->
+    <!-- ---------- top bar: account identity only ---------- -->
     <v-app-bar :elevation="0" border="b" height="64" class="topbar">
       <div class="topbar__inner">
-        <div class="topbar__titles">
-          <h1 class="topbar__title">Pelipper Operations</h1>
-          <p class="topbar__meta">Data through Sep 2026</p>
-        </div>
-
         <v-spacer />
-
-        <!-- Filters only. The theme toggle lives in the sidebar footer and
-             appears exactly once — BRIEF.md §4. -->
-        <div class="topbar__controls">
-          <v-select
-            v-model="selectedMonth"
-            :items="monthOptions"
-            label="Month"
-            density="compact"
-            hide-details
-            variant="outlined"
-            class="topbar__select"
-          />
-          <v-select
-            v-model="selectedRegion"
-            :items="regionOptions"
-            label="Region"
-            density="compact"
-            hide-details
-            variant="outlined"
-            class="topbar__select"
-          />
-        </div>
+        <AccountBlock />
       </div>
     </v-app-bar>
 
@@ -148,13 +117,21 @@ const NAV = [
   max-width: 1440px;
 }
 
-/* Card treatment: 12px radius, hairline border, very soft shadow — not heavy
-   elevation. Two classes of specificity so it wins over Vuetify's own rule
-   without needing !important. */
+/* ---- nested card shell ----
+   Inner cards get the LIGHTER treatment — hairline border, minimal shadow — so
+   the nesting reads as nesting rather than cards stacked on cards. */
 .v-application .v-card {
   border-radius: 12px;
+  border: 1px solid rgba(var(--v-theme-muted), 0.2);
+  box-shadow: 0 1px 2px rgba(15, 30, 45, 0.04);
+}
+
+/* The one outer container card per page. */
+.v-application .v-card.pp-shell {
+  border-radius: 16px;
+  padding: 24px;
   border: 1px solid rgba(var(--v-theme-muted), 0.22);
-  box-shadow: 0 1px 2px rgba(15, 30, 45, 0.05), 0 1px 10px rgba(15, 30, 45, 0.04);
+  box-shadow: 0 1px 3px rgba(15, 30, 45, 0.06), 0 8px 28px rgba(15, 30, 45, 0.05);
 }
 
 /* Card internals — 20px padding, 15px/600 title, 12px muted subtitle.
@@ -368,6 +345,18 @@ const NAV = [
 /* ---------- sidebar ---------- */
 .sidebar {
   z-index: 3;
+  /* Glass: the sky shows through, blurred and slightly saturated. */
+  background: rgba(var(--v-theme-surface), 0.62) !important;
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+}
+
+/* Where backdrop-filter is unsupported the panel falls back to a solid surface,
+   so label contrast never depends on a blur that isn't happening. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .sidebar {
+    background: rgb(var(--v-theme-surface)) !important;
+  }
 }
 
 .sidebar__brand {
@@ -384,46 +373,23 @@ const NAV = [
 /* ---------- top bar ---------- */
 .topbar {
   z-index: 2;
+  background: rgba(var(--v-theme-surface), 0.72) !important;
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .topbar {
+    background: rgb(var(--v-theme-surface)) !important;
+  }
 }
 
 .topbar__inner {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 0 16px;
+  padding: 0 20px;
   gap: 16px;
 }
 
-.topbar__title {
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0;
-}
-
-.topbar__meta {
-  font-size: 11.5px;
-  color: rgb(var(--v-theme-muted));
-  margin: 1px 0 0;
-}
-
-.topbar__controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.topbar__select {
-  width: 165px;
-}
-
-@media (max-width: 700px) {
-  .topbar__select {
-    width: 128px;
-  }
-
-  .topbar__meta {
-    display: none;
-  }
-}
 </style>

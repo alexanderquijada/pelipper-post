@@ -352,10 +352,37 @@ below 960px**:
 - These are **real routes.** The active item comes from the current route — there is no scroll-spy.
 - Pinned to the bottom: a **theme toggle** row. This is the only theme toggle in the app.
 
-**Top bar** — **Pelipper Operations** as the heading, with **"Data through Sep 2026"** beneath it in
-small muted text. On the right: the **two filters** only (Month and Region — they move up
-here, replacing the old standalone filter row). **The theme toggle lives in the sidebar footer and
-appears exactly once** — the top bar already carries the filters.
+**Top bar — account identity only.** A right-aligned block: circular avatar, **Wren Calloway**,
+*Regional Operations Director*, `wren.calloway@pelipperpost.pkm`. **All invented** — not a real
+person and not any Pokémon character. No page heading, no data-vintage line, no filters.
+
+The avatar falls back to a **Pokémon sprite** (Noctowl, 164) in the circular frame: the PokeAPI
+sprites repo has **no trainers directory** — it holds only `badges`, `items`, `pokemon` and `types`
+— so every `sprites/trainers/*` path 404s. Noctowl is deliberately neither the Pelipper brand mark
+nor any of the eight couriers.
+
+**The sidebar is glass** — semi-transparent over the sky with `backdrop-filter: blur(18px)
+saturate(1.5)` and a hairline right border. **A solid-surface fallback is required** under
+`@supports not (backdrop-filter: ...)`, so label legibility never depends on a blur that isn't
+happening. Nav-label contrast, measured from composited pixels: **7.97:1 light, 5.08:1 dark.**
+
+**The theme toggle lives in the sidebar footer and appears exactly once.**
+
+### Nested card shell
+
+Every page's content sits inside **one outer container card** — `PageShell.vue`, **16px radius,
+24px padding**, on the sky. Inside it, in order: **page title · descriptive subtitle · the filter
+row · the grid of inner cards.**
+
+Inner cards take the **lighter** treatment — 12px radius, hairline border, minimal shadow — so the
+nesting reads as nesting rather than cards stacked on cards.
+
+**The filters live in the shell**, on their own row above the inner cards, not in the top bar. They
+remain module-level state shared across all six routes.
+
+**Every row must be fully occupied.** No dead negative space at the end of a row, and cards grow and
+shrink with how many are in the row. Where a count doesn't divide the 12-column grid — five KPI
+cards, for instance — use an auto-fit CSS grid rather than `v-col` widths that leave a gap.
 
 ### Density
 

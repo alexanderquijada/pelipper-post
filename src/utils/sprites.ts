@@ -29,6 +29,17 @@ export const BRAND_SPRITE_URL = `${SPRITE_ROOT}/pokemon/${PELIPPER_DEX_ID}.png`
 /** Fallback for the app bar if the CDN is unreachable — never leave a gap in the wordmark. */
 export const BRAND_FALLBACK_ICON = 'mdi-mail'
 
+/**
+ * Account avatar. The PokeAPI sprites repo has NO trainers directory — it holds
+ * only badges, items, pokemon and types (checked 2026-09-22, every
+ * `sprites/trainers/*` path 404s) — so this falls back to a Pokémon sprite in
+ * the circular frame. Noctowl: deliberately not the Pelipper brand mark and not
+ * any of the eight couriers, so the account avatar can't be mistaken for either.
+ */
+export const ACCOUNT_AVATAR_DEX_ID = 164
+export const ACCOUNT_AVATAR_URL = `${COURIER_BASE}/${ACCOUNT_AVATAR_DEX_ID}.png`
+export const ACCOUNT_FALLBACK_ICON = 'mdi-account-circle'
+
 // --- cargo item sprites ------------------------------------------------------
 /**
  * 30x30 pixel art, one per cargo type. All five curl-verified HTTP 200 on

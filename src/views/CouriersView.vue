@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import PageHeader from '@/components/PageHeader.vue'
+import PageShell from '@/components/PageShell.vue'
 import CourierRoster from '@/components/CourierRoster.vue'
 import BarSeriesChart from '@/components/charts/BarSeriesChart.vue'
 import { useMetrics } from '@/composables/useMetrics'
@@ -22,11 +22,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 </script>
 
 <template>
-  <v-container class="pelipper-width px-4 py-4">
-    <PageHeader
-      title="Courier Fleet"
-      subtitle="The delivery fleet, their home regions and individual performance."
-    />
+  <PageShell title="Courier Fleet" subtitle="The delivery fleet, their home regions and individual performance.">
 
     <v-row dense class="mb-2">
       <v-col v-for="c in filteredCouriers" :key="c.name" cols="12" sm="6" md="4" lg="3">
@@ -138,7 +134,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </PageShell>
 </template>
 
 <style scoped>

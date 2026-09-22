@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import PageHeader from '@/components/PageHeader.vue'
+import PageShell from '@/components/PageShell.vue'
 import LineSeriesChart from '@/components/charts/LineSeriesChart.vue'
 import { useChartTheme } from '@/components/charts/chartTheme'
 import { useMetrics } from '@/composables/useMetrics'
@@ -23,11 +23,7 @@ const num = (n: number) => n.toLocaleString('en-US')
 </script>
 
 <template>
-  <v-container class="pelipper-width px-4 py-4">
-    <PageHeader
-      title="Exceptions &amp; Delivery Risk"
-      subtitle="Where deliveries are failing, and what it is costing."
-    />
+  <PageShell title="Exceptions &amp; Delivery Risk" subtitle="Where deliveries are failing, and what it is costing.">
 
     <v-row dense class="mb-2">
       <v-col v-for="group in signalGroups" :key="group.severity" cols="12" md="4">
@@ -173,7 +169,7 @@ const num = (n: number) => n.toLocaleString('en-US')
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </PageShell>
 </template>
 
 <style scoped>

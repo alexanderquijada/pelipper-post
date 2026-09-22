@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-22 — **Weather, brand lockup, night sky, renamed navigation.** Only the Vercel deployment is outstanding.
+- **Last updated:** 2026-09-22 — **Nested card shell with glass sidebar.** Only the Vercel deployment is outstanding.
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -860,6 +860,34 @@ Append here as the build goes. Date, what came up, what was decided.
   every route, 0 console errors, no NaN, both themes, reduced motion stops clouds *and* night while
   leaving both visible. Validator exit 0, `metrics.json` unchanged since the data commit, chart
   palettes untouched.
+
+- **2026-09-22 — Nested card shell, glass sidebar, account top bar.**
+
+  | Change | Verified |
+  |---|---|
+  | Nested shell | one `.pp-shell` per page: **24px padding / 16px radius**; inner cards 12px radius, lighter border and shadow |
+  | Glass sidebar | `blur(18px) saturate(1.5)`, hairline border, **solid-surface `@supports` fallback** |
+  | Nav contrast | **7.97:1 light · 5.08:1 dark** — measured from composited screenshot pixels, not computed from the token |
+  | Filters | moved into the shell (2 selects per page, **0 in the top bar**), still shared across all six routes |
+  | Top bar | account identity only — Wren Calloway, avatar loaded |
+  | Row fill | **100% on every route**, including the KPI strip |
+  | Card gaps | 21px minimum on every route · 0 console errors · no NaN |
+
+  **Trainer sprites do not exist.** The PokeAPI sprites repo contains only `badges`, `items`,
+  `pokemon` and `types` — every `sprites/trainers/*` candidate 404s, confirmed against the GitHub
+  contents API. The account avatar falls back to **Noctowl (164)**, chosen because it is neither the
+  Pelipper brand mark nor any of the eight couriers, so it can't be misread as either.
+
+  **Two regressions I introduced and caught before committing:**
+
+  1. **Cargo Share lost its styling.** Making Top Couriers full-width replaced the `.top*` CSS with
+     `.fleet*`, but the Cargo Share list still used `.top` — it rendered as a bulleted list with
+     `Poké Balls31.7%` run together. Found by looking at the screenshot; the build and every
+     numeric check passed. Given its own `.mini` styles.
+  2. **The KPI strip had dead space.** Five cards at `lg="2"` occupy 10 of 12 columns, so the row
+     measured **83% full** — the exact defect this phase was meant to remove, in a row I hadn't
+     thought to question. Replaced with an auto-fit grid; now 100%. **Five does not divide twelve**
+     — any odd card count needs a grid, not `v-col` widths.
 
 ---
 

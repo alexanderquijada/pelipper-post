@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PageHeader from '@/components/PageHeader.vue'
+import PageShell from '@/components/PageShell.vue'
 import ReliabilityHealth from '@/components/ReliabilityHealth.vue'
 import BarSeriesChart from '@/components/charts/BarSeriesChart.vue'
 import { useMetrics } from '@/composables/useMetrics'
@@ -20,11 +20,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 </script>
 
 <template>
-  <v-container class="pelipper-width px-4 py-4">
-    <PageHeader
-      title="Regional Performance"
-      subtitle="Delivery volume and reliability across the six regions."
-    />
+  <PageShell title="Regional Performance" subtitle="Delivery volume and reliability across the six regions.">
 
     <v-row dense class="mb-2">
       <v-col cols="12" lg="5">
@@ -136,7 +132,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </PageShell>
 </template>
 
 <style scoped>

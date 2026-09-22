@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PageHeader from '@/components/PageHeader.vue'
+import PageShell from '@/components/PageShell.vue'
 import LineSeriesChart from '@/components/charts/LineSeriesChart.vue'
 import DeliveryTrendChart from '@/components/charts/DeliveryTrendChart.vue'
 import SparkLine from '@/components/charts/SparkLine.vue'
@@ -21,11 +21,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 </script>
 
 <template>
-  <v-container class="pelipper-width px-4 py-4">
-    <PageHeader
-      title="Monthly Trends &amp; Seasonality"
-      subtitle="Parcel volume and delivery activity across the trailing twelve months."
-    />
+  <PageShell title="Monthly Trends &amp; Seasonality" subtitle="Parcel volume and delivery activity across the trailing twelve months.">
 
     <v-row dense class="mb-2">
       <v-col cols="12">
@@ -157,7 +153,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </PageShell>
 </template>
 
 <style scoped>

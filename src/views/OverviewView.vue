@@ -4,7 +4,7 @@ import { RouterLink } from 'vue-router'
 import MetricCard, { type MetricCardProps } from '@/components/MetricCard.vue'
 import CriticalSignals from '@/components/CriticalSignals.vue'
 import ReliabilityHealth from '@/components/ReliabilityHealth.vue'
-import PageHeader from '@/components/PageHeader.vue'
+import PageShell from '@/components/PageShell.vue'
 import WeatherCard from '@/components/WeatherCard.vue'
 import DeliveryTrendChart from '@/components/charts/DeliveryTrendChart.vue'
 import { useMetrics } from '@/composables/useMetrics'
@@ -72,8 +72,9 @@ const kpiCards = computed<MetricCardProps[]>(() => [
 ])
 
 /** Top three by on-time rate — the roster itself lives on /couriers. */
-const topCouriers = computed(() =>
-  [...filteredCouriers.value].sort((a, b) => b.onTimeRate - a.onTimeRate).slice(0, 3),
+/** Whole fleet in scope, best on-time first — the card spans the full row. */
+const rankedCouriers = computed(() =>
+  [...filteredCouriers.value].sort((a, b) => b.onTimeRate - a.onTimeRate),
 )
 
 const topSignals = computed(() => signals.value.slice(0, 3))
@@ -98,21 +99,16 @@ const RISK_COLOR: Record<DelayRisk, string> = {
 </script>
 
 <template>
-  <v-container class="pelipper-width px-4 py-4">
+  <PageShell title="Network Overview" subtitle="Headline delivery performance across the network.">
     <template v-if="hasData">
-      <PageHeader
-        title="Network Overview"
-        subtitle="Headline delivery performance across the network."
-      />
-
       <section class="pp-section">
         <p v-if="trendCaption" class="pp-section-subtitle mb-3">{{ trendCaption }}</p>
 
-        <v-row dense>
-          <v-col v-for="card in kpiCards" :key="card.label" cols="12" sm="6" md="4" lg="2" xl="2">
-            <MetricCard v-bind="card" />
-          </v-col>
-        </v-row>
+        <!-- auto-fit grid rather than the 12-column row: five cards can't divide
+             12 evenly, which left two columns of dead space at the end. -->
+        <div class="kpi-strip">
+          <MetricCard v-for="card in kpiCards" :key="card.label" v-bind="card" />
+        </div>
       </section>
 
       <section class="pp-section">
@@ -149,11 +145,10 @@ const RISK_COLOR: Record<DelayRisk, string> = {
                 <RouterLink class="pp-details" to="/cargo">View details →</RouterLink>
               </div>
               <p class="pp-card-subtitle">The three largest cargo types by share of parcels.</p>
-              <ul class="top">
-                <li v-for="c in topCargo" :key="c.label" class="top__row">
-                  <span class="top__name">{{ c.label }}</span>
-                  <span class="top__region" />
-                  <span class="top__value">{{ (c.share * 100).toFixed(1) }}%</span>
+              <ul class="mini">
+                <li v-for="c in topCargo" :key="c.label" class="mini__row">
+                  <span class="mini__label">{{ c.label }}</span>
+                  <span class="mini__value">{{ (c.share * 100).toFixed(1) }}%</span>
                 </li>
               </ul>
             </v-card>
@@ -176,40 +171,51 @@ const RISK_COLOR: Record<DelayRisk, string> = {
 
       <section class="pp-section">
         <v-row dense>
-          <v-col cols="12" lg="4">
-            <v-card class="pp-card-pad" height="100%">
+          <v-col cols="12">
+            <v-card class="pp-card-pad">
               <div class="d-flex align-start justify-space-between ga-3">
-                <h2 class="pp-card-title">Top Couriers</h2>
+                <h2 class="pp-card-title">Courier Performance</h2>
                 <RouterLink class="pp-details" to="/couriers">View details →</RouterLink>
               </div>
-              <p class="pp-card-subtitle">The three strongest on-time performers in scope.</p>
+              <p class="pp-card-subtitle">
+                Couriers in scope, ranked by on-time rate, with their home conditions.
+              </p>
 
-              <ul v-if="topCouriers.length" class="top">
-                <li v-for="c in topCouriers" :key="c.name" class="top__row">
-                  <v-avatar size="34" class="top__avatar">
+              <ul v-if="rankedCouriers.length" class="fleet">
+                <li v-for="c in rankedCouriers" :key="c.name" class="fleet__card">
+                  <v-avatar size="38" class="fleet__avatar">
                     <v-img :src="spriteUrl(c.dexId)" :alt="`${c.species} sprite`">
                       <template #error>
                         <v-icon :icon="SPRITE_FALLBACK_ICON" color="muted" />
                       </template>
                     </v-img>
                   </v-avatar>
-                  <span class="top__name">{{ c.name }}</span>
-                  <span class="top__region">{{ c.homeRegion }}</span>
-                  <span v-if="weatherFor(c.homeRegion)" class="top__wx">
-                    <v-icon
-                      :icon="weatherFor(c.homeRegion)!.icon"
-                      size="16"
-                      :aria-label="weatherFor(c.homeRegion)!.condition"
-                    />
-                    <v-chip
-                      :color="RISK_COLOR[weatherFor(c.homeRegion)!.delayRisk]"
-                      variant="tonal"
-                      size="x-small"
-                    >
-                      {{ weatherFor(c.homeRegion)!.delayRisk }}
-                    </v-chip>
-                  </span>
-                  <span class="top__value">{{ pct(c.onTimeRate) }}</span>
+
+                  <div class="fleet__body">
+                    <div class="fleet__head">
+                      <span class="fleet__name">{{ c.name }}</span>
+                      <span v-if="weatherFor(c.homeRegion)" class="fleet__wx">
+                        <v-icon
+                          :icon="weatherFor(c.homeRegion)!.icon"
+                          size="15"
+                          :aria-label="weatherFor(c.homeRegion)!.condition"
+                        />
+                        <v-chip
+                          :color="RISK_COLOR[weatherFor(c.homeRegion)!.delayRisk]"
+                          variant="tonal"
+                          size="x-small"
+                        >
+                          {{ weatherFor(c.homeRegion)!.delayRisk }}
+                        </v-chip>
+                      </span>
+                    </div>
+                    <p class="fleet__meta">{{ c.species }} · {{ c.homeRegion }}</p>
+                    <dl class="fleet__stats">
+                      <div><dt>On-time</dt><dd>{{ pct(c.onTimeRate) }}</dd></div>
+                      <div><dt>Runs</dt><dd>{{ c.runs.toLocaleString('en-US') }}</dd></div>
+                      <div><dt>Stops</dt><dd>{{ c.stopsPerRun }}</dd></div>
+                    </dl>
+                  </div>
                 </li>
               </ul>
               <p v-else class="text-caption text-muted mb-0">No couriers in this region.</p>
@@ -228,7 +234,7 @@ const RISK_COLOR: Record<DelayRisk, string> = {
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </PageShell>
 </template>
 
 <style scoped>
@@ -256,54 +262,118 @@ const RISK_COLOR: Record<DelayRisk, string> = {
   text-decoration: underline;
 }
 
-.top {
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.mini {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.top__row {
+.mini__row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
-  padding: 7px 0;
+  padding: 9px 0;
 }
 
-.top__row + .top__row {
+.mini__row + .mini__row {
   border-top: 1px solid rgba(var(--v-theme-muted), 0.16);
 }
 
-.top__avatar {
+.mini__label {
+  font-size: 13px;
+}
+
+.mini__value {
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.fleet {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  /* auto-fit so the row is always full regardless of how many couriers are in
+     scope — one region shows one wide card, all six show a filled grid */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.fleet__card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(var(--v-theme-muted), 0.18);
+  border-radius: 10px;
+}
+
+.fleet__avatar {
   background: rgba(var(--v-theme-primary), 0.12);
   flex: none;
 }
 
-.top__avatar :deep(img) {
+.fleet__avatar :deep(img) {
   object-fit: contain;
   padding: 2px;
 }
 
-.top__name {
-  font-size: 13px;
-  font-weight: 600;
+.fleet__body {
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
-.top__wx {
+.fleet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fleet__name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fleet__wx {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   color: rgb(var(--v-theme-primary));
 }
 
-.top__region {
-  flex: 1 1 auto;
-  font-size: 11.5px;
+.fleet__meta {
+  font-size: 11px;
+  color: rgb(var(--v-theme-muted));
+  margin: 1px 0 6px;
+}
+
+.fleet__stats {
+  display: flex;
+  gap: 14px;
+  margin: 0;
+}
+
+.fleet__stats dt {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: rgb(var(--v-theme-muted));
 }
 
-.top__value {
-  font-size: 13px;
+.fleet__stats dd {
+  font-size: 12.5px;
   font-weight: 700;
+  margin: 1px 0 0;
   font-variant-numeric: tabular-nums;
 }
 </style>

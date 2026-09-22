@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import PageHeader from '@/components/PageHeader.vue'
+import PageShell from '@/components/PageShell.vue'
 import TopCargoCategories from '@/components/TopCargoCategories.vue'
 import CargoTrendChart from '@/components/charts/CargoTrendChart.vue'
 import { useChartTheme } from '@/components/charts/chartTheme'
@@ -16,11 +16,7 @@ const num = (n: number) => n.toLocaleString('en-US')
 </script>
 
 <template>
-  <v-container class="pelipper-width px-4 py-4">
-    <PageHeader
-      title="Cargo Mix &amp; Revenue"
-      subtitle="What the network is carrying, and what it earns."
-    />
+  <PageShell title="Cargo Mix &amp; Revenue" subtitle="What the network is carrying, and what it earns.">
 
     <v-row dense class="mb-2">
       <v-col cols="12" lg="5">
@@ -151,7 +147,7 @@ const num = (n: number) => n.toLocaleString('en-US')
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </PageShell>
 </template>
 
 <style scoped>
