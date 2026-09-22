@@ -48,6 +48,68 @@
       "revenuePerParcel": 1260
     }
   },
+  "weather": [
+    {
+      "region": "Kanto",
+      "condition": "Clear",
+      "icon": "mdi-weather-sunny",
+      "tempC": 21,
+      "windKph": 9,
+      "visibilityKm": 14,
+      "delayRisk": "Low",
+      "note": "Open skies across the corridor — flying couriers unrestricted."
+    },
+    {
+      "region": "Johto",
+      "condition": "Partly cloudy",
+      "icon": "mdi-weather-partly-cloudy",
+      "tempC": 19,
+      "windKph": 13,
+      "visibilityKm": 12,
+      "delayRisk": "Low",
+      "note": "Light cloud cover, no operational impact expected."
+    },
+    {
+      "region": "Hoenn",
+      "condition": "Rain easing",
+      "icon": "mdi-weather-rainy",
+      "tempC": 24,
+      "windKph": 22,
+      "visibilityKm": 7,
+      "delayRisk": "Moderate",
+      "note": "Tail of the storm season — water routes still running wet."
+    },
+    {
+      "region": "Sinnoh",
+      "condition": "Snow at altitude",
+      "icon": "mdi-weather-snowy",
+      "tempC": -3,
+      "windKph": 31,
+      "visibilityKm": 3,
+      "delayRisk": "High",
+      "note": "Mountain passes marginal; expect grounded couriers above the treeline."
+    },
+    {
+      "region": "Unova",
+      "condition": "Windy",
+      "icon": "mdi-weather-windy",
+      "tempC": 16,
+      "windKph": 38,
+      "visibilityKm": 11,
+      "delayRisk": "Moderate",
+      "note": "Crosswinds on the northern approach slowing flying couriers."
+    },
+    {
+      "region": "Galar",
+      "condition": "Fog and drizzle",
+      "icon": "mdi-weather-fog",
+      "tempC": 12,
+      "windKph": 10,
+      "visibilityKm": 2,
+      "delayRisk": "Moderate",
+      "note": "Low visibility on the coastal leg — ground handoffs preferred."
+    }
+  ],
   "months": [
     {
       "key": "2025-10",
@@ -2222,7 +2284,9 @@
       "stopsPerRun": 34,
       "firstAttemptRate": 0.889,
       "restDaysTaken": 41,
-      "tenureMonths": 58
+      "tenureMonths": 58,
+      "avgTransitDays": 2.2,
+      "damageRate": 0.01
     },
     {
       "name": "Gale",
@@ -2235,7 +2299,9 @@
       "stopsPerRun": 41,
       "firstAttemptRate": 0.921,
       "restDaysTaken": 29,
-      "tenureMonths": 76
+      "tenureMonths": 76,
+      "avgTransitDays": 1.6,
+      "damageRate": 0.011
     },
     {
       "name": "Nimbus",
@@ -2248,7 +2314,9 @@
       "stopsPerRun": 38,
       "firstAttemptRate": 0.904,
       "restDaysTaken": 52,
-      "tenureMonths": 64
+      "tenureMonths": 64,
+      "avgTransitDays": 1.9,
+      "damageRate": 0.009
     },
     {
       "name": "Tidal",
@@ -2261,7 +2329,9 @@
       "stopsPerRun": 26,
       "firstAttemptRate": 0.847,
       "restDaysTaken": 67,
-      "tenureMonths": 39
+      "tenureMonths": 39,
+      "avgTransitDays": 3.4,
+      "damageRate": 0.014
     },
     {
       "name": "Brix",
@@ -2274,7 +2344,9 @@
       "stopsPerRun": 22,
       "firstAttemptRate": 0.883,
       "restDaysTaken": 34,
-      "tenureMonths": 27
+      "tenureMonths": 27,
+      "avgTransitDays": 2.9,
+      "damageRate": 0.016
     },
     {
       "name": "Dash",
@@ -2287,7 +2359,9 @@
       "stopsPerRun": 19,
       "firstAttemptRate": 0.866,
       "restDaysTaken": 45,
-      "tenureMonths": 16
+      "tenureMonths": 16,
+      "avgTransitDays": 2.6,
+      "damageRate": 0.018
     },
     {
       "name": "Emberlyn",
@@ -2300,7 +2374,24 @@
       "stopsPerRun": 36,
       "firstAttemptRate": 0.913,
       "restDaysTaken": 31,
-      "tenureMonths": 71
+      "tenureMonths": 71,
+      "avgTransitDays": 1.8,
+      "damageRate": 0.013
+    },
+    {
+      "name": "Dawdle",
+      "species": "Slowpoke",
+      "dexId": 79,
+      "homeRegion": "Johto",
+      "runs": 604,
+      "onTimeRate": 0.861,
+      "status": "On Route",
+      "stopsPerRun": 8,
+      "firstAttemptRate": 0.934,
+      "restDaysTaken": 88,
+      "tenureMonths": 22,
+      "avgTransitDays": 6.8,
+      "damageRate": 0.003
     }
   ]
 }

@@ -47,7 +47,8 @@ const RANGES = {
 };
 const EXPECTED_CAUSES = ['Storm grounding', 'Recipient absent', 'Cargo damaged', 'Courier fainted', 'Route blocked'];
 const CARGO_PROP_FIELDS = ['avgWeightKg', 'damageRate', 'avgTransitDays', 'revenuePerParcel'];
-const COURIER_OPS_FIELDS = { stopsPerRun: [5, 80], firstAttemptRate: [0.7, 1], restDaysTaken: [0, 200], tenureMonths: [1, 240] };
+const COURIER_OPS_FIELDS = { stopsPerRun: [5, 80], firstAttemptRate: [0.7, 1], restDaysTaken: [0, 200], tenureMonths: [1, 240], avgTransitDays: [1, 10], damageRate: [0, 0.1] };
+const VALID_DELAY_RISK = ['Low', 'Moderate', 'High'];
 
 // ---------- structure ----------
 if (data.company !== 'Pelipper Post & Freight') fail(`company should be "Pelipper Post & Freight", got "${data.company}"`);
@@ -264,10 +265,10 @@ const EXPECTED_COURIERS = [
   ['Skyler', 'Pelipper', 279, 'Hoenn'], ['Gale', 'Pidgeot', 18, 'Kanto'],
   ['Nimbus', 'Dragonite', 149, 'Johto'], ['Tidal', 'Gyarados', 130, 'Sinnoh'],
   ['Brix', 'Machamp', 68, 'Unova'], ['Dash', 'Doduo', 84, 'Galar'],
-  ['Emberlyn', 'Rapidash', 78, 'Kanto'],
+  ['Emberlyn', 'Rapidash', 78, 'Kanto'], ['Dawdle', 'Slowpoke', 79, 'Johto'],
 ];
 const VALID_STATUS = ['On Route', 'Resting', 'Grounded'];
-if (data.couriers?.length !== 7) fail(`expected 7 couriers, found ${data.couriers?.length}`);
+if (data.couriers?.length !== 8) fail(`expected 8 couriers, found ${data.couriers?.length}`);
 for (const [name, species, dexId, homeRegion] of EXPECTED_COURIERS) {
   const c = data.couriers?.find((x) => x.name === name);
   if (!c) { fail(`courier "${name}" is missing`); continue; }
@@ -281,6 +282,60 @@ for (const [name, species, dexId, homeRegion] of EXPECTED_COURIERS) {
     const v = c[f];
     if (typeof v !== 'number') { fail(`${name}: ${f} is missing`); continue; }
     if (v < lo || v > hi) fail(`${name}: ${f} = ${v}, outside the expected ${lo}-${hi}`);
+  }
+}
+
+// ---------- the Slowpoke outlier ----------
+// Dawdle is a DELIBERATE outlier: slowest and fewest stops by a clear margin,
+// but the cleanest damage record. If a future regeneration smooths it toward
+// the rest of the fleet, that is a regression, not a tidy-up.
+const dawdle = data.couriers?.find((c) => c.name === 'Dawdle');
+const fleet = (data.couriers ?? []).filter((c) => c.name !== 'Dawdle');
+if (dawdle && fleet.length) {
+  const worstOtherTransit = Math.max(...fleet.map((c) => c.avgTransitDays ?? 0));
+  if (!(dawdle.avgTransitDays > worstOtherTransit * 1.5)) {
+    fail(`Dawdle should be the slowest courier by a clear margin: ${dawdle.avgTransitDays}d vs ${worstOtherTransit}d for the next slowest.`);
+  }
+  const fewestOtherStops = Math.min(...fleet.map((c) => c.stopsPerRun ?? 0));
+  if (!(dawdle.stopsPerRun < fewestOtherStops * 0.75)) {
+    fail(`Dawdle should make the fewest stops per run by a clear margin: ${dawdle.stopsPerRun} vs ${fewestOtherStops}.`);
+  }
+  const bestOtherDamage = Math.min(...fleet.map((c) => c.damageRate ?? 1));
+  if (!(dawdle.damageRate < bestOtherDamage)) {
+    fail(`Dawdle should have the BEST damage rate in the fleet — slow, not careless: ${dawdle.damageRate} vs ${bestOtherDamage}.`);
+  }
+  const lowestOtherOnTime = Math.min(...fleet.map((c) => c.onTimeRate ?? 1));
+  if (!(dawdle.onTimeRate < lowestOtherOnTime)) {
+    fail(`Dawdle should have the lowest onTimeRate: ${dawdle.onTimeRate} vs ${lowestOtherOnTime}.`);
+  }
+  const medianFirst = [...fleet.map((c) => c.firstAttemptRate)].sort((a, b) => a - b)[Math.floor(fleet.length / 2)];
+  if (!(dawdle.firstAttemptRate > medianFirst)) {
+    fail(`Dawdle should have a HIGH firstAttemptRate: ${dawdle.firstAttemptRate} vs fleet median ${medianFirst}.`);
+  }
+}
+
+// ---------- weather ----------
+const weather = data.weather;
+if (!Array.isArray(weather)) {
+  fail('weather block is missing or not an array');
+} else {
+  for (const want of EXPECTED_REGIONS) {
+    if (!weather.some((w) => w.region === want)) fail(`weather is missing region ${want}`);
+  }
+  if (weather.length !== 6) fail(`expected 6 weather entries, found ${weather.length}`);
+  for (const w of weather) {
+    if (!VALID_DELAY_RISK.includes(w.delayRisk)) {
+      fail(`weather ${w.region}: delayRisk "${w.delayRisk}" must be one of ${VALID_DELAY_RISK.join(' / ')}`);
+    }
+    if (typeof w.icon !== 'string' || !w.icon.startsWith('mdi-')) {
+      fail(`weather ${w.region}: icon "${w.icon}" should be an mdi-* name`);
+    }
+    for (const f of ['condition', 'note']) {
+      if (typeof w[f] !== 'string' || !w[f].trim()) fail(`weather ${w.region}: ${f} is missing`);
+    }
+    for (const f of ['tempC', 'windKph', 'visibilityKm']) {
+      if (typeof w[f] !== 'number') fail(`weather ${w.region}: ${f} is missing or not a number`);
+    }
   }
 }
 
@@ -314,6 +369,16 @@ console.log(`    Gym Season transit   ${gymTransit.toFixed(2)}d vs ${calmTransit
 console.log(`    Storm cost/parcel    ${stormCost.toFixed(0)} vs ${calmCost.toFixed(0)}  ${D}(want higher)${X}`);
 console.log(`    Storm first-attempt  ${(stormFirst * 100).toFixed(1)}% vs ${(calmFirst * 100).toFixed(1)}%  ${D}(want lower)${X}`);
 console.log(`    Top storm cause      ${topStormCause}  ${D}(want Storm grounding)${X}`);
+if (dawdle) {
+  console.log(`\n  ${D}Dawdle the deliberate outlier${X}`);
+  console.log(`    transit ${dawdle.avgTransitDays}d  stops/run ${dawdle.stopsPerRun}  damage ${(dawdle.damageRate * 100).toFixed(1)}%  on-time ${(dawdle.onTimeRate * 100).toFixed(1)}%  first-attempt ${(dawdle.firstAttemptRate * 100).toFixed(1)}%`);
+}
+if (Array.isArray(weather)) {
+  console.log(`\n  ${D}current conditions${X}`);
+  for (const w of [...weather].sort((a, b) => VALID_DELAY_RISK.indexOf(b.delayRisk) - VALID_DELAY_RISK.indexOf(a.delayRisk))) {
+    console.log(`    ${w.region.padEnd(7)} ${String(w.condition).padEnd(16)} ${String(w.tempC).padStart(3)}C  ${w.delayRisk}`);
+  }
+}
 
 if (notes.length) {
   console.log(`\n${Y}  ${notes.length} thing(s) worth a look:${X}`);

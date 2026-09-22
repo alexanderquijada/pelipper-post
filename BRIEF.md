@@ -69,7 +69,28 @@ perishable (highest damage rate); TMs the lightest.** All enforced by the valida
 
 ### Courier operations
 
-Each courier also carries `stopsPerRun` · `firstAttemptRate` · `restDaysTaken` · `tenureMonths`.
+Each courier also carries `stopsPerRun` · `firstAttemptRate` · `restDaysTaken` · `tenureMonths` ·
+`avgTransitDays` · `damageRate`.
+
+**There are eight couriers.** The eighth, **Dawdle** (Slowpoke, dexId 79, Johto), is a **deliberate
+outlier and must stay one**: the slowest transit and fewest stops per run in the fleet by a clear
+margin, the lowest on-time rate — but the **best damage rate** and a **high first-attempt rate**.
+Slow, not careless. The validator enforces every one of those relationships, so a future
+regeneration cannot quietly smooth him toward the rest of the fleet.
+
+### Weather (new top-level block)
+
+`weather` — **current conditions per region, not a monthly series.** It is point-in-time context for
+delay risk and **does not respond to the month filter.**
+
+Per region: `condition` · `icon` (an `@mdi/font` name) · `tempC` · `windKph` · `visibilityKm` ·
+`delayRisk` (`Low` | `Moderate` | `High`) · `note`.
+
+Set for late September, with storm season just past, and coherent with each region's character:
+Kanto clear (Low) · Johto partly cloudy (Low) · Hoenn rain easing (Moderate) · Sinnoh snow at
+altitude (High) · Unova windy (Moderate) · Galar fog and drizzle (Moderate).
+
+**Icon names must be verified to render** — a wrong MDI name produces an empty box, not an error.
 
 These ranges are wide on purpose — they have to hold for *both* the smallest region in its
 slowest month *and* the largest region at the peak of Gym Season. A small region like Galar will sit

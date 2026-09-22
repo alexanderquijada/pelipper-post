@@ -121,6 +121,29 @@ export interface Courier {
   restDaysTaken: number
   /** How long they have flown for the carrier, in months. */
   tenureMonths: number
+  /** Average days this courier takes in transit. */
+  avgTransitDays: number
+  /** Share of this courier's parcels damaged in transit, 0–1. */
+  damageRate: number
+}
+
+/** How much the current weather is expected to delay deliveries. */
+export type DelayRisk = 'Low' | 'Moderate' | 'High'
+
+/**
+ * Current conditions for one region. This is "now", not a monthly series —
+ * it provides delay-risk context, and does not respond to the month filter.
+ */
+export interface RegionWeather {
+  region: RegionName
+  condition: string
+  /** An `@mdi/font` icon name, e.g. "mdi-weather-snowy". */
+  icon: string
+  tempC: number
+  windKph: number
+  visibilityKm: number
+  delayRisk: DelayRisk
+  note: string
 }
 
 /** The whole dataset — the default export of metrics.json. */
@@ -131,6 +154,8 @@ export interface MetricsDataset {
   cargoTypes: CargoType[]
   /** Per cargo type: weight, damage rate, transit time, revenue. */
   cargoProperties: Record<CargoType, CargoProperties>
+  /** Current conditions per region — point-in-time, not a monthly series. */
+  weather: RegionWeather[]
   months: MonthMetrics[]
   couriers: Courier[]
 }
