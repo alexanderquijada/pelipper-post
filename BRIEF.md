@@ -265,7 +265,8 @@ src/
     charts/DeliveryTrendChart.vue
   assets/
     delivery-map.svg         ORIGINAL illustrated world map, drawn for this
-                             project — inlined, not <img>. See §4 item 6.
+                             project. RETAINED BUT UNREFERENCED since the
+                             dashboard was restructured — see §8 of the status doc.
   data/metrics.json          mock dataset
   utils/sprites.ts           dexId -> sprite URL
   composables/useMetrics.ts  filtering + aggregation logic
@@ -275,99 +276,110 @@ src/
 
 ## 4. Layout
 
-Top to bottom, one page, no scrolling required at 1440×900 beyond the courier table:
+A **dense, multi-card executive dashboard**: persistent left sidebar, top bar, a compact KPI strip,
+then rows of mixed-width cards. The conventions and density are borrowed from standard SaaS
+analytics dashboards; **the palette, wordmark and content remain entirely ours** — no other
+product's branding, naming or colour scheme appears anywhere.
 
-1. **App bar** — Pelipper Post & Freight wordmark on the left with an `mdi-mail` icon, the tagline
-   as muted subtitle text, and a light/dark theme toggle on the right.
+Content column is centred, **max-width 1440px**, sitting on the sky gradient from §6.
 
-2. **Filter row** — two dropdowns, left-aligned, on the same line:
-   - **Month** — options: `All Months` (default) + the twelve months
-   - **Region** — options: `All Regions` (default) + the six regions
-   Plus a muted caption on the right of the row reading e.g. *"Showing 12 months across 6 regions"*
-   that updates with the filters.
+### App shell
 
-3. **KPI row** — four equal `MetricCard`s across on desktop, 2×2 on tablet, stacked on mobile:
-   - Poké Balls Shipped
-   - Berry Crates Delivered
-   - Gym Supply Runs
-   - Fainted Couriers
+**Left sidebar** — `v-navigation-drawer`, **220px**, `permanent` on desktop, collapsing to a **rail
+below 960px**:
 
-4. **Chart row** — two charts side by side, equal width:
-   - **Parcels by Region** — vertical bar chart. Hidden/disabled when a single region is selected;
-     in that case show a small empty-state message instead of an awkward one-bar chart.
-   - **Cargo Mix** — doughnut chart, five segments, with a legend
+- Pelipper sprite + **Pelipper Post & Freight** wordmark, with **Executive Dashboard** beneath as
+  small muted subtitle
+- Nav items: **Overview · Trends · Signals · Couriers · Network**
+- These are **anchor links that smooth-scroll to sections of this one page.** They are not routes —
+  `CLAUDE.md` rule 6 still stands: one route, one page. The active item highlights as you scroll,
+  driven by an `IntersectionObserver` over the section anchors.
+- Pinned to the bottom: a **theme toggle** row, and an **About this data** row opening a dialog that
+  states plainly that every number is fabricated mock data.
 
-5. **Trend row** — one full-width card: **Gym Supply Runs & Parcels Delivered over 12 months**,
-   drawn as **two vertically stacked area panels sharing one time axis** — Parcels Delivered on top,
-   Gym Supply Runs beneath. Each panel has its own y-axis, both starting at zero, and the y-axis
-   gutters are pinned to the same width so the two time axes line up exactly.
+**Top bar** — **Pelipper Operations** as the heading, with **"Data through Sep 2026 · mock dataset"**
+beneath it in small muted text. On the right: the **two filters** (Month and Region — they move up
+here, replacing the old standalone filter row) and the **theme toggle**.
 
-   **Not a dual-axis chart, deliberately.** Parcels Delivered runs in the tens of thousands and Gym
-   Supply Runs in the tens — roughly a 200× gap. Plotted against two y-scales in one frame, the
-   smaller series flattens against the axis and the point where the lines cross is an artefact of
-   the scales chosen rather than anything real. Two aligned single-axis panels keep both shapes
-   readable and every comparison honest, while still reading as one chart in one card.
+### Density
 
-   The card always shows all twelve months (it's the trend view) but respects the region filter,
-   and highlights the currently selected month with a marker on both panels when one is selected.
+The page previously read oversized because the **type scale** was too large, not because the spacing
+was wrong. These values are the specification, not suggestions:
 
-6. **Delivery Network** — full-width card, between the trend chart and the courier roster.
-   An **illustrated world map** of the carrier's network, with a Pelipper flying its delivery loop.
+| Element | Value |
+|---|---|
+| KPI value | **28px / 700** |
+| KPI label | **11px**, uppercase, `letter-spacing: .06em`, muted |
+| KPI delta | a small tinted **pill** — rounded chip, tinted background, **11px**. Not bare arrow text. |
+| Card title | **15px / 600** |
+| Card subtitle | **12px** muted, one line, explaining what the card shows |
+| Card padding | **20px** |
+| Grid gutter | **16px** |
+| Card radius | **12px** |
+| Card treatment | **1px hairline border + a very soft shadow** — not heavy elevation |
+| Trend chart height | **240px** |
+| Doughnut height | **200px** |
+| Region bar height | **200px** |
+| Roster row height | **44px**, compact density |
+| Content max-width | **1440px** |
 
-   **This is decorative.** It is the one piece of the page that exists for character rather than
-   analysis. It has no click behaviour and is not wired into the filters — it does not change when
-   Month or Region changes.
+### Sections, top to bottom
 
-   The artwork is **`src/assets/delivery-map.svg`**, drawn for this project. It is **original** —
-   an invented world, not a reproduction, trace or approximation of the official Pokémon region maps
-   or their geography. What the file already contains:
+1. **KPI strip — five cards**, not four:
+   **Parcels Delivered · Poké Balls Shipped · On-Time Rate · Gym Supply Runs · Fainted Couriers**
+   (inverted). On-Time Rate uses the existing **weighted-average** logic — weight by
+   `parcelsDelivered`, **never average an average**.
 
-   - an ocean gradient, **7 landmasses** and **8 islets**
-   - an orange right-angle **route network** with **30 waypoint squares** (`class="pp-wp"`, each
-     carrying a `data-wp` index)
-   - **6 hub squares** labelled Kanto, Johto, Hoenn, Sinnoh, Unova and Galar
-   - **52 decorative wave strokes**
-   - an invisible **`<path id="pp-flight-route">`** — the courier's closed loop through all six hubs
-   - **13 CSS custom properties**, each with a light-theme fallback baked in:
-     `--ppmap-sea-1` `--ppmap-sea-2` `--ppmap-land` `--ppmap-inland` `--ppmap-highland`
-     `--ppmap-route` `--ppmap-stop` `--ppmap-stop-edge` `--ppmap-hub` `--ppmap-label`
-     `--ppmap-label-halo` `--ppmap-wave` `--ppmap-shore`
+2. **Trend row** — the twelve-month chart, as specified below under *Trends*.
 
-   **Implementation requirements:**
+3. **Chart row** — Parcels by Region, and Cargo Mix.
 
-   - **Inline the SVG** — `import map from '@/assets/delivery-map.svg?raw'` and render it into the
-     DOM. **Do not use `<img>`**: an external image is an isolated document, so neither the CSS
-     custom properties nor the flight animation can reach inside it.
-   - **Full bleed inside the card** — no padding inset around the artwork, and a fixed aspect ratio
-     so it never letterboxes. The heading and the *"illustrative, invented"* caption stay above it.
-   - **Animate the Pelipper along `#pp-flight-route`**, using `<animateMotion>` with
-     `<mpath href="#pp-flight-route"/>`. **Reference the existing path — do not duplicate its data**,
-     or the two copies will drift apart. Slow loop, **40–60s**. Same hotlinked 279 sprite,
-     `image-rendering: pixelated`.
-   - **Flip the sprite horizontally on right-to-left legs** so it never flies backwards.
-   - **Pulse each waypoint once as the courier passes it** — a brief scale and opacity bump.
-     **Stagger the pulses off the flight's own timeline**; do not run 30 independent loops.
-   - **Define dark-theme values for all 13 `--ppmap-*` variables** — deeper ocean, muted land — and
-     confirm the labels stay legible against the darker fills.
+4. **Critical Delivery Signals** — a list of alert rows. Each row: a **severity dot**
+   (red / amber / green), a **one-line finding**, and an **expandable detail line**.
+   **Computed from the data, never hardcoded.** Must cover at least:
+   - the storm-season exception spike
+   - any region under a **93% on-time target**
+   - the largest single month-over-month on-time drop
+   - the fastest-growing region
+   - the December berry-rush strain
 
-   **Reduced motion is a hard requirement.** Under `prefers-reduced-motion: reduce`: **no flight, no
-   waypoint pulses, no wave motion.** Park the sprite at a hub. The map must still read as a
-   complete, finished illustration when nothing is moving — the motion is a flourish on top of a
-   static image that already works.
+   Sorted **most severe first**, and **respects both filters**. A signal that cannot be computed
+   under the current filters (for example a month-over-month comparison with no prior month) is
+   omitted rather than faked.
 
-   > **On the labels:** they use `paint-order="stroke"` to put a white halo behind dark text. That is
-   > correct and renders properly in browsers. If a preview tool shows them as solid white blocks,
-   > that tool is ignoring `paint-order` — it is not a defect in the file.
+5. **Top Cargo Categories** — horizontal progress bars, one per cargo type: the **PokeAPI item
+   sprite**, the label, the absolute value and the share. The bar fill uses **that cargo type's
+   existing categorical chart colour** (§6 — unchanged). Sorted descending.
 
-7. **Courier roster** — full-width Vuetify table: circular sprite avatar, courier name, species,
-   home region, total runs, on-time rate, and status as a colored chip. Respects the region filter.
+6. **Network Reliability & Fulfillment Health** — metric rows, each a **coloured dot + label +
+   right-aligned value**: On-Time Rate, Avg Parcels per Courier Run, Fainted Couriers per 1k
+   Parcels, Couriers On Route vs Grounded, Busiest Region, Quietest Region. The dot colour reflects
+   whether that value is **healthy**, not merely what it is.
+
+7. **Courier roster** — full-width table: circular sprite avatar, courier name, species, home
+   region, total runs, on-time rate, and status as a coloured chip. Respects the region filter.
+   Compact density, 44px rows.
 
 8. **Footer** — small muted line: *"Made with coffee and Claude Code · mock data, not a real carrier."*
 
-**Grid:** use `v-container` / `v-row` / `v-col` with responsive breakpoints. Centered, max width
-~1400px, generous gutters. Do not let content jam against the left edge.
+**Removed:** the Delivery Network map section. `src/assets/delivery-map.svg` is **kept in the repo
+but is no longer referenced** by any component — see §8 of `PELIPPER-POST-STATUS.md`.
 
----
+**Trends (the twelve-month chart)** — one card, **two vertically stacked area panels sharing one
+time axis**: Parcels Delivered on top, Gym Supply Runs beneath. Each panel has its own y-axis, both
+starting at zero, with the y-gutters pinned to the same width so the two time axes line up.
+
+**Not a dual-axis chart, deliberately.** Parcels Delivered runs in the tens of thousands and Gym
+Supply Runs in the tens — roughly a 200x gap. Plotted against two y-scales in one frame the smaller
+series flattens against the axis, and where the lines cross becomes an artefact of the scales chosen
+rather than anything real.
+
+The card always shows all twelve months (it is the trend view) but respects the region filter, and
+marks the selected month on both panels when one is chosen.
+
+**Grid:** `v-container` / `v-row` / `v-col` with responsive breakpoints. Mixed-width rows are the
+point — do not make every card full width.
+
 
 ## 5. Interactions
 
@@ -513,11 +525,17 @@ more common red-green types. The mitigation below covers it.
 - a legend listing each segment's **label, value and percentage share**
 
 **Feel:**
-- Clean and minimal with real whitespace. Cards get generous internal padding (24px), and the gaps
-  between cards should be visible — do not let tiles crowd each other.
-- Subtle elevation, rounded corners (`rounded="lg"`), no heavy borders, no drop-shadow drama.
-- KPI values are the largest type on the page. Labels above them, small and muted, uppercase,
-  letter-spaced. Trend indicators small and below the value.
+- **Dense and information-first, not airy.** This is an executive dashboard read on a laptop in a
+  meeting — the goal is a lot of trustworthy information on one screen, not generous whitespace.
+  The exact type scale, padding, gutter and radius values are in §4 under *Density* and they are
+  the specification.
+- Cards carry a **1px hairline border and a very soft shadow**. Not heavy elevation, not drop-shadow
+  drama, and not borderless.
+- **KPI values are 28px/700** — prominent, but no longer the dominant type on the page. Labels sit
+  above them at 11px uppercase and letter-spaced; the change-versus-previous reads as a small
+  **tinted pill**, not bare arrow text.
+- Every card carries a **one-line 12px muted subtitle** saying what it shows. A number without a
+  stated basis is not self-explanatory to someone reading it for the first time in a meeting.
 - Numbers formatted with thousands separators. Rates shown as one decimal percent (`94.2%`).
 - Charts have no gridline clutter — horizontal gridlines only, at low opacity, no chart borders.
 - System font stack or Inter. No decorative fonts.
@@ -551,10 +569,12 @@ Added with the §2 / §4 / §6 extension:
 
 - [ ] All five cargo item sprites render, hotlinked, with `image-rendering: pixelated`
 - [ ] The app bar icon and the favicon are the Pelipper sprite, with an icon fallback
-- [ ] The Delivery Network card renders the inlined `delivery-map.svg` full-bleed, with the Pelipper
-      flying `#pp-flight-route` and waypoints pulsing as it passes
-- [ ] All 13 `--ppmap-*` variables have dark-theme values and the labels stay legible in both themes
-- [ ] The map is **original** — it does not reproduce any official Pokémon region map
+- [ ] The sidebar nav anchor-scrolls to each section and highlights the active one on scroll
+- [ ] The KPI strip shows **five** cards, with On-Time Rate weighted by `parcelsDelivered`
+- [ ] Critical Signals, Top Cargo Categories and Network Reliability are all **computed** from
+      `metrics.json` and all respond to **both** filters
+- [ ] The §4 density values are applied as written (28px KPI value, 20px card padding, 16px gutter,
+      12px radius, hairline border)
 - [ ] Light is the default theme on first load
 - [ ] The sky gradient and 2–3 cloud layers drift at different speeds, and cards stay fully opaque
 - [ ] **`prefers-reduced-motion: reduce` stops both** the cloud drift and the Pelipper's flight,
