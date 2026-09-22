@@ -39,7 +39,9 @@
       "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --window-size=1440,1750 --virtual-time-budget=12000 --screenshot=proto2.png \"file:///Users/alex.quijada/Projects/pelipper-post/index.html\")",
       "Bash(open /Users/alex.quijada/Projects/pelipper-post/index.html)",
       "Bash(python3 -)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(sed -n '/^6\\\\. \\\\*\\\\*One page/,/^7\\\\./p' CLAUDE.md)",
+      "Bash(awk 'NR<=40 && \\(/^const selectedMonth/ || /^const selectedRegion/ || /^export function useMetrics/\\)' src/composables/useMetrics.ts)"
     ],
     "deny": [
       "Bash(git push --force:*)",

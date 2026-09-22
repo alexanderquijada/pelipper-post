@@ -40,8 +40,22 @@ Owner: Alex Quijada. Alex is a designer, not a developer. He reviews and redirec
 5. **Verify before you claim done.** Run `npm run dev`, then `npm run build`. Report actual output.
    Never say something works because it should.
 
-6. **One page, one route.** Vue Router is installed because the capstone asks for it, but there is
-   exactly one route (`/`). Do not add pages.
+6. **Six routes, one app.** `/` (Overview), `/trends`, `/signals`, `/cargo`, `/network`,
+   `/couriers`. Vue Router is the app's actual navigation now, not decoration. Unknown paths
+   redirect to `/`.
+
+   **This replaces the previous "one page, one route — do not add pages" rule, changed on Alex's
+   explicit instruction (2026-09-22).** The capstone only ever required that Router be used; it did
+   not require a single route. Adding a seventh page is still a scope decision for Alex, not a free
+   call — the rule now bounds *which* six pages exist, not that there is one.
+
+   Two things that must hold across all six:
+   - **Route components are lazy-loaded.** Route-level code splitting is the textbook case for it.
+     (This is not in tension with the earlier decision to keep Chart.js eagerly bundled — that code
+     is above-the-fold on first paint; a route the user has not visited is not.)
+   - **Filter state is shared, not per-page.** `selectedMonth` and `selectedRegion` live at module
+     scope in `useMetrics.ts` so all six pages read one instance. A filter set on Overview must
+     still be set after navigating to Cargo. Do not move those refs inside the composable function.
 
 7. **Delete the starter template.** No `HelloWorld.vue`, no `AboutView.vue`, no Vue logo SVG, no
    starter `base.css` / `main.css` rules that fight Vuetify. Leaving starter cruft behind is a

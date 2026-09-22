@@ -241,7 +241,10 @@ degrades to an icon rather than a gap in the wordmark.
   (`@mdi/font`). Install as `vuetify@^3`; a bare `npm install vuetify` now resolves to 4.x.
 - **Chart.js** + **vue-chartjs** for all charts
 - No Pinia, no testing framework, no JSX, no ESLint, no Prettier
-- Single page — everything renders in `src/views/HomeView.vue`
+- **Six routes**, lazy-loaded: `/` Overview · `/trends` · `/signals` · `/cargo` · `/network` ·
+  `/couriers`. Unknown paths redirect to `/`. See `CLAUDE.md` rule 6.
+- **Filter state is shared across all six pages** — `selectedMonth` and `selectedRegion` live at
+  module scope in `useMetrics.ts`, so a filter set on one page is still set on the next.
 - Deploys to Vercel as a static Vite build
 
 `src/assets/` exists again as of the map work — it holds **original artwork authored for this
@@ -253,21 +256,34 @@ unchanged, and those stay hotlinked and uncommitted. Anything that lands in `ass
 ```
 src/
   main.ts                    Vuetify plugin + theme registration
-  App.vue                    v-app shell, app bar, router-view
-  router/index.ts            one route -> HomeView
-  views/HomeView.vue         the whole dashboard
+  App.vue                    shell: sidebar nav, top bar, filters, router-view
+  router/index.ts            six lazy-loaded routes
+  views/
+    OverviewView.vue         / — the highlights, one card per section
+    TrendsView.vue           /trends
+    SignalsView.vue          /signals
+    CargoView.vue            /cargo
+    NetworkView.vue          /network
+    CouriersView.vue         /couriers
   components/
     MetricCard.vue           custom reusable KPI card
     CourierRoster.vue        courier table with sprites
-    DeliveryNetwork.vue      the illustrated map card
-    charts/RegionBarChart.vue
-    charts/CargoMixChart.vue
-    charts/DeliveryTrendChart.vue
+    CriticalSignals.vue      computed alert rows
+    TopCargoCategories.vue   cargo bars with item sprites
+    ReliabilityHealth.vue    health metric rows
+    PageHeader.vue           title + subtitle + filter summary, used by every page
+    charts/
+      BarSeriesChart.vue     bars, optional target line
+      DeliveryTrendChart.vue twelve-month area panels
+      CargoTrendChart.vue    cargo mix over twelve months
+      SparkLine.vue          small per-region trend
+      chartTheme.ts          series palettes + theme-aware axes
   assets/
     delivery-map.svg         ORIGINAL illustrated world map, drawn for this
                              project. RETAINED BUT UNREFERENCED since the
                              dashboard was restructured — see §8 of the status doc.
   data/metrics.json          mock dataset
+  types/metrics.ts           TypeScript interfaces for that dataset
   utils/sprites.ts           dexId -> sprite URL
   composables/useMetrics.ts  filtering + aggregation logic
 ```
@@ -290,10 +306,9 @@ below 960px**:
 
 - Pelipper sprite + **Pelipper Post & Freight** wordmark, with **Executive Dashboard** beneath as
   small muted subtitle
-- Nav items: **Overview · Trends · Signals · Couriers · Network**
-- These are **anchor links that smooth-scroll to sections of this one page.** They are not routes —
-  `CLAUDE.md` rule 6 still stands: one route, one page. The active item highlights as you scroll,
-  driven by an `IntersectionObserver` over the section anchors.
+- Nav items, in this order — **it must match the reading order of the Overview cards**:
+  **Overview · Trends · Signals · Cargo · Network · Couriers**
+- These are **real routes.** The active item comes from the current route — there is no scroll-spy.
 - Pinned to the bottom: a **theme toggle** row. This is the only theme toggle in the app.
 
 **Top bar** — **Pelipper Operations** as the heading, with **"Data through Sep 2026"** beneath it in
@@ -323,7 +338,26 @@ was wrong. These values are the specification, not suggestions:
 | Roster row height | **44px**, compact density |
 | Content max-width | **1440px** |
 
-**Row order:** KPI strip / trend + region bars / the three derived cards / courier roster.
+**Row order on Overview:** KPI strip / trend + region bars / the three derived cards / courier roster.
+
+### The six pages
+
+**Overview (`/`) is the highlights and stays as it is — do not add to it.** Each of its cards carries
+a **"View details →"** link in the card header, routing to the page that expands it.
+
+Every page opens with a **title**, a **descriptive subtitle**, and the **"Showing N months across N
+regions"** line beneath the title. All five detail pages draw from the same `metrics.json` — no new
+data, and no changes to that file.
+
+| Page | Contains |
+|---|---|
+| **`/trends`** | The twelve-month chart at full width and taller · Parcels by Region · a month-by-month table (12 rows: parcels, Poké Balls, berries, gym runs, fainted, on-time) · six small sparklines, one per region |
+| **`/signals`** | Every signal, uncapped, grouped under **Critical / Warning / Healthy** with counts and details expanded by default · a per-region on-time table against the 93% target |
+| **`/cargo`** | The horizontal cargo bars · a cargo-by-region matrix (6 regions × 5 types) · cargo mix across the twelve months. Item sprites throughout |
+| **`/network`** | The health rows · a six-region comparison table (parcels, on-time, fainted, gym runs, avg monthly volume) · on-time by region with a 93% target line · fainted couriers by month |
+| **`/couriers`** | The full roster · a card per courier with a larger sprite and their stats · on-time rate compared across couriers · a status breakdown of On Route / Resting / Grounded |
+
+The filter controls stay in the **top bar** and apply to **every** page.
 
 ### Card copy
 
@@ -597,7 +631,10 @@ Added with the §2 / §4 / §6 extension:
 
 - [ ] All five cargo item sprites render, hotlinked, with `image-rendering: pixelated`
 - [ ] The app bar icon and the favicon are the Pelipper sprite, with an icon fallback
-- [ ] The sidebar nav anchor-scrolls to each section and highlights the active one on scroll
+- [ ] All six routes load, lazy-loaded, with unknown paths redirecting to `/`
+- [ ] The sidebar highlights the active route, in the order Overview · Trends · Signals · Cargo ·
+      Network · Couriers
+- [ ] A filter set on one page is still set after navigating to another
 - [ ] The KPI strip shows **five** cards, with On-Time Rate weighted by `parcelsDelivered`
 - [ ] Critical Signals, Top Cargo Categories and Network Reliability are all **computed** from
       `metrics.json` and all respond to **both** filters
