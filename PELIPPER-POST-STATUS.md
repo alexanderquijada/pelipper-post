@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-22 — **Split into six routed pages.** Only the Vercel deployment is outstanding.
+- **Last updated:** 2026-09-22 — **Dataset expanded; pages de-duplicated by dimension.** Only the Vercel deployment is outstanding.
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -788,6 +788,42 @@ Append here as the build goes. Date, what came up, what was decided.
   was correct. Worth recording because a harness bug that *looks* like an app bug is the expensive
   kind: the fix is to make the helper scroll before measuring, and to sanity-check a "failure"
   against the rendered values before touching application code.
+
+- **2026-09-22 — Dataset expanded and pages rebuilt per dimension.** Two commits.
+
+  **Data (`4559e9a`).** Seven new fields per region-month (`firstAttemptRate`, `avgTransitDays`,
+  `damagedParcels`, `returnedParcels`, `costPerParcel`, `capacityUtilization`, `exceptionsByCause`),
+  a new top-level `cargoProperties` block, and four operational fields per courier. Regenerated with
+  the **same seed (20260918)**; every existing field and seasonality rule survives.
+
+  **The validator's new checks were tested against the OLD data first** — the same discipline used
+  for the cargo-mix equality. They produced **897 failures** on the pre-expansion file (missing
+  fields, missing causes, absent cargo properties) before the new data was generated. A check that
+  has only ever seen passing data proves nothing.
+
+  New validator output on the new data — all green:
+  `Storm transit 3.17d vs 2.49d` · `Gym Season transit 2.20d vs 2.49d` ·
+  `Storm cost/parcel 325 vs 266` · `Storm first-attempt 83.3% vs 88.0%` ·
+  `Top storm cause: Storm grounding`.
+
+  **Pages (`<this commit>`).** Governing rule added to `BRIEF.md` §4: each page owns one dimension,
+  and a metric's headline value appears on exactly one card in the app.
+
+  **Four duplications were found by the audit and fixed** — the audit is the deliverable, not the
+  claim that it happened:
+
+  | Duplicate | Was on | Fix |
+  |---|---|---|
+  | Top Cargo Categories (identical bars) | `/` and `/cargo` | Overview now shows a compact **Cargo Share** top-3 list; the bars are `/cargo`'s single volume view |
+  | Network Reliability & Fulfillment Health | `/` and `/network` | Overview now shows **Reliability Snapshot**, filtered to rows *not* already in the KPI strip |
+  | On-Time Rate by Region | `/signals` and `/network` | Signals now shows **Regions Below Target** (breaches only); the six-region comparison is `/network`'s |
+  | The trend chart, identical on both | `/` and `/trends` | Overview renders the **parcels panel only**; `/trends` owns the paired parcels + gym-runs view |
+
+  Post-fix audit: **0 duplicate cards across all six routes.** 21px minimum content-to-edge gap on
+  every route, 0 console errors, no NaN in any filter state.
+
+  Constraints held: chart palettes untouched, `metrics.json` unchanged after commit 1, validator
+  exit 0, filters shared and driving every new card, both themes.
 
 ---
 

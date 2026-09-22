@@ -3,6 +3,7 @@ import raw from '@/data/metrics.json'
 import type {
   CargoType,
   Courier,
+  ExceptionCause,
   MetricsDataset,
   MonthMetrics,
   RegionMetrics,
@@ -41,6 +42,19 @@ export interface Aggregate {
   parcelsDelivered: number
   /** Weighted by parcelsDelivered — never a mean of means. */
   onTimeRate: number
+  /** Weighted by parcelsDelivered. */
+  firstAttemptRate: number
+  /** Weighted by parcelsDelivered. */
+  avgTransitDays: number
+  /** Weighted by parcelsDelivered. */
+  costPerParcel: number
+  /** Weighted by parcelsDelivered. */
+  capacityUtilization: number
+  damagedParcels: number
+  returnedParcels: number
+  exceptionsByCause: Record<ExceptionCause, number>
+  /** faintedCouriers + returnedParcels — every open exception. */
+  openExceptions: number
   cargoMix: Record<CargoType, number>
   recordCount: number
 }
@@ -55,6 +69,18 @@ function regionsFor(m: MonthMetrics, region: RegionFilter): RegionMetrics[] {
 
 function recordsFor(month: MonthFilter, region: RegionFilter): RegionMetrics[] {
   return monthsFor(month).flatMap((m) => regionsFor(m, region))
+}
+
+const CAUSES: ExceptionCause[] = [
+  'Storm grounding',
+  'Recipient absent',
+  'Cargo damaged',
+  'Courier fainted',
+  'Route blocked',
+]
+
+function emptyCauses(): Record<ExceptionCause, number> {
+  return CAUSES.reduce((a, c) => ({ ...a, [c]: 0 }), {} as Record<ExceptionCause, number>)
 }
 
 function emptyCargoMix(): Record<CargoType, number> {
@@ -76,11 +102,23 @@ function aggregate(records: RegionMetrics[]): Aggregate {
     faintedCouriers: 0,
     parcelsDelivered: 0,
     onTimeRate: 0,
+    firstAttemptRate: 0,
+    avgTransitDays: 0,
+    costPerParcel: 0,
+    capacityUtilization: 0,
+    damagedParcels: 0,
+    returnedParcels: 0,
+    exceptionsByCause: emptyCauses(),
+    openExceptions: 0,
     cargoMix: emptyCargoMix(),
     recordCount: records.length,
   }
 
   let onTimeWeighted = 0
+  let firstWeighted = 0
+  let transitWeighted = 0
+  let costWeighted = 0
+  let capWeighted = 0
 
   for (const r of records) {
     out.pokeBallsShipped += r.pokeBallsShipped
@@ -89,11 +127,25 @@ function aggregate(records: RegionMetrics[]): Aggregate {
     out.faintedCouriers += r.faintedCouriers
     out.parcelsDelivered += r.parcelsDelivered
     onTimeWeighted += r.onTimeRate * r.parcelsDelivered
+    firstWeighted += r.firstAttemptRate * r.parcelsDelivered
+    transitWeighted += r.avgTransitDays * r.parcelsDelivered
+    costWeighted += r.costPerParcel * r.parcelsDelivered
+    capWeighted += r.capacityUtilization * r.parcelsDelivered
+    out.damagedParcels += r.damagedParcels
+    out.returnedParcels += r.returnedParcels
+    for (const c of CAUSES) out.exceptionsByCause[c] += r.exceptionsByCause[c] ?? 0
     for (const c of metrics.cargoTypes) out.cargoMix[c] += r.cargoMix[c] ?? 0
   }
 
+  out.openExceptions = out.faintedCouriers + out.returnedParcels
+
   // Guard the divide — no NaN may ever reach the screen.
-  out.onTimeRate = out.parcelsDelivered > 0 ? onTimeWeighted / out.parcelsDelivered : 0
+  const p = out.parcelsDelivered
+  out.onTimeRate = p > 0 ? onTimeWeighted / p : 0
+  out.firstAttemptRate = p > 0 ? firstWeighted / p : 0
+  out.avgTransitDays = p > 0 ? transitWeighted / p : 0
+  out.costPerParcel = p > 0 ? costWeighted / p : 0
+  out.capacityUtilization = p > 0 ? capWeighted / p : 0
 
   return out
 }
@@ -185,6 +237,9 @@ export function useMetrics() {
       berryCrates: null,
       gymSupplyRuns: null,
       faintedCouriers: null,
+      firstAttemptRate: null,
+      costPerParcel: null,
+      openExceptions: null,
     }
     if (!pair) return none
 
@@ -199,6 +254,10 @@ export function useMetrics() {
       berryCrates: changeFraction(now.berryCrates, before.berryCrates),
       gymSupplyRuns: changeFraction(now.gymSupplyRuns, before.gymSupplyRuns),
       faintedCouriers: changeFraction(now.faintedCouriers, before.faintedCouriers),
+      // a rate, so its delta is in percentage POINTS (see §8 standing rule)
+      firstAttemptRate: now.firstAttemptRate - before.firstAttemptRate,
+      costPerParcel: changeFraction(now.costPerParcel, before.costPerParcel),
+      openExceptions: changeFraction(now.openExceptions, before.openExceptions),
     }
   })
 
@@ -648,6 +707,140 @@ export function useMetrics() {
     })
   })
 
+
+  // ---- new page-specific series -------------------------------------------
+  const INDUSTRY_BENCHMARK = 0.95
+
+  /** On-time and cost across the twelve months — Trends owns the time dimension. */
+  const onTimeOverMonths = computed(() => ({
+    labels: metrics.months.map((m) => m.label),
+    values: metrics.months.map((m) => aggregate(regionsFor(m, selectedRegion.value)).onTimeRate),
+  }))
+
+  const costOverMonths = computed(() => ({
+    labels: metrics.months.map((m) => m.label),
+    values: metrics.months.map((m) => aggregate(regionsFor(m, selectedRegion.value)).costPerParcel),
+  }))
+
+  /** Peak vs trough callout for the Trends page. */
+  const seasonality = computed(() => {
+    const rows = metrics.months.map((m) => ({
+      label: m.label,
+      parcels: aggregate(regionsFor(m, selectedRegion.value)).parcelsDelivered,
+    }))
+    const sorted = [...rows].sort((a, b) => b.parcels - a.parcels)
+    const peak = sorted[0]!
+    const trough = sorted[sorted.length - 1]!
+    return {
+      peak,
+      trough,
+      swing: trough.parcels > 0 ? (peak.parcels - trough.parcels) / trough.parcels : 0,
+    }
+  })
+
+  /** Exceptions split by cause — the Signals page centrepiece. */
+  const exceptionsByCause = computed(() => {
+    const totals = current.value.exceptionsByCause
+    const total = Object.values(totals).reduce((a, b) => a + b, 0)
+    return CAUSES.map((cause, colorIndex) => ({
+      cause,
+      value: totals[cause],
+      colorIndex,
+      share: total > 0 ? totals[cause] / total : 0,
+    })).sort((a, b) => b.value - a.value)
+  })
+
+  const exceptionsOverMonths = computed(() => ({
+    labels: metrics.months.map((m) => m.label),
+    values: metrics.months.map((m) => aggregate(regionsFor(m, selectedRegion.value)).openExceptions),
+  }))
+
+  /** What first-attempt failures cost, priced with costPerParcel. */
+  const firstAttemptCost = computed(() => {
+    const agg = current.value
+    const missed = Math.round(agg.parcelsDelivered * (1 - agg.firstAttemptRate))
+    return {
+      firstAttemptRate: agg.firstAttemptRate,
+      missedParcels: missed,
+      costPerParcel: agg.costPerParcel,
+      // a missed first attempt means the parcel moves at least once more
+      redeliveryCost: missed * agg.costPerParcel,
+      damagedParcels: agg.damagedParcels,
+      returnedParcels: agg.returnedParcels,
+    }
+  })
+
+  // ---- /cargo: properties, not volume repeated -----------------------------
+  const cargoProperties = computed(() =>
+    metrics.cargoTypes.map((cargo, colorIndex) => {
+      const props = metrics.cargoProperties[cargo]
+      const volume = current.value.cargoMix[cargo] ?? 0
+      return {
+        cargo,
+        colorIndex,
+        volume,
+        avgWeightKg: props.avgWeightKg,
+        damageRate: props.damageRate,
+        avgTransitDays: props.avgTransitDays,
+        revenuePerParcel: props.revenuePerParcel,
+        revenue: volume * props.revenuePerParcel,
+      }
+    }),
+  )
+
+  const revenueByCargo = computed(() => {
+    const rows = [...cargoProperties.value].sort((a, b) => b.revenue - a.revenue)
+    const total = rows.reduce((a, r) => a + r.revenue, 0)
+    return rows.map((r) => ({ ...r, share: total > 0 ? r.revenue / total : 0 }))
+  })
+
+  // ---- /network: the WHERE --------------------------------------------------
+  const capacityByRegion = computed(() => {
+    const months = monthsFor(selectedMonth.value)
+    const scope =
+      selectedRegion.value === ALL_REGIONS ? metrics.regions : [selectedRegion.value as RegionName]
+    return scope.map((region) => {
+      const recs = months.flatMap((m) => m.regions.filter((r) => r.region === region))
+      const agg = aggregate(recs)
+      return {
+        region,
+        capacityUtilization: agg.capacityUtilization,
+        avgTransitDays: agg.avgTransitDays,
+      }
+    })
+  })
+
+  /** Fastest and slowest growing region over the full series. */
+  const regionGrowth = computed(() => {
+    const first = metrics.months[0]!
+    const last = metrics.months[metrics.months.length - 1]!
+    const scope =
+      selectedRegion.value === ALL_REGIONS ? metrics.regions : [selectedRegion.value as RegionName]
+    return scope
+      .map((region) => {
+        const a = first.regions.find((r) => r.region === region)?.parcelsDelivered ?? 0
+        const b = last.regions.find((r) => r.region === region)?.parcelsDelivered ?? 0
+        return { region, change: a > 0 ? (b - a) / a : 0, from: a, to: b }
+      })
+      .sort((x, y) => y.change - x.change)
+  })
+
+  // ---- /couriers: the WHO ---------------------------------------------------
+  const courierStops = computed(() => ({
+    labels: filteredCouriers.value.map((c) => c.name),
+    values: filteredCouriers.value.map((c) => c.stopsPerRun),
+  }))
+
+  const courierFirstAttempt = computed(() => ({
+    labels: filteredCouriers.value.map((c) => c.name),
+    values: filteredCouriers.value.map((c) => c.firstAttemptRate),
+  }))
+
+  const courierRest = computed(() => ({
+    labels: filteredCouriers.value.map((c) => c.name),
+    values: filteredCouriers.value.map((c) => c.restDaysTaken),
+  }))
+
   return {
     // company identity
     company: metrics.company,
@@ -694,5 +887,21 @@ export function useMetrics() {
     courierStatusBreakdown,
     cargoTypes: metrics.cargoTypes,
     regions: metrics.regions,
+
+    // expanded page content
+    industryBenchmark: INDUSTRY_BENCHMARK,
+    onTimeOverMonths,
+    costOverMonths,
+    seasonality,
+    exceptionsByCause,
+    exceptionsOverMonths,
+    firstAttemptCost,
+    cargoProperties,
+    revenueByCargo,
+    capacityByRegion,
+    regionGrowth,
+    courierStops,
+    courierFirstAttempt,
+    courierRest,
   }
 }

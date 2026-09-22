@@ -7,7 +7,8 @@ import { useMetrics } from '@/composables/useMetrics'
 import { SPRITE_FALLBACK_ICON, spriteUrl } from '@/utils/sprites'
 import type { CourierStatus } from '@/types/metrics'
 
-const { filteredCouriers, courierOnTime, courierStatusBreakdown } = useMetrics()
+const { filteredCouriers, courierStops, courierFirstAttempt, courierRest, courierStatusBreakdown } =
+  useMetrics()
 
 const STATUS_COLOR: Record<CourierStatus, string> = {
   'On Route': 'success',
@@ -52,8 +53,12 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
               <dd>{{ num(c.runs) }}</dd>
             </div>
             <div class="courier__stat">
-              <dt>On-Time</dt>
-              <dd>{{ pct(c.onTimeRate) }}</dd>
+              <dt>Stops / Run</dt>
+              <dd>{{ num(c.stopsPerRun) }}</dd>
+            </div>
+            <div class="courier__stat">
+              <dt>Tenure</dt>
+              <dd>{{ c.tenureMonths }}mo</dd>
             </div>
           </dl>
 
@@ -65,15 +70,45 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
     </v-row>
 
     <v-row dense class="mb-2">
+      <v-col cols="12" lg="6">
+        <v-card class="pp-card-pad" height="100%">
+          <h2 class="pp-card-title">Stops per Run</h2>
+          <p class="pp-card-subtitle">Average delivery stops each courier makes per run.</p>
+          <BarSeriesChart
+            :labels="courierStops.labels"
+            :values="courierStops.values"
+            :height="210"
+            unit="stops"
+          />
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" lg="6">
+        <v-card class="pp-card-pad" height="100%">
+          <h2 class="pp-card-title">First-Attempt Rate by Courier</h2>
+          <p class="pp-card-subtitle">Share of parcels each courier lands on the first try.</p>
+          <BarSeriesChart
+            :labels="courierFirstAttempt.labels"
+            :values="courierFirstAttempt.values"
+            format="percent"
+            :color-index="2"
+            :height="210"
+          />
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row dense class="mb-2">
       <v-col cols="12" lg="7">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">On-Time Rate by Courier</h2>
-          <p class="pp-card-subtitle">Individual on-time delivery rates side by side.</p>
+          <h2 class="pp-card-title">Rest Days Taken</h2>
+          <p class="pp-card-subtitle">Rest days each courier has taken across their tenure.</p>
           <BarSeriesChart
-            :labels="courierOnTime.labels"
-            :values="courierOnTime.values"
-            format="percent"
-            :height="220"
+            :labels="courierRest.labels"
+            :values="courierRest.values"
+            :color-index="3"
+            :height="210"
+            unit="days"
           />
         </v-card>
       </v-col>

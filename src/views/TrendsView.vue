@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import PageHeader from '@/components/PageHeader.vue'
-import BarSeriesChart from '@/components/charts/BarSeriesChart.vue'
+import LineSeriesChart from '@/components/charts/LineSeriesChart.vue'
 import DeliveryTrendChart from '@/components/charts/DeliveryTrendChart.vue'
 import SparkLine from '@/components/charts/SparkLine.vue'
 import { useMetrics } from '@/composables/useMetrics'
 
-const { trendChart, regionChart, showRegionChart, monthlyTable, regionSparklines } = useMetrics()
+const {
+  trendChart,
+  monthlyTable,
+  regionSparklines,
+  onTimeOverMonths,
+  costOverMonths,
+  seasonality,
+  onTimeTarget,
+  industryBenchmark,
+} = useMetrics()
 
 const num = (n: number) => n.toLocaleString('en-US')
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`
@@ -37,22 +46,61 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
     </v-row>
 
     <v-row dense class="mb-2">
+      <v-col cols="12" lg="7">
+        <v-card class="pp-card-pad" height="100%">
+          <h2 class="pp-card-title">On-Time Rate Over Time</h2>
+          <p class="pp-card-subtitle">
+            Monthly on-time rate against the internal target and the industry benchmark.
+          </p>
+          <LineSeriesChart
+            :labels="onTimeOverMonths.labels"
+            :values="onTimeOverMonths.values"
+            format="percent"
+            :references="[
+              { value: onTimeTarget, label: 'Internal target' },
+              { value: industryBenchmark, label: 'Industry benchmark' },
+            ]"
+            :height="240"
+          />
+        </v-card>
+      </v-col>
+
       <v-col cols="12" lg="5">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Parcels by Region</h2>
-          <p class="pp-card-subtitle">Total parcels delivered by region.</p>
-          <BarSeriesChart
-            v-if="showRegionChart"
-            :labels="regionChart.labels"
-            :values="regionChart.values"
+          <h2 class="pp-card-title">Cost per Parcel Over Time</h2>
+          <p class="pp-card-subtitle">Monthly delivery cost per parcel, in Pokédollars.</p>
+          <LineSeriesChart
+            :labels="costOverMonths.labels"
+            :values="costOverMonths.values"
+            format="currency"
+            :color-index="2"
             :height="240"
-            unit="parcels"
           />
-          <div v-else class="empty-state d-flex align-center justify-center text-center px-4">
-            <p class="text-caption text-muted mb-0">
-              Showing a single region — switch Region to
-              <strong>All Regions</strong> to compare across the network.
-            </p>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row dense class="mb-2">
+      <v-col cols="12" lg="5">
+        <v-card class="pp-card-pad" height="100%">
+          <h2 class="pp-card-title">Seasonality</h2>
+          <p class="pp-card-subtitle">The busiest and quietest months in the period.</p>
+          <div class="season">
+            <div class="season__item">
+              <p class="season__label">Peak</p>
+              <p class="season__month">{{ seasonality.peak.label }}</p>
+              <p class="season__value">{{ num(seasonality.peak.parcels) }}</p>
+            </div>
+            <div class="season__item">
+              <p class="season__label">Trough</p>
+              <p class="season__month">{{ seasonality.trough.label }}</p>
+              <p class="season__value">{{ num(seasonality.trough.parcels) }}</p>
+            </div>
+            <div class="season__item">
+              <p class="season__label">Swing</p>
+              <p class="season__month">Peak over trough</p>
+              <p class="season__value">+{{ (seasonality.swing * 100).toFixed(0) }}%</p>
+            </div>
           </div>
         </v-card>
       </v-col>
@@ -113,8 +161,38 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 </template>
 
 <style scoped>
-.empty-state {
-  height: 240px;
+.season {
+  display: grid;
+  gap: 12px;
+}
+
+.season__item {
+  padding: 10px 0;
+}
+
+.season__item + .season__item {
+  border-top: 1px solid rgba(var(--v-theme-muted), 0.16);
+}
+
+.season__label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgb(var(--v-theme-muted));
+  margin: 0;
+}
+
+.season__month {
+  font-size: 12.5px;
+  margin: 3px 0 0;
+}
+
+.season__value {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 2px 0 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .sparks {

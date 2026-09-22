@@ -19,13 +19,15 @@ const props = withDefaults(
   defineProps<{
   /** Taller panels for the dedicated Trends page. */
   tall?: boolean
+  /** Overview shows the parcels panel only — Trends owns the paired view. */
+  parcelsOnly?: boolean
   labels: string[]
   parcelsDelivered: number[]
   gymSupplyRuns: number[]
   /** Index of the month to mark, or -1 for none. */
   selectedIndex: number
 }>(),
-  { tall: false },
+  { tall: false, parcelsOnly: false },
 )
 
 const { muted, grid, surface, ink } = useChartTheme()
@@ -126,7 +128,9 @@ const gymData = computed(() => ({
   datasets: [series(props.gymSupplyRuns, SEQUENTIAL_COLORS[1])],
 }))
 
-const parcelsOptions = computed(() => panelOptions({ showXTicks: false, unit: 'parcels' }))
+const parcelsOptions = computed(() =>
+  panelOptions({ showXTicks: props.parcelsOnly, unit: 'parcels' }),
+)
 const gymOptions = computed(() => panelOptions({ showXTicks: true, unit: 'runs' }))
 </script>
 
@@ -140,13 +144,15 @@ const gymOptions = computed(() => panelOptions({ showXTicks: true, unit: 'runs' 
       <Line :data="parcelsData" :options="parcelsOptions" />
     </div>
 
-    <div class="panel-label text-caption text-muted mt-3">
-      <span class="dot" :style="{ background: SEQUENTIAL_COLORS[1] }" />
-      Gym Supply Runs
-    </div>
-    <div class="panel" :class="tall ? 'panel--short-lg' : 'panel--short'">
-      <Line :data="gymData" :options="gymOptions" />
-    </div>
+    <template v-if="!parcelsOnly">
+      <div class="panel-label text-caption text-muted mt-3">
+        <span class="dot" :style="{ background: SEQUENTIAL_COLORS[1] }" />
+        Gym Supply Runs
+      </div>
+      <div class="panel" :class="tall ? 'panel--short-lg' : 'panel--short'">
+        <Line :data="gymData" :options="gymOptions" />
+      </div>
+    </template>
   </div>
 </template>
 
