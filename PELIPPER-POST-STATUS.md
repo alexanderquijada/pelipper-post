@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-22 — **Layout tightened; redundant cargo doughnut removed.** Only the Vercel deployment is outstanding.
+- **Last updated:** 2026-09-22 — **Card copy tightened; redundant chrome removed.** Only the Vercel deployment is outstanding.
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -731,6 +731,29 @@ Append here as the build goes. Date, what came up, what was decided.
   unchanged, build **exit 0**, **0 console errors**, Hoenn + Aug 2026 still **3,242 / 342 / 38 / 5**,
   all three derived cards still respond to both filters, both themes work.
 
+- **2026-09-22 — Card copy tightened, redundant chrome removed.** Six edits: the *About this data*
+  dialog and its sidebar row deleted, `· mock dataset` dropped from the top bar, the filter summary
+  moved under the **Overview** heading as its subtitle, the page footer removed, *"Nothing here is
+  hardcoded."* struck from the Signals card, and **all six card subtitles rewritten to say what the
+  card SHOWS** — no derivation, thresholds, filter behaviour or dot-colour legends.
+
+  The subtitles are now **specified in `BRIEF.md` §4 under *Card copy*** rather than invented per
+  phase, which is what let them drift into explaining themselves in the first place.
+
+  **The fabricated-data disclosure is not lost** — `README.md` carries a dedicated *All of the data
+  is fake* section opening "Every number in this repository is fabricated." Verified present before
+  removing the in-app copies.
+
+  **A real defect surfaced by the "no content touches a card edge" check:** `.pp-card-pad` computed
+  to **0px**. The rule existed and looked right in the stylesheet, but a lone `.pp-card-pad` (0,1,0)
+  ties with Vuetify's own `.v-card` rule and loses on cascade order — so the six non-KPI cards had
+  been running with **zero padding**, content flush to the border. Fixed with `.v-card.pp-card-pad`.
+  All eleven cards now measure a uniform **21px** minimum gap from content to card edge.
+
+  Re-verified: validator **exit 0**, `metrics.json` unchanged, chart palettes unchanged, build
+  **exit 0**, **0 console errors**, both themes, both filters still driving every card.
+  Page height 1494, roster top 1076 — the roster stays below the fold, as ratified.
+
 ---
 
 ## 8. Known issues / watch list
@@ -947,6 +970,15 @@ Append here as the build goes. Date, what came up, what was decided.
   **If Alex wants the real fix**, the cheapest version keeps the brief's five hues but re-orders them
   so the two similar blues are never adjacent, and darkens `#7FD1E8` a step. That is a change to
   `BRIEF.md` §6 and is his decision, not one to make silently.
+
+- ⚠️ **STANDING RULE — a single-class global rule will lose to Vuetify. Use two classes.**
+  This has now bitten **three times**: card radius (`rounded="lg"` utility carried `!important`),
+  content max-width (`v-container`'s own breakpoint maximum), and card padding (`.pp-card-pad`
+  computed to 0px against `.v-card`). In every case the rule was present and looked correct in the
+  stylesheet while computing to the wrong value. **Write `.v-card.pp-card-pad`, not `.pp-card-pad`**,
+  and **verify with `getComputedStyle`, never by eye** — all three of these passed visual review.
+  `CLAUDE.md` rule 8 says fix it with Vuetify props and specificity, not `!important`; that still
+  holds.
 
 - 📏 **STANDING RULE — a delta on a RATE metric is reported in percentage POINTS, never percent.**
   `MetricCard` takes `trendUnit: 'relative' | 'points'`; any metric whose value is itself a rate must

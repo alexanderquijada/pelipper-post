@@ -23,9 +23,7 @@ const SEVERITY_LABEL: Record<Signal['severity'], string> = {
 <template>
   <v-card class="pp-card-pad" height="100%">
     <h2 class="pp-card-title">Critical Delivery Signals</h2>
-    <p class="pp-card-subtitle">
-      Derived from the current selection — most severe first. Nothing here is hardcoded.
-    </p>
+    <p class="pp-card-subtitle">Notable shifts in network performance.</p>
 
     <ul v-if="signals.length" class="signals">
       <li v-for="s in signals" :key="s.id" class="signal">

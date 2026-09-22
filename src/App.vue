@@ -23,7 +23,6 @@ const { width } = useDisplay()
 const rail = computed(() => width.value < 960)
 
 const brandSpriteFailed = ref(false)
-const aboutOpen = ref(false)
 
 /**
  * Anchor links, not routes. One route, one page — CLAUDE.md rule 6 stands.
@@ -118,11 +117,6 @@ onBeforeUnmount(() => observer?.disconnect())
             :title="isDark ? 'Dark theme' : 'Light theme'"
             @click="toggleTheme"
           />
-          <v-list-item
-            prepend-icon="mdi-information-outline"
-            title="About this data"
-            @click="aboutOpen = true"
-          />
         </v-list>
       </template>
     </v-navigation-drawer>
@@ -132,7 +126,7 @@ onBeforeUnmount(() => observer?.disconnect())
       <div class="topbar__inner">
         <div class="topbar__titles">
           <h1 class="topbar__title">Pelipper Operations</h1>
-          <p class="topbar__meta">Data through Sep 2026 · mock dataset</p>
+          <p class="topbar__meta">Data through Sep 2026</p>
         </div>
 
         <v-spacer />
@@ -164,36 +158,8 @@ onBeforeUnmount(() => observer?.disconnect())
 
     <v-main class="above-sky">
       <RouterView />
-
-      <v-container class="pelipper-width pt-0 pb-8 px-4">
-        <p class="text-caption text-muted mb-0">
-          Made with coffee and Claude Code · mock data, not a real carrier.
-        </p>
-      </v-container>
     </v-main>
 
-    <!-- ---------- about this data ---------- -->
-    <v-dialog v-model="aboutOpen" max-width="520">
-      <v-card class="pa-6">
-        <h2 class="pp-card-title mb-2">About this data</h2>
-        <p class="text-body-2 mb-3">
-          <strong>Every number in this dashboard is fabricated.</strong> Pelipper Post &amp; Freight
-          does not exist — there is no real carrier, no real logistics network and no real courier
-          roster behind any of it.
-        </p>
-        <p class="text-body-2 mb-3">
-          The dataset is 72 generated records — twelve months across six regions — built to look
-          like a plausible business, with seasonal peaks, a storm-season dip and distinct per-region
-          behaviour, so the dashboard has something realistic to display.
-        </p>
-        <p class="text-body-2 text-muted mb-4">
-          No client data, no employer data and no real people appear anywhere in this project.
-          Pokémon sprites are hotlinked from the community PokeAPI CDN and are not redistributed
-          here; Pokémon is a trademark of Nintendo / Creatures Inc. / GAME FREAK.
-        </p>
-        <v-btn color="primary" variant="flat" block @click="aboutOpen = false">Close</v-btn>
-      </v-card>
-    </v-dialog>
   </v-app>
 </template>
 
@@ -227,8 +193,11 @@ onBeforeUnmount(() => observer?.disconnect())
   box-shadow: 0 1px 2px rgba(15, 30, 45, 0.05), 0 1px 10px rgba(15, 30, 45, 0.04);
 }
 
-/* Card internals — 20px padding, 15px/600 title, 12px muted subtitle. */
-.pp-card-pad {
+/* Card internals — 20px padding, 15px/600 title, 12px muted subtitle.
+   Needs `.v-card.pp-card-pad` (0,2,0): a lone `.pp-card-pad` ties with Vuetify's
+   own `.v-card` rule and loses on cascade order, silently giving the card zero
+   padding. Third time this pattern has bitten here — see §8. */
+.v-card.pp-card-pad {
   padding: 20px;
 }
 

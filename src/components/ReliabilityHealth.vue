@@ -9,9 +9,7 @@ const HEALTH_LABEL = { good: 'Healthy', warn: 'Watch', bad: 'At risk' } as const
 <template>
   <v-card class="pp-card-pad" height="100%">
     <h2 class="pp-card-title">Network Reliability &amp; Fulfillment Health</h2>
-    <p class="pp-card-subtitle">
-      Dot colour reflects whether the figure is healthy, not simply what it is.
-    </p>
+    <p class="pp-card-subtitle">Key delivery and fleet health measures.</p>
 
     <ul class="health">
       <li v-for="row in rows" :key="row.label" class="health__row" :title="row.hint">

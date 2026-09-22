@@ -294,11 +294,10 @@ below 960px**:
 - These are **anchor links that smooth-scroll to sections of this one page.** They are not routes —
   `CLAUDE.md` rule 6 still stands: one route, one page. The active item highlights as you scroll,
   driven by an `IntersectionObserver` over the section anchors.
-- Pinned to the bottom: a **theme toggle** row, and an **About this data** row opening a dialog that
-  states plainly that every number is fabricated mock data.
+- Pinned to the bottom: a **theme toggle** row. This is the only theme toggle in the app.
 
-**Top bar** — **Pelipper Operations** as the heading, with **"Data through Sep 2026 · mock dataset"**
-beneath it in small muted text. On the right: the **two filters** only (Month and Region — they move up
+**Top bar** — **Pelipper Operations** as the heading, with **"Data through Sep 2026"** beneath it in
+small muted text. On the right: the **two filters** only (Month and Region — they move up
 here, replacing the old standalone filter row). **The theme toggle lives in the sidebar footer and
 appears exactly once** — the top bar already carries the filters.
 
@@ -313,7 +312,7 @@ was wrong. These values are the specification, not suggestions:
 | KPI label | **11px**, uppercase, `letter-spacing: .06em`, muted |
 | KPI delta | a small tinted **pill** — rounded chip, tinted background, **11px**. Not bare arrow text. |
 | Card title | **15px / 600** |
-| Card subtitle | **12px** muted, one line, explaining what the card shows |
+| Card subtitle | **12px** muted, one line. See *Card copy* below — the exact strings are specified, not invented. |
 | Card padding | **20px** |
 | Grid gutter | **16px** |
 | Card radius | **12px** |
@@ -325,6 +324,31 @@ was wrong. These values are the specification, not suggestions:
 | Content max-width | **1440px** |
 
 **Row order:** KPI strip / trend + region bars / the three derived cards / courier roster.
+
+### Card copy
+
+Every card carries a one-line subtitle that says **what the card shows** — nothing about how the
+number is derived, which filter it respects, what the thresholds are, or what the dot colours mean.
+That is implementation detail; a reader in a meeting needs to know what they are looking at.
+
+**These strings are the specification. Do not paraphrase them per phase.**
+
+| Card | Subtitle |
+|---|---|
+| Gym Supply Runs & Parcels Delivered | Monthly parcel volume and gym supply runs over the trailing twelve months. |
+| Parcels by Region | Total parcels delivered by region. |
+| Critical Delivery Signals | Notable shifts in network performance. |
+| Top Cargo Categories | Parcels delivered by cargo type. |
+| Network Reliability & Fulfillment Health | Key delivery and fleet health measures. |
+| Courier Roster | Couriers, their home regions, and delivery performance. |
+
+The **Overview** section heading takes the filter summary as its subtitle —
+*"Showing 12 months across 6 regions · Trends compare Sep 2026 to Aug 2026."* — sitting directly
+beneath the heading. It appears there and nowhere else.
+
+**No page footer**, and **no "About this data" dialog**. The fabricated-data disclosure lives in
+`README.md`, which carries a dedicated *All of the data is fake* section; it does not need repeating
+as page chrome. The top bar reads **"Data through Sep 2026"** and nothing more.
 
 ### Sections, top to bottom
 
@@ -363,8 +387,6 @@ was wrong. These values are the specification, not suggestions:
 6. **Courier roster** — **full width, in its own row** below the three derived cards. Table with: circular sprite avatar, courier name, species, home
    region, total runs, on-time rate, and status as a coloured chip. Respects the region filter.
    Compact density, 44px rows.
-
-7. **Footer** — small muted line: *"Made with coffee and Claude Code · mock data, not a real carrier."*
 
 **Removed:** the **Cargo Mix doughnut** — it displayed exactly the same data as *Top Cargo
 Categories*, and the bars carry more (item sprite, absolute value and share). One view of one

@@ -73,9 +73,9 @@ const kpiCards = computed<MetricCardProps[]>(() => [
     <template v-if="hasData">
       <!-- ---------- Overview: KPI strip ---------- -->
       <section id="overview" class="pp-section">
-        <div class="d-flex align-baseline justify-space-between flex-wrap ga-2 mb-3">
+        <div class="mb-3">
           <p class="pp-eyebrow mb-0">Overview</p>
-          <p class="text-caption text-muted mb-0">
+          <p class="pp-section-subtitle">
             {{ filterCaption }}<template v-if="trendCaption"> · {{ trendCaption }}</template>
           </p>
         </div>
@@ -94,7 +94,7 @@ const kpiCards = computed<MetricCardProps[]>(() => [
             <v-card class="pp-card-pad" height="100%">
               <h2 class="pp-card-title">Gym Supply Runs &amp; Parcels Delivered</h2>
               <p class="pp-card-subtitle">
-                All twelve months. Respects the region filter; the selected month is marked.
+                Monthly parcel volume and gym supply runs over the trailing twelve months.
               </p>
               <DeliveryTrendChart
                 :labels="trendChart.labels"
@@ -108,7 +108,7 @@ const kpiCards = computed<MetricCardProps[]>(() => [
           <v-col cols="12" lg="4">
             <v-card class="pp-card-pad" height="100%">
               <h2 class="pp-card-title">Parcels by Region</h2>
-              <p class="pp-card-subtitle">Total parcels delivered across the selected months.</p>
+              <p class="pp-card-subtitle">Total parcels delivered by region.</p>
 
               <RegionBarChart
                 v-if="showRegionChart"
@@ -145,7 +145,7 @@ const kpiCards = computed<MetricCardProps[]>(() => [
       <section id="couriers" class="pp-section">
         <v-card class="pp-card-pad">
           <h2 class="pp-card-title">Courier Roster</h2>
-          <p class="pp-card-subtitle">Fleet in scope for the selected region.</p>
+          <p class="pp-card-subtitle">Couriers, their home regions, and delivery performance.</p>
           <CourierRoster :couriers="filteredCouriers" />
         </v-card>
       </section>
@@ -168,6 +168,13 @@ const kpiCards = computed<MetricCardProps[]>(() => [
 .pp-section {
   margin-bottom: 16px;
   scroll-margin-top: 80px;
+}
+
+.pp-section-subtitle {
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgb(var(--v-theme-muted));
+  margin: 2px 0 0;
 }
 
 .pp-eyebrow {
