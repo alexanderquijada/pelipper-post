@@ -83,6 +83,56 @@ export const ICON_GLYPH_DARK = {
 
 export type EditorialKey = keyof typeof EDITORIAL_LIGHT
 
+/**
+ * WEATHER tints — one visual channel per meaning.
+ *
+ * The weather icon previously took its tint from the DELAY RISK, which put snow
+ * in a red circle and clear skies in a teal one: two meanings fighting over one
+ * channel, and the reader has no way to tell which one the colour is encoding.
+ * Now the icon carries the weather and the risk chip alone carries the risk.
+ *
+ * These are weather-appropriate, not categorical — blue-grey snow, amber sun,
+ * slate fog — so they are never used to distinguish unordered categories and the
+ * colourblind constraint doesn't bind (BRIEF.md §6). They still have to clear
+ * 3:1 as graphical objects, which is why there are two variants: a tint dark
+ * enough to read on white is invisible on the dark card and vice versa.
+ */
+export type WeatherKind = 'clear' | 'partly' | 'rain' | 'snow' | 'wind' | 'fog'
+
+export const WEATHER_LIGHT: Record<WeatherKind, string> = {
+  clear: '#B06E00',
+  partly: '#3D77A8',
+  rain: '#2C6FA8',
+  snow: '#4E6E88',
+  wind: '#2E7F7A',
+  fog: '#5C6875',
+}
+
+export const WEATHER_DARK: Record<WeatherKind, string> = {
+  clear: '#F0B052',
+  partly: '#79B4E4',
+  rain: '#62A6DE',
+  snow: '#A9C3D8',
+  wind: '#5CC0B6',
+  fog: '#9CA9B7',
+}
+
+/**
+ * Icon name -> weather kind. Keyed off `icon` rather than `condition` because
+ * the icon name is already a controlled vocabulary; `condition` is free prose
+ * ("Rain easing", "Snow at altitude") and would need matching on substrings.
+ * Anything unrecognised falls back to `fog`'s neutral slate rather than
+ * borrowing a colour that would imply the wrong weather.
+ */
+export function weatherKind(icon: string): WeatherKind {
+  if (icon.includes('sunny')) return 'clear'
+  if (icon.includes('partly-cloudy') || icon.includes('cloudy')) return 'partly'
+  if (icon.includes('snow')) return 'snow'
+  if (icon.includes('rain') || icon.includes('pouring') || icon.includes('hail')) return 'rain'
+  if (icon.includes('windy') || icon.includes('tornado') || icon.includes('hurricane')) return 'wind'
+  return 'fog'
+}
+
 /** #RRGGBB -> "r, g, b" for use inside rgba(). */
 export function rgbTriplet(hex: string): string {
   const n = Number.parseInt(hex.replace('#', ''), 16)
@@ -127,6 +177,8 @@ export function useChartTheme() {
     editorial: computed(() => (isDark.value ? EDITORIAL_DARK : EDITORIAL_LIGHT)),
     /** Glyph colour for an icon sitting on a tint of its own accent. */
     iconGlyph: computed(() => (isDark.value ? ICON_GLYPH_DARK : ICON_GLYPH_LIGHT)),
+    /** Weather-appropriate tint for a weather glyph. Never encodes delay risk. */
+    weather: computed(() => (isDark.value ? WEATHER_DARK : WEATHER_LIGHT)),
   }
 }
 

@@ -90,7 +90,26 @@ Set for late September, with storm season just past, and coherent with each regi
 Kanto clear (Low) · Johto partly cloudy (Low) · Hoenn rain easing (Moderate) · Sinnoh snow at
 altitude (High) · Unova windy (Moderate) · Galar fog and drizzle (Moderate).
 
-**Icon names must be verified to render** — a wrong MDI name produces an empty box, not an error.
+**`delayRisk` must FOLLOW from `condition`**, never be set independently:
+
+| Condition | Delay risk |
+|---|---|
+| snow, storms / lightning | **High** |
+| fog, wind, rain / hail | **Moderate** |
+| clear, partly cloudy | **Low** |
+
+A risk that doesn't follow from the weather is unreadable — nobody can tell a deliberate exception
+from a typo. `scripts/validate-data.mjs` derives the expected risk from the icon name and fails the
+build on any mismatch.
+
+**Icon names must be verified to render** — a wrong MDI name produces an empty box, not an error, so
+it survives every test that only checks the element exists. The validator now checks each `icon`
+against the `mdi-*` classes actually defined in the installed `node_modules/@mdi/font` stylesheet.
+
+**The name existing is not sufficient — the glyph has to read at its rendered size.** `mdi-weather-snowy`
+is a real icon that draws a cloud with one small flake; at 20px the flake disappears and it reads as
+plain cloud. Sinnoh uses **`mdi-weather-snowy-heavy`** for that reason. Render each icon and look at
+it; don't stop at "the class exists".
 
 These ranges are wide on purpose — they have to hold for *both* the smallest region in its
 slowest month *and* the largest region at the peak of Gym Season. A small region like Galar will sit
@@ -666,6 +685,23 @@ point — do not make every card full width.
 ---
 
 ## 6. Style
+
+### Standing rule — one visual channel per meaning
+
+**A single channel encodes a single thing.** The weather icon's circle was tinted by *delay risk*,
+which put a snowflake inside a red circle and a sun inside a teal one: the glyph said one thing and
+its own background said another, with nothing telling the reader which meaning the colour carried.
+
+Now the **weather icon carries the weather** — blue-grey snow, amber sun, slate fog, in
+`WEATHER_LIGHT` / `WEATHER_DARK` — and the **chip alone carries the risk**. These tints are
+weather-appropriate rather than categorical, so they never distinguish unordered categories and the
+colour-blind constraint below doesn't bind; they still have to clear **3:1** as graphical objects
+against both the circle and the card, which is why there are two variants.
+
+**Any value shown as a colour, a chip or a bare number needs a visible label.** The delay-risk chip
+read "High" beside "−3°C" with nothing naming it, so it could equally have meant high temperature.
+Every place risk appears now labels it: a `Delay Risk` column header on the weather card, its own
+column in the courier roster, and a `Delay risk` term in the courier tile's stat list.
 
 ### Standing rule — card copy must hold in every filter state
 

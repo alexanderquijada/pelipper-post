@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { rgbTriplet, useChartTheme } from '@/components/charts/chartTheme'
+import { rgbTriplet, useChartTheme, weatherKind } from '@/components/charts/chartTheme'
 import type { DelayRisk, RegionWeather } from '@/types/metrics'
 
 defineProps<{ rows: RegionWeather[] }>()
@@ -10,35 +10,50 @@ const RISK_COLOR: Record<DelayRisk, string> = {
   Low: 'success',
 }
 
-// Circle tint tracks the delay risk, so the row reads before you get to the chip.
-const RISK_ACCENT: Record<DelayRisk, 'coral' | 'orange' | 'teal'> = {
-  High: 'coral',
-  Moderate: 'orange',
-  Low: 'teal',
-}
-
-const { editorial, iconGlyph } = useChartTheme()
-const accentRgb = (risk: DelayRisk) => rgbTriplet(editorial.value[RISK_ACCENT[risk]])
-const glyphRgb = (risk: DelayRisk) => rgbTriplet(iconGlyph.value[RISK_ACCENT[risk]])
+/**
+ * The circle tint tracks the WEATHER, not the delay risk. Tinting it by risk put
+ * a snowflake in a red circle and a sun in a teal one — the icon said one thing
+ * and its own background said another. The chip is the only risk encoder here.
+ */
+const { weather } = useChartTheme()
+const wxRgb = (icon: string) => rgbTriplet(weather.value[weatherKind(icon)])
 </script>
 
 <template>
   <v-card class="pp-card-pad" height="100%">
     <h2 class="pp-card-title">Weather Delays Today</h2>
-    <p class="pp-card-subtitle">Where conditions are likely to slow deliveries right now.</p>
+    <p class="pp-card-subtitle">
+      Current conditions in each region, and how likely they are to delay deliveries.
+    </p>
+
+    <!-- The chip used to sit unlabelled beside a temperature, so "High" read as
+         either a temperature or an unnamed severity. The header names it. -->
+    <div class="wx__head" aria-hidden="true">
+      <span></span>
+      <span>Region</span>
+      <span>Conditions</span>
+      <span>Temp</span>
+      <span class="wx__head-risk">Delay Risk</span>
+    </div>
 
     <ul class="wx">
       <li v-for="w in rows" :key="w.region" class="wx__row" :title="w.note">
         <span
           class="pp-ico pp-ico--sm"
-          :style="{ '--pp-accent-rgb': accentRgb(w.delayRisk), '--pp-glyph-rgb': glyphRgb(w.delayRisk) }"
+          :style="{ '--pp-accent-rgb': wxRgb(w.icon), '--pp-glyph-rgb': wxRgb(w.icon) }"
         >
-          <v-icon :icon="w.icon" size="20" />
+          <v-icon :icon="w.icon" size="22" />
         </span>
         <span class="wx__region">{{ w.region }}</span>
         <span class="wx__condition">{{ w.condition }}</span>
         <span class="wx__temp">{{ w.tempC }}°C</span>
-        <v-chip :color="RISK_COLOR[w.delayRisk]" variant="tonal" size="x-small" class="wx__chip">
+        <v-chip
+          :color="RISK_COLOR[w.delayRisk]"
+          variant="tonal"
+          size="x-small"
+          class="wx__chip"
+          :aria-label="`Delay risk: ${w.delayRisk}`"
+        >
           {{ w.delayRisk }}
         </v-chip>
       </li>
@@ -53,11 +68,30 @@ const glyphRgb = (risk: DelayRisk) => rgbTriplet(iconGlyph.value[RISK_ACCENT[ris
   margin: 0;
 }
 
+/* Identical track sizing to .wx__row so each label sits over its own column. */
+.wx__head,
 .wx__row {
   display: grid;
   grid-template-columns: 34px 62px 1fr auto auto;
   align-items: center;
   gap: 10px;
+}
+
+.wx__head {
+  padding: 2px 0 6px;
+  border-bottom: 1px solid rgba(var(--v-theme-muted), 0.16);
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(var(--v-theme-muted));
+}
+
+.wx__head-risk {
+  justify-self: end;
+}
+
+.wx__row {
   padding: 8px 0;
 }
 

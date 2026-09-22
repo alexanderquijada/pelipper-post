@@ -8,12 +8,13 @@
  * output tells you in plain language whether the mock data is good. Green = fine.
  */
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const dataPath = resolve(here, '../src/data/metrics.json');
+const root = resolve(here, '..');
+const dataPath = resolve(root, 'src/data/metrics.json');
 
 const G = '\x1b[32m', R = '\x1b[31m', Y = '\x1b[33m', D = '\x1b[2m', X = '\x1b[0m';
 const problems = [];
@@ -315,6 +316,44 @@ if (dawdle && fleet.length) {
 }
 
 // ---------- weather ----------
+/**
+ * Every `mdi-*` class the installed font actually defines. Parsed from the real
+ * stylesheet rather than a hardcoded list, so it tracks whatever version is in
+ * node_modules. If the file is missing the icon-name check is skipped loudly
+ * instead of passing vacuously — a check that cannot fail proves nothing.
+ */
+const MDI_CSS = resolve(root, 'node_modules/@mdi/font/css/materialdesignicons.css');
+const MDI_NAMES = new Set();
+if (existsSync(MDI_CSS)) {
+  for (const m of readFileSync(MDI_CSS, 'utf8').matchAll(/\.(mdi-[a-z0-9-]+)::?before/g)) {
+    MDI_NAMES.add(m[1]);
+  }
+}
+if (MDI_NAMES.size === 0) {
+  fail('cannot read @mdi/font stylesheet — icon names are UNVERIFIED; run npm install');
+}
+
+/** Same vocabulary as `weatherKind` in src/components/charts/chartTheme.ts. */
+function weatherKind(icon) {
+  if (icon.includes('sunny')) return 'clear';
+  if (icon.includes('partly-cloudy') || icon.includes('cloudy')) return 'partly';
+  if (icon.includes('snow')) return 'snow';
+  if (icon.includes('rain') || icon.includes('pouring') || icon.includes('hail')) return 'rain';
+  if (icon.includes('windy') || icon.includes('tornado') || icon.includes('hurricane')) return 'wind';
+  if (icon.includes('lightning')) return 'storm';
+  return 'fog';
+}
+
+const RISK_FOR_WEATHER = {
+  clear: 'Low',
+  partly: 'Low',
+  rain: 'Moderate',
+  wind: 'Moderate',
+  fog: 'Moderate',
+  snow: 'High',
+  storm: 'High',
+};
+
 const weather = data.weather;
 if (!Array.isArray(weather)) {
   fail('weather block is missing or not an array');
@@ -329,6 +368,21 @@ if (!Array.isArray(weather)) {
     }
     if (typeof w.icon !== 'string' || !w.icon.startsWith('mdi-')) {
       fail(`weather ${w.region}: icon "${w.icon}" should be an mdi-* name`);
+    } else if (!MDI_NAMES.has(w.icon)) {
+      // A misspelt @mdi/font class does not throw — the ::before has no content
+      // and the glyph is silently blank. Check it against the installed font.
+      fail(`weather ${w.region}: icon "${w.icon}" is not in the installed @mdi/font`);
+    } else {
+      // Delay risk must FOLLOW from the condition: snow and storms High,
+      // fog/wind/rain Moderate, clear/partly cloudy Low. A risk that doesn't
+      // follow makes the chip unreadable — there is no way to tell a deliberate
+      // exception from a typo.
+      const expected = RISK_FOR_WEATHER[weatherKind(w.icon)];
+      if (w.delayRisk !== expected) {
+        fail(
+          `weather ${w.region}: "${w.condition}" (${w.icon}) implies delayRisk ${expected}, found ${w.delayRisk}`,
+        );
+      }
     }
     for (const f of ['condition', 'note']) {
       if (typeof w[f] !== 'string' || !w[f].trim()) fail(`weather ${w.region}: ${f} is missing`);

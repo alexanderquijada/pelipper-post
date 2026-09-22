@@ -7,6 +7,7 @@ import ReliabilityHealth from '@/components/ReliabilityHealth.vue'
 import PageShell from '@/components/PageShell.vue'
 import WeatherCard from '@/components/WeatherCard.vue'
 import DeliveryTrendChart from '@/components/charts/DeliveryTrendChart.vue'
+import { useChartTheme, weatherKind } from '@/components/charts/chartTheme'
 import { useMetrics } from '@/composables/useMetrics'
 import { SPRITE_FALLBACK_ICON, spriteUrl } from '@/utils/sprites'
 import type { DelayRisk } from '@/types/metrics'
@@ -104,6 +105,11 @@ const RISK_COLOR: Record<DelayRisk, string> = {
   Moderate: 'accent',
   Low: 'success',
 }
+
+// `weather` is already the dataset rows from useMetrics(); this is the tint map.
+/** Weather on the icon, risk on the chip — never both on one channel. */
+const { weather: weatherTint } = useChartTheme()
+const wxColor = (icon: string) => weatherTint.value[weatherKind(icon)]
 </script>
 
 <template>
@@ -206,26 +212,39 @@ const RISK_COLOR: Record<DelayRisk, string> = {
                   <div class="fleet__body">
                     <div class="fleet__head">
                       <span class="fleet__name">{{ c.name }}</span>
-                      <span v-if="weatherFor(c.homeRegion)" class="fleet__wx">
+                    </div>
+                    <!-- Weather sits on the meta line, named by its own condition
+                         text; the risk chip moves into the stats list where the
+                         <dt> labels it. Previously both floated unlabelled. -->
+                    <p class="fleet__meta">
+                      {{ c.species }} · {{ c.homeRegion }}
+                      <template v-if="weatherFor(c.homeRegion)">
+                        ·
                         <v-icon
                           :icon="weatherFor(c.homeRegion)!.icon"
                           size="15"
-                          :aria-label="weatherFor(c.homeRegion)!.condition"
+                          :color="wxColor(weatherFor(c.homeRegion)!.icon)"
+                          aria-hidden="true"
                         />
-                        <v-chip
-                          :color="RISK_COLOR[weatherFor(c.homeRegion)!.delayRisk]"
-                          variant="tonal"
-                          size="x-small"
-                        >
-                          {{ weatherFor(c.homeRegion)!.delayRisk }}
-                        </v-chip>
-                      </span>
-                    </div>
-                    <p class="fleet__meta">{{ c.species }} · {{ c.homeRegion }}</p>
+                        {{ weatherFor(c.homeRegion)!.condition }}
+                      </template>
+                    </p>
                     <dl class="fleet__stats">
                       <div><dt>On-time</dt><dd>{{ pct(c.onTimeRate) }}</dd></div>
                       <div><dt>Runs</dt><dd>{{ c.runs.toLocaleString('en-US') }}</dd></div>
                       <div><dt>Stops</dt><dd>{{ c.stopsPerRun }}</dd></div>
+                      <div v-if="weatherFor(c.homeRegion)">
+                        <dt>Delay risk</dt>
+                        <dd>
+                          <v-chip
+                            :color="RISK_COLOR[weatherFor(c.homeRegion)!.delayRisk]"
+                            variant="tonal"
+                            size="x-small"
+                          >
+                            {{ weatherFor(c.homeRegion)!.delayRisk }}
+                          </v-chip>
+                        </dd>
+                      </div>
                     </dl>
                   </div>
                 </li>
@@ -356,13 +375,6 @@ const RISK_COLOR: Record<DelayRisk, string> = {
   font-weight: 700;
 }
 
-.fleet__wx {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: rgb(var(--v-theme-primary));
-}
-
 .fleet__meta {
   font-size: 11px;
   color: rgb(var(--v-theme-muted));
@@ -371,7 +383,8 @@ const RISK_COLOR: Record<DelayRisk, string> = {
 
 .fleet__stats {
   display: flex;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 8px 14px;
   margin: 0;
 }
 

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import type { Courier, CourierStatus } from '@/types/metrics'
 import { SPRITE_FALLBACK_ICON, spriteUrl } from '@/utils/sprites'
 import { useMetrics } from '@/composables/useMetrics'
+import { useChartTheme, weatherKind } from '@/components/charts/chartTheme'
 import type { DelayRisk } from '@/types/metrics'
 
 defineProps<{ couriers: Courier[] }>()
@@ -10,12 +11,18 @@ defineProps<{ couriers: Courier[] }>()
 const { weatherFor } = useMetrics()
 
 // Compact on purpose: icon plus risk chip, no temperature — the table is wide
-// enough already. Full conditions live on the Regional Weather card.
+// enough already. Full conditions live on the Weather Delays Today card.
 const RISK_COLOR: Record<DelayRisk, string> = {
   High: 'error',
   Moderate: 'accent',
   Low: 'success',
 }
+
+// Weather on the icon, risk on the chip — and they are now separate columns, so
+// the header names each one. A single "Conditions" column holding both left the
+// chip unlabelled exactly as it was on the weather card.
+const { weather } = useChartTheme()
+const wxColor = (icon: string) => weather.value[weatherKind(icon)]
 
 const STATUS_COLOR: Record<CourierStatus, string> = {
   'On Route': 'success',
@@ -43,6 +50,7 @@ function onSpriteError(dexId: number) {
         <th class="text-left">Species</th>
         <th class="text-left">Home Region</th>
         <th class="text-left">Conditions</th>
+        <th class="text-left">Delay Risk</th>
         <th class="text-right">Runs</th>
         <th class="text-right">On-Time Rate</th>
         <th class="text-left">Status</th>
@@ -68,18 +76,22 @@ function onSpriteError(dexId: number) {
           <span v-if="weatherFor(courier.homeRegion)" class="wx-cell">
             <v-icon
               :icon="weatherFor(courier.homeRegion)!.icon"
-              size="17"
-              class="wx-cell__icon"
+              size="19"
+              :color="wxColor(weatherFor(courier.homeRegion)!.icon)"
               :aria-label="weatherFor(courier.homeRegion)!.condition"
             />
-            <v-chip
-              :color="RISK_COLOR[weatherFor(courier.homeRegion)!.delayRisk]"
-              variant="tonal"
-              size="x-small"
-            >
-              {{ weatherFor(courier.homeRegion)!.delayRisk }}
-            </v-chip>
+            <span class="wx-cell__label">{{ weatherFor(courier.homeRegion)!.condition }}</span>
           </span>
+        </td>
+        <td>
+          <v-chip
+            v-if="weatherFor(courier.homeRegion)"
+            :color="RISK_COLOR[weatherFor(courier.homeRegion)!.delayRisk]"
+            variant="tonal"
+            size="x-small"
+          >
+            {{ weatherFor(courier.homeRegion)!.delayRisk }}
+          </v-chip>
         </td>
         <td class="text-right">{{ formatNumber(courier.runs) }}</td>
         <td class="text-right">{{ formatRate(courier.onTimeRate) }}</td>
@@ -104,8 +116,10 @@ function onSpriteError(dexId: number) {
   gap: 6px;
 }
 
-.wx-cell__icon {
-  color: rgb(var(--v-theme-primary));
+.wx-cell__label {
+  font-size: 12px;
+  color: rgb(var(--v-theme-muted));
+  white-space: nowrap;
 }
 
 /* 44px rows, compact density — BRIEF.md §4. */

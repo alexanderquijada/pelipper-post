@@ -971,6 +971,58 @@ Append here as the build goes. Date, what came up, what was decided.
   Verified: build exit 0, validator exit 0, 0 console errors on any of the six routes, no
   NaN/undefined anywhere, every rendered title and subtitle matched against the approved table.
 
+- **2026-09-22 — weather labelling and iconography.**
+
+  **The chip was unlabelled, and that was the whole bug.** "High" sat beside "−3°C" with nothing
+  naming it, so it read as either a high temperature or an unnamed severity. The *value* was right —
+  snow at altitude genuinely is a high delay risk — so this was fixed by labelling, not by changing
+  data. Three sites, all of which had the same defect: the weather card gained a **`Delay Risk`
+  column header** (verified right-aligned over the chip column, within 6px); the courier roster's
+  single "Conditions" column, which held an icon *and* a chip under one heading, was **split into
+  `Conditions` + `Delay Risk`**; and the Overview courier tile's floating chip moved into the stat
+  list under a **`Delay risk`** term. Subtitle now states both halves.
+
+  **Icon tint was fighting the icon.** The circle was tinted by delay risk, so snow appeared in a red
+  circle and clear skies in a teal one — two meanings on one channel. Weather now drives the icon
+  (`WEATHER_LIGHT` / `WEATHER_DARK` in `chartTheme.ts`, keyed off the icon name via `weatherKind`),
+  and the chip alone drives risk. Confirmed by measurement: rows sharing a delay risk no longer
+  share a tint (Moderate = 3 rows, 3 distinct tints; Low = 2 rows, 2 distinct tints). All twelve
+  glyph/circle pairs clear 3:1 — worst **3.44 light, 4.26 dark**, measured against composited
+  pixels in both themes.
+
+  **A real icon name is not a correct icon.** All six names existed in the installed font, so no
+  name-validity check would have caught anything. Rendering them at 64px and looking is what found
+  it: `mdi-weather-snowy` draws a cloud with a *single small flake* that vanishes at 20px and reads
+  as plain cloud. Sinnoh changed to **`mdi-weather-snowy-heavy`** (the only `metrics.json` edit —
+  a one-line diff), and all glyphs went from 20px to 22px. Final mapping:
+
+  | Condition | Icon | Verdict |
+  |---|---|---|
+  | Clear | `mdi-weather-sunny` | kept — sun with rays, unambiguous |
+  | Partly cloudy | `mdi-weather-partly-cloudy` | kept — semantically correct; fixed by size, not by name |
+  | Rain easing | `mdi-weather-rainy` | kept — cloud + single drop suits "easing" better than `pouring` |
+  | Snow at altitude | **`mdi-weather-snowy-heavy`** | **changed** from `mdi-weather-snowy` |
+  | Windy | `mdi-weather-windy` | kept — bare wind lines read better than `windy-variant` |
+  | Fog and drizzle | `mdi-weather-fog` | kept — `hazy` is sun-based, wrong for drizzle |
+
+  **Risk values needed no change.** Checked against the rule (snow/storms High, fog/wind/rain
+  Moderate, clear/partly cloudy Low): all six regions already followed it. Rather than leave that as
+  a one-time eyeball, the rule is now **enforced** — the validator derives the expected risk from the
+  icon and fails on a mismatch, and separately checks each icon name against the `mdi-*` classes
+  defined in the installed `@mdi/font` stylesheet.
+
+  **Both new checks were run against deliberately broken data first** and caught all three planted
+  defects: a plausible typo (`mdi-weather-snowyy`), Kanto's clear skies set to High, and Galar's fog
+  set to Low. The icon-name check also fails loudly if the stylesheet can't be read, rather than
+  passing vacuously on an empty name set.
+
+  Verified: build exit 0, validator exit 0, 0 console errors, no horizontal overflow, theme swap
+  confirmed by class name (`v-theme--pelipperLight` ⇄ `v-theme--pelipperDark`) rather than inferred
+  from differing numbers, all 8 courier sprites loading at 475px.
+
+  **Held for Alex: F2**, plain-language risk wording ("Delays likely / Some delays / On track")
+  versus the current High / Moderate / Low. Not applied either way.
+
 ---
 
 ## 8. Known issues / watch list

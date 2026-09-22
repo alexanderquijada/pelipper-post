@@ -82,7 +82,7 @@
     {
       "region": "Sinnoh",
       "condition": "Snow at altitude",
-      "icon": "mdi-weather-snowy",
+      "icon": "mdi-weather-snowy-heavy",
       "tempC": -3,
       "windKph": 31,
       "visibilityKm": 3,
