@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { RouterView } from 'vue-router'
 import { useDisplay, useTheme } from 'vuetify'
 import { BRAND_FALLBACK_ICON, BRAND_SPRITE_URL } from '@/utils/sprites'
@@ -25,48 +25,18 @@ const rail = computed(() => width.value < 960)
 const brandSpriteFailed = ref(false)
 
 /**
- * Anchor links, not routes. One route, one page — CLAUDE.md rule 6 stands.
- * These scroll to sections and highlight whichever is on screen.
+ * Real routes. Order matches the reading order of the Overview cards — see
+ * BRIEF.md §4. The active item comes from the route; there is no scroll-spy.
  */
 const NAV = [
-  { id: 'overview', label: 'Overview', icon: 'mdi-view-dashboard-outline' },
-  { id: 'trends', label: 'Trends', icon: 'mdi-chart-line' },
-  { id: 'signals', label: 'Signals', icon: 'mdi-alert-circle-outline' },
-  { id: 'couriers', label: 'Couriers', icon: 'mdi-account-group-outline' },
-  { id: 'network', label: 'Network', icon: 'mdi-lan' },
+  { to: '/', label: 'Overview', icon: 'mdi-view-dashboard-outline' },
+  { to: '/trends', label: 'Trends', icon: 'mdi-chart-line' },
+  { to: '/signals', label: 'Signals', icon: 'mdi-alert-circle-outline' },
+  { to: '/cargo', label: 'Cargo', icon: 'mdi-package-variant-closed' },
+  { to: '/network', label: 'Network', icon: 'mdi-lan' },
+  { to: '/couriers', label: 'Couriers', icon: 'mdi-account-group-outline' },
 ] as const
 
-const activeSection = ref<string>('overview')
-let observer: IntersectionObserver | null = null
-
-function scrollTo(id: string) {
-  const el = document.getElementById(id)
-  if (!el) return
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
-  activeSection.value = id
-}
-
-onMounted(() => {
-  observer = new IntersectionObserver(
-    (entries) => {
-      // Pick the entry nearest the top of the viewport that is actually visible.
-      const visible = entries
-        .filter((e) => e.isIntersecting)
-        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
-      if (visible[0]?.target.id) activeSection.value = visible[0].target.id
-    },
-    // Top-weighted band: a section counts as "current" once it reaches the
-    // upper third, which matches what a reader considers the active section.
-    { rootMargin: '-72px 0px -62% 0px', threshold: 0 },
-  )
-  NAV.forEach((n) => {
-    const el = document.getElementById(n.id)
-    if (el) observer!.observe(el)
-  })
-})
-
-onBeforeUnmount(() => observer?.disconnect())
 </script>
 
 <template>
@@ -100,13 +70,13 @@ onBeforeUnmount(() => observer?.disconnect())
       <v-list density="compact" nav class="px-2">
         <v-list-item
           v-for="item in NAV"
-          :key="item.id"
+          :key="item.to"
+          :to="item.to"
+          exact
           :prepend-icon="item.icon"
           :title="item.label"
-          :active="activeSection === item.id"
           color="primary"
           class="sidebar__item"
-          @click="scrollTo(item.id)"
         />
       </v-list>
 

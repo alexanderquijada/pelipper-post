@@ -15,13 +15,18 @@ import { SEQUENTIAL_COLORS, compactNumber, fullNumber, useChartTheme, withAlpha 
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Filler, Tooltip)
 
-const props = defineProps<{
+const props = withDefaults(
+  defineProps<{
+  /** Taller panels for the dedicated Trends page. */
+  tall?: boolean
   labels: string[]
   parcelsDelivered: number[]
   gymSupplyRuns: number[]
   /** Index of the month to mark, or -1 for none. */
   selectedIndex: number
-}>()
+}>(),
+  { tall: false },
+)
 
 const { muted, grid, surface, ink } = useChartTheme()
 
@@ -131,7 +136,7 @@ const gymOptions = computed(() => panelOptions({ showXTicks: true, unit: 'runs' 
       <span class="dot" :style="{ background: SEQUENTIAL_COLORS[0] }" />
       Parcels Delivered
     </div>
-    <div class="panel panel--tall">
+    <div class="panel" :class="tall ? 'panel--tall-lg' : 'panel--tall'">
       <Line :data="parcelsData" :options="parcelsOptions" />
     </div>
 
@@ -139,7 +144,7 @@ const gymOptions = computed(() => panelOptions({ showXTicks: true, unit: 'runs' 
       <span class="dot" :style="{ background: SEQUENTIAL_COLORS[1] }" />
       Gym Supply Runs
     </div>
-    <div class="panel panel--short">
+    <div class="panel" :class="tall ? 'panel--short-lg' : 'panel--short'">
       <Line :data="gymData" :options="gymOptions" />
     </div>
   </div>
@@ -156,6 +161,14 @@ const gymOptions = computed(() => panelOptions({ showXTicks: true, unit: 'runs' 
 
 .panel--short {
   height: 94px;
+}
+
+.panel--tall-lg {
+  height: 260px;
+}
+
+.panel--short-lg {
+  height: 150px;
 }
 
 .panel-label {

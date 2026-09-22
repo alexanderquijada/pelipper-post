@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 defineProps<{
   rows: { label: string; value: string; health: 'good' | 'warn' | 'bad'; hint: string }[]
+  detailsTo?: string
 }>()
 
 const HEALTH_LABEL = { good: 'Healthy', warn: 'Watch', bad: 'At risk' } as const
@@ -8,7 +10,10 @@ const HEALTH_LABEL = { good: 'Healthy', warn: 'Watch', bad: 'At risk' } as const
 
 <template>
   <v-card class="pp-card-pad" height="100%">
-    <h2 class="pp-card-title">Network Reliability &amp; Fulfillment Health</h2>
+    <div class="d-flex align-start justify-space-between ga-3">
+      <h2 class="pp-card-title">Network Reliability &amp; Fulfillment Health</h2>
+      <RouterLink v-if="detailsTo" class="pp-details" :to="detailsTo">View details →</RouterLink>
+    </div>
     <p class="pp-card-subtitle">Key delivery and fleet health measures.</p>
 
     <ul class="health">
@@ -26,6 +31,19 @@ const HEALTH_LABEL = { good: 'Healthy', warn: 'Watch', bad: 'At risk' } as const
 </template>
 
 <style scoped>
+.pp-details {
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(var(--v-theme-primary));
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pp-details:hover {
+  text-decoration: underline;
+}
+
 .health {
   list-style: none;
   padding: 0;

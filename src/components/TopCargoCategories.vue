@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import { ref } from 'vue'
 import { useChartTheme } from '@/components/charts/chartTheme'
 import { cargoItemUrl } from '@/utils/sprites'
 
 defineProps<{
   categories: { label: string; value: number; share: number; colorIndex: number }[]
+  detailsTo?: string
 }>()
 
 // Same categorical palette as the doughnut — contrast- and CVD-verified, and
@@ -17,7 +19,10 @@ const fullNumber = (n: number) => n.toLocaleString('en-US')
 
 <template>
   <v-card class="pp-card-pad" height="100%">
-    <h2 class="pp-card-title">Top Cargo Categories</h2>
+    <div class="d-flex align-start justify-space-between ga-3">
+      <h2 class="pp-card-title">Top Cargo Categories</h2>
+      <RouterLink v-if="detailsTo" class="pp-details" :to="detailsTo">View details →</RouterLink>
+    </div>
     <p class="pp-card-subtitle">Parcels delivered by cargo type.</p>
 
     <ul class="cargo">
@@ -57,6 +62,19 @@ const fullNumber = (n: number) => n.toLocaleString('en-US')
 </template>
 
 <style scoped>
+.pp-details {
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(var(--v-theme-primary));
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pp-details:hover {
+  text-decoration: underline;
+}
+
 .cargo {
   list-style: none;
   padding: 0;

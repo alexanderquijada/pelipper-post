@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import MetricCard, { type MetricCardProps } from '@/components/MetricCard.vue'
 import CourierRoster from '@/components/CourierRoster.vue'
 import CriticalSignals from '@/components/CriticalSignals.vue'
 import TopCargoCategories from '@/components/TopCargoCategories.vue'
 import ReliabilityHealth from '@/components/ReliabilityHealth.vue'
-import RegionBarChart from '@/components/charts/RegionBarChart.vue'
+import BarSeriesChart from '@/components/charts/BarSeriesChart.vue'
 import DeliveryTrendChart from '@/components/charts/DeliveryTrendChart.vue'
 import { useMetrics } from '@/composables/useMetrics'
 
@@ -72,7 +73,7 @@ const kpiCards = computed<MetricCardProps[]>(() => [
   <v-container class="pelipper-width px-4 py-4">
     <template v-if="hasData">
       <!-- ---------- Overview: KPI strip ---------- -->
-      <section id="overview" class="pp-section">
+      <section class="pp-section">
         <div class="mb-3">
           <p class="pp-eyebrow mb-0">Overview</p>
           <p class="pp-section-subtitle">
@@ -88,11 +89,14 @@ const kpiCards = computed<MetricCardProps[]>(() => [
       </section>
 
       <!-- ---------- Trends: chart at 2/3, region bars at 1/3 ---------- -->
-      <section id="trends" class="pp-section">
+      <section class="pp-section">
         <v-row dense>
           <v-col cols="12" lg="8">
             <v-card class="pp-card-pad" height="100%">
-              <h2 class="pp-card-title">Gym Supply Runs &amp; Parcels Delivered</h2>
+              <div class="d-flex align-start justify-space-between ga-3">
+                <h2 class="pp-card-title">Gym Supply Runs &amp; Parcels Delivered</h2>
+                <RouterLink class="pp-details" :to="'/trends'">View details →</RouterLink>
+              </div>
               <p class="pp-card-subtitle">
                 Monthly parcel volume and gym supply runs over the trailing twelve months.
               </p>
@@ -107,13 +111,18 @@ const kpiCards = computed<MetricCardProps[]>(() => [
 
           <v-col cols="12" lg="4">
             <v-card class="pp-card-pad" height="100%">
-              <h2 class="pp-card-title">Parcels by Region</h2>
+              <div class="d-flex align-start justify-space-between ga-3">
+                <h2 class="pp-card-title">Parcels by Region</h2>
+                <RouterLink class="pp-details" :to="'/trends'">View details →</RouterLink>
+              </div>
               <p class="pp-card-subtitle">Total parcels delivered by region.</p>
 
-              <RegionBarChart
+              <BarSeriesChart
                 v-if="showRegionChart"
                 :labels="regionChart.labels"
                 :values="regionChart.values"
+                :height="200"
+                unit="parcels"
               />
               <div v-else class="empty-state d-flex align-center justify-center text-center px-4">
                 <p class="text-caption text-muted mb-0">
@@ -127,24 +136,27 @@ const kpiCards = computed<MetricCardProps[]>(() => [
       </section>
 
       <!-- ---------- The three derived cards, one row ---------- -->
-      <section id="signals" class="pp-section">
+      <section class="pp-section">
         <v-row dense>
           <v-col cols="12" md="6" lg="4">
-            <CriticalSignals :signals="signals" />
+            <CriticalSignals :signals="signals" details-to="/signals" />
           </v-col>
           <v-col cols="12" md="6" lg="4">
-            <TopCargoCategories :categories="cargoCategories" />
+            <TopCargoCategories :categories="cargoCategories" details-to="/cargo" />
           </v-col>
-          <v-col id="network" cols="12" lg="4">
-            <ReliabilityHealth :rows="reliability" />
+          <v-col cols="12" lg="4">
+            <ReliabilityHealth :rows="reliability" details-to="/network" />
           </v-col>
         </v-row>
       </section>
 
       <!-- ---------- Couriers ---------- -->
-      <section id="couriers" class="pp-section">
+      <section class="pp-section">
         <v-card class="pp-card-pad">
-          <h2 class="pp-card-title">Courier Roster</h2>
+          <div class="d-flex align-start justify-space-between ga-3">
+            <h2 class="pp-card-title">Courier Roster</h2>
+            <RouterLink class="pp-details" to="/couriers">View details →</RouterLink>
+          </div>
           <p class="pp-card-subtitle">Couriers, their home regions, and delivery performance.</p>
           <CourierRoster :couriers="filteredCouriers" />
         </v-card>
@@ -167,7 +179,6 @@ const kpiCards = computed<MetricCardProps[]>(() => [
 <style scoped>
 .pp-section {
   margin-bottom: 16px;
-  scroll-margin-top: 80px;
 }
 
 .pp-section-subtitle {
@@ -175,6 +186,19 @@ const kpiCards = computed<MetricCardProps[]>(() => [
   line-height: 1.4;
   color: rgb(var(--v-theme-muted));
   margin: 2px 0 0;
+}
+
+.pp-details {
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(var(--v-theme-primary));
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pp-details:hover {
+  text-decoration: underline;
 }
 
 .pp-eyebrow {

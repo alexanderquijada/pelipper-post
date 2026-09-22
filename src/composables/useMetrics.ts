@@ -510,6 +510,144 @@ export function useMetrics() {
   })
 
 
+
+  // ---- /trends ---------------------------------------------------------------
+  /** One row per month for the selected region scope. */
+  const monthlyTable = computed(() =>
+    metrics.months.map((m) => {
+      const recs = regionsFor(m, selectedRegion.value)
+      const agg = aggregate(recs)
+      return {
+        key: m.key,
+        label: m.label,
+        parcelsDelivered: agg.parcelsDelivered,
+        pokeBallsShipped: agg.pokeBallsShipped,
+        berryCrates: agg.berryCrates,
+        gymSupplyRuns: agg.gymSupplyRuns,
+        faintedCouriers: agg.faintedCouriers,
+        onTimeRate: agg.onTimeRate,
+        isSelected: selectedMonth.value === m.key,
+      }
+    }),
+  )
+
+  /** Twelve-month parcel shape per region — one sparkline each. */
+  const regionSparklines = computed(() =>
+    metrics.regions.map((region) => {
+      const values = metrics.months.map(
+        (m) => m.regions.find((r) => r.region === region)?.parcelsDelivered ?? 0,
+      )
+      const first = values[0] ?? 0
+      const last = values[values.length - 1] ?? 0
+      return {
+        region,
+        values,
+        total: values.reduce((a, b) => a + b, 0),
+        change: first > 0 ? (last - first) / first : 0,
+        dimmed: selectedRegion.value !== ALL_REGIONS && selectedRegion.value !== region,
+      }
+    }),
+  )
+
+  // ---- /signals --------------------------------------------------------------
+  /** Signals grouped by severity, with counts. Every signal, uncapped. */
+  const signalGroups = computed(() =>
+    (['critical', 'warning', 'ok'] as const).map((severity) => ({
+      severity,
+      title: { critical: 'Critical', warning: 'Warning', ok: 'Healthy' }[severity],
+      items: signals.value.filter((s) => s.severity === severity),
+    })),
+  )
+
+  /** Per-region on-time against the target — powers the table on /signals. */
+  const onTimeVsTarget = computed(() =>
+    regionTotals.value.map((r) => ({
+      region: r.region,
+      onTime: r.onTime,
+      parcels: r.parcels,
+      gap: r.onTime - ON_TIME_TARGET,
+      meets: r.onTime >= ON_TIME_TARGET,
+    })),
+  )
+
+  const onTimeTarget = ON_TIME_TARGET
+
+  // ---- /cargo ----------------------------------------------------------------
+  /** 6 regions x 5 cargo types for the selected months. */
+  const cargoByRegion = computed(() => {
+    const months = monthsFor(selectedMonth.value)
+    const scope =
+      selectedRegion.value === ALL_REGIONS ? metrics.regions : [selectedRegion.value as RegionName]
+    return scope.map((region) => {
+      const recs = months.flatMap((m) => m.regions.filter((r) => r.region === region))
+      const agg = aggregate(recs)
+      return {
+        region,
+        total: agg.parcelsDelivered,
+        values: metrics.cargoTypes.map((c) => agg.cargoMix[c] ?? 0),
+      }
+    })
+  })
+
+  /** Cargo mix across all twelve months — respects the region filter. */
+  const cargoOverMonths = computed(() => ({
+    labels: metrics.months.map((m) => m.label),
+    series: metrics.cargoTypes.map((cargo, colorIndex) => ({
+      label: cargo,
+      colorIndex,
+      values: metrics.months.map((m) =>
+        regionsFor(m, selectedRegion.value).reduce((a, r) => a + (r.cargoMix[cargo] ?? 0), 0),
+      ),
+    })),
+  }))
+
+  // ---- /network --------------------------------------------------------------
+  /** Six-region comparison for the selected months. */
+  const regionComparison = computed(() => {
+    const months = monthsFor(selectedMonth.value)
+    const scope =
+      selectedRegion.value === ALL_REGIONS ? metrics.regions : [selectedRegion.value as RegionName]
+    return scope
+      .map((region) => {
+        const recs = months.flatMap((m) => m.regions.filter((r) => r.region === region))
+        const agg = aggregate(recs)
+        return {
+          region,
+          parcelsDelivered: agg.parcelsDelivered,
+          onTimeRate: agg.onTimeRate,
+          faintedCouriers: agg.faintedCouriers,
+          gymSupplyRuns: agg.gymSupplyRuns,
+          avgMonthly: agg.parcelsDelivered / (months.length || 1),
+        }
+      })
+      .sort((a, b) => b.parcelsDelivered - a.parcelsDelivered)
+  })
+
+  /** Fainted couriers per month for the selected region scope. */
+  const faintedByMonth = computed(() => ({
+    labels: metrics.months.map((m) => m.label),
+    values: metrics.months.map((m) =>
+      regionsFor(m, selectedRegion.value).reduce((a, r) => a + r.faintedCouriers, 0),
+    ),
+  }))
+
+  // ---- /couriers -------------------------------------------------------------
+  /** On-time rate compared across the couriers in scope. */
+  const courierOnTime = computed(() => ({
+    labels: filteredCouriers.value.map((c) => c.name),
+    values: filteredCouriers.value.map((c) => c.onTimeRate),
+  }))
+
+  /** How the fleet in scope splits across the three statuses. */
+  const courierStatusBreakdown = computed(() => {
+    const statuses = ['On Route', 'Resting', 'Grounded'] as const
+    const total = filteredCouriers.value.length
+    return statuses.map((status) => {
+      const count = filteredCouriers.value.filter((c) => c.status === status).length
+      return { status, count, share: total > 0 ? count / total : 0 }
+    })
+  })
+
   return {
     // company identity
     company: metrics.company,
@@ -541,5 +679,20 @@ export function useMetrics() {
     reliability,
     signals,
     regionTotals,
+
+    // per-page data
+    monthlyTable,
+    regionSparklines,
+    signalGroups,
+    onTimeVsTarget,
+    onTimeTarget,
+    cargoByRegion,
+    cargoOverMonths,
+    regionComparison,
+    faintedByMonth,
+    courierOnTime,
+    courierStatusBreakdown,
+    cargoTypes: metrics.cargoTypes,
+    regions: metrics.regions,
   }
 }

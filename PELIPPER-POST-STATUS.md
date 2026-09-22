@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-22 — **Card copy tightened; redundant chrome removed.** Only the Vercel deployment is outstanding.
+- **Last updated:** 2026-09-22 — **Split into six routed pages.** Only the Vercel deployment is outstanding.
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -753,6 +753,41 @@ Append here as the build goes. Date, what came up, what was decided.
   Re-verified: validator **exit 0**, `metrics.json` unchanged, chart palettes unchanged, build
   **exit 0**, **0 console errors**, both themes, both filters still driving every card.
   Page height 1494, roster top 1076 — the roster stays below the fold, as ratified.
+
+- **2026-09-22 — Split into six routed pages.** Sidebar items are real routes now, not anchors.
+  Docs amended and committed separately (`CLAUDE.md` rule 6 rewritten on Alex's instruction,
+  `BRIEF.md` §3 structure and §4 per-page spec).
+
+  | Verified | Result |
+  |---|---|
+  | Routes | `/` `/trends` `/signals` `/cargo` `/network` `/couriers` all load; `/does-not-exist` → `/` |
+  | Nav order | **Overview · Trends · Signals · Cargo · Network · Couriers** — matches the Overview card order |
+  | Active highlight | from the route; the `IntersectionObserver` scroll-spy is **fully removed** |
+  | Filter persistence | Hoenn + Aug 2026 set on Overview survives all six routes and the round trip back — KPIs **10,479 / 3,242 / 88.2% / 38 / 5** before and after |
+  | Card padding | **21px** minimum content-to-edge gap on **every** route |
+  | Console | 0 errors on every route |
+  | Build / validator | both **exit 0**; `metrics.json` and chart palettes untouched |
+  | Themes | light ⇄ dark on a detail route |
+
+  **Filter state needed no change.** `selectedMonth` / `selectedRegion` were already at module scope
+  in `useMetrics.ts` — the shared-instance requirement was satisfied before this phase, and was
+  verified empirically across all six routes rather than assumed from reading the code.
+
+  **Bundle — the chunk-size warning is gone.** Main chunk **579.39 kB → 347.21 kB**, with Chart.js
+  split out to its own 172.52 kB chunk and each route 0.5–8 kB. This does **not** contradict the
+  earlier decision to keep Chart.js eagerly bundled: that call was about not deferring above-the-fold
+  code, and Chart.js is still fetched on first paint — just in parallel as a separately cacheable
+  chunk rather than inlined. Nothing was deferred that the first screen needs.
+
+  `RegionBarChart.vue` was replaced by a generic `BarSeriesChart.vue` (adds an optional target line
+  and percent formatting) rather than duplicated, and deleted.
+
+  **Verification-harness note:** the first route run reported the Month filter as not persisting.
+  That was a defect in the test script — its `center()` helper omitted the `scrollIntoView` the
+  earlier scripts had, so the click landed off-target on an option scrolled out of the menu. The app
+  was correct. Worth recording because a harness bug that *looks* like an app bug is the expensive
+  kind: the fix is to make the helper scroll before measuring, and to sanity-check a "failure"
+  against the rendered values before touching application code.
 
 ---
 

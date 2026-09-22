@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import { ref } from 'vue'
 import type { Signal } from '@/composables/useMetrics'
 
-defineProps<{ signals: Signal[] }>()
+defineProps<{ signals: Signal[]; detailsTo?: string }>()
 
 /** Which rows are expanded. Detail is collapsed by default to keep the card dense. */
 const open = ref(new Set<string>())
@@ -22,7 +23,10 @@ const SEVERITY_LABEL: Record<Signal['severity'], string> = {
 
 <template>
   <v-card class="pp-card-pad" height="100%">
-    <h2 class="pp-card-title">Critical Delivery Signals</h2>
+    <div class="d-flex align-start justify-space-between ga-3">
+      <h2 class="pp-card-title">Critical Delivery Signals</h2>
+      <RouterLink v-if="detailsTo" class="pp-details" :to="detailsTo">View details →</RouterLink>
+    </div>
     <p class="pp-card-subtitle">Notable shifts in network performance.</p>
 
     <ul v-if="signals.length" class="signals">
@@ -55,6 +59,19 @@ const SEVERITY_LABEL: Record<Signal['severity'], string> = {
 </template>
 
 <style scoped>
+.pp-details {
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(var(--v-theme-primary));
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pp-details:hover {
+  text-decoration: underline;
+}
+
 .signals {
   list-style: none;
   padding: 0;
