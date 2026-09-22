@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { BRAND_FALLBACK_ICON, BRAND_SPRITE_URL } from '@/utils/sprites'
+import { BRAND_ARTWORK_URL, BRAND_FALLBACK_ICON } from '@/utils/sprites'
 
 /**
  * The wordmark lockup. Original design — the two-line stack and the sprite are
@@ -16,11 +16,11 @@ const spriteFailed = ref(false)
   <div class="lockup" :class="{ 'lockup--rail': rail }">
     <img
       v-if="!spriteFailed"
-      :src="BRAND_SPRITE_URL"
+      :src="BRAND_ARTWORK_URL"
       alt=""
       class="lockup__sprite"
-      width="44"
-      height="44"
+      width="52"
+      height="52"
       @error="spriteFailed = true"
     />
     <v-icon v-else :icon="BRAND_FALLBACK_ICON" color="primary" size="30" class="lockup__sprite" />
@@ -36,7 +36,7 @@ const spriteFailed = ref(false)
 .lockup {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -45,11 +45,11 @@ const spriteFailed = ref(false)
   gap: 0;
 }
 
+/* NO image-rendering here: this is the 475x475 artwork, displayed well below
+   its natural size, so it must be smoothed like any photograph. */
 .lockup__sprite {
-  /* 96x96 pixel art — must not be smoothed on scale-up */
-  image-rendering: pixelated;
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   object-fit: contain;
   flex: none;
 }
@@ -63,19 +63,20 @@ const spriteFailed = ref(false)
 }
 
 .lockup__name {
-  font-size: 17px;
+  /* largest text in the sidebar — nav labels are 13px */
+  font-size: 23px;
   font-weight: 800;
   line-height: 1;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.005em;
   /* theme token, so the lockup inverts correctly in dark */
   color: rgb(var(--v-theme-on-surface));
 }
 
 .lockup__sub {
-  font-size: 8.5px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.17em;
+  letter-spacing: 0.145em;
   color: rgb(var(--v-theme-primary));
   white-space: nowrap;
 }

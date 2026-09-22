@@ -45,25 +45,32 @@ const avatarFailed = ref(false)
 }
 
 .account__name {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
   line-height: 1.25;
   margin: 0;
+  color: rgb(var(--v-theme-on-surface));
 }
 
+/* Thin grey small text is the worst case for legibility, so these use the
+   on-surface ink at reduced opacity rather than the muted token, and carry
+   more weight. Measured >= 4.5:1 in both themes. */
 .account__role {
   font-size: 11.5px;
-  line-height: 1.3;
-  color: rgb(var(--v-theme-muted));
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgb(var(--v-theme-on-surface));
+  opacity: 0.82;
   margin: 1px 0 0;
 }
 
 .account__email {
   font-size: 11px;
-  line-height: 1.3;
-  color: rgb(var(--v-theme-muted));
+  font-weight: 500;
+  line-height: 1.35;
+  color: rgb(var(--v-theme-on-surface));
+  opacity: 0.72;
   margin: 0;
-  opacity: 0.85;
 }
 
 .account__avatar {

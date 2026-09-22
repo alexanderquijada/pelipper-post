@@ -24,7 +24,14 @@ export const SPRITE_FALLBACK_ICON = 'mdi-truck-delivery-outline'
  * against 130 kB and visibly sharper at 30px. Verified HTTP 200 on 2026-09-18.
  */
 export const PELIPPER_DEX_ID = 279
+/** 96x96 pixel sprite — correct for the favicon, where the pixel look is wanted. */
 export const BRAND_SPRITE_URL = `${SPRITE_ROOT}/pokemon/${PELIPPER_DEX_ID}.png`
+/**
+ * 475x475 official artwork for the sidebar lockup. The 96px sprite looked
+ * crushed there: it was being DOWN-scaled and then rendered nearest-neighbour.
+ * `image-rendering: pixelated` must never reach this image.
+ */
+export const BRAND_ARTWORK_URL = `${COURIER_BASE}/${PELIPPER_DEX_ID}.png`
 
 /** Fallback for the app bar if the CDN is unreachable — never leave a gap in the wordmark. */
 export const BRAND_FALLBACK_ICON = 'mdi-mail'

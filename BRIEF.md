@@ -361,12 +361,37 @@ sprites repo has **no trainers directory** — it holds only `badges`, `items`, 
 — so every `sprites/trainers/*` path 404s. Noctowl is deliberately neither the Pelipper brand mark
 nor any of the eight couriers.
 
+**The top bar is OPAQUE, deliberately.** A translucent bar over arbitrary scrolling content cannot
+guarantee text contrast, because what sits behind it is unknowable and changes as the page moves.
+The account name, role and email all clear **4.5:1 in both themes** with a chart scrolled beneath,
+and the role and email carry extra weight — thin grey small text is the worst case for legibility.
+
 **The sidebar is glass** — semi-transparent over the sky with `backdrop-filter: blur(18px)
 saturate(1.5)` and a hairline right border. **A solid-surface fallback is required** under
 `@supports not (backdrop-filter: ...)`, so label legibility never depends on a blur that isn't
 happening. Nav-label contrast, measured from composited pixels: **7.97:1 light, 5.08:1 dark.**
 
 **The theme toggle lives in the sidebar footer and appears exactly once.**
+
+### Card nesting — maximum two levels
+
+**Level 1** — the outer page container card.
+**Level 2** — content cards inside it, on a surface that clearly separates them from level 1.
+**Level 3 and deeper — NOT cards.** Horizontal separator lines and spacing only: no borders, no
+elevation, no card background.
+
+The level-2 surface differs by theme, and the reason matters:
+
+| | Level 1 (shell) | Level 2 (cards) |
+|---|---|---|
+| Light | `#F1F5F9` *(tinted)* | `#FFFFFF` |
+| Dark | `#131C28` | `#1E2A3A` *(lifted)* |
+
+In **dark** this is as first specified — level 2 lifts above the shell. In **light** the
+relationship is inverted, with the shell tinted and level-2 cards left pure white, because **any
+perceptible off-white on a level-2 card drops the verified categorical palette below 3:1** — TMs
+`#CC79A7` reaches 2.98 at `#FBFCFD`. Level 2 still reads as lifted from level 1 in both themes,
+which is the actual goal; the palette is not negotiable for it.
 
 ### Nested card shell
 

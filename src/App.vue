@@ -140,12 +140,34 @@ function accentRgb(key: keyof typeof editorial.value) {
   box-shadow: 0 1px 2px rgba(15, 30, 45, 0.04);
 }
 
-/* The one outer container card per page. */
+/* Level 1 — the one outer container card per page.
+   Level 2 cards must separate visibly from it. In DARK that is done as
+   specified, by lifting the level-2 surface above the shell. In LIGHT the
+   relationship is inverted — the shell is tinted and level-2 cards stay pure
+   white — because any perceptible off-white on a level-2 card drops the
+   verified categorical palette below 3:1 (TMs reaches 2.98 at #FBFCFD). Level 2
+   still reads as lifted from level 1 in both themes, which is the point. */
 .v-application .v-card.pp-shell {
   border-radius: 16px;
   padding: 24px;
+  background: var(--pp-shell-bg) !important;
   border: 1px solid rgba(var(--v-theme-muted), 0.22);
   box-shadow: 0 1px 3px rgba(15, 30, 45, 0.06), 0 8px 28px rgba(15, 30, 45, 0.05);
+}
+
+/* Level 2 — content cards inside the shell. */
+.v-application .pp-shell .v-card {
+  background: var(--pp-level2-bg) !important;
+}
+
+.v-theme--pelipperLight {
+  --pp-shell-bg: #f1f5f9;
+  --pp-level2-bg: #ffffff;
+}
+
+.v-theme--pelipperDark {
+  --pp-shell-bg: #131c28;
+  --pp-level2-bg: #1e2a3a;
 }
 
 /* Card internals — 20px padding, 15px/600 title, 12px muted subtitle.
@@ -210,11 +232,9 @@ function accentRgb(key: keyof typeof editorial.value) {
   height: 17px;
 }
 
-/* Pixel art must not be smoothed on scale-up. */
-.brand-sprite {
-  image-rendering: pixelated;
-  object-fit: contain;
-}
+/* NOTE: there is deliberately NO blanket `img { image-rendering }` rule.
+   Pixel rendering is scoped to the classes that wrap 30x30 item sprites; the
+   475x475 brand artwork and the courier avatars must stay smoothed. */
 </style>
 
 <style scoped>
@@ -427,15 +447,9 @@ function accentRgb(key: keyof typeof editorial.value) {
 /* ---------- top bar ---------- */
 .topbar {
   z-index: 2;
-  background: rgba(var(--v-theme-surface), 0.72) !important;
-  backdrop-filter: blur(18px) saturate(1.5);
-  -webkit-backdrop-filter: blur(18px) saturate(1.5);
-}
-
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .topbar {
-    background: rgb(var(--v-theme-surface)) !important;
-  }
+  /* OPAQUE on purpose. A translucent bar over arbitrary scrolling content
+     cannot guarantee contrast, because what sits behind it is unknowable. */
+  background: rgb(var(--v-theme-surface)) !important;
 }
 
 .topbar__inner {

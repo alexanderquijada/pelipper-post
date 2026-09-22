@@ -314,13 +314,14 @@ const RISK_COLOR: Record<DelayRisk, string> = {
   gap: 12px;
 }
 
+/* Level 3 is NOT a card — separator lines and spacing only. No border, no
+   radius, no background. BRIEF.md §6. */
 .fleet__card {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid rgba(var(--v-theme-muted), 0.18);
-  border-radius: 10px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(var(--v-theme-muted), 0.18);
 }
 
 .fleet__avatar {
