@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import PageShell from '@/components/PageShell.vue'
 import CourierRoster from '@/components/CourierRoster.vue'
-import BarSeriesChart from '@/components/charts/BarSeriesChart.vue'
+import LollipopChart from '@/components/charts/LollipopChart.vue'
 import { useMetrics } from '@/composables/useMetrics'
 import { SPRITE_FALLBACK_ICON, spriteUrl } from '@/utils/sprites'
 import type { CourierStatus } from '@/types/metrics'
@@ -18,6 +18,7 @@ const STATUS_COLOR: Record<CourierStatus, string> = {
 
 const failedSprites = ref(new Set<number>())
 const num = (n: number) => n.toLocaleString('en-US')
+const avg = (a: number[]) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0)
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 </script>
 
@@ -70,11 +71,11 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
         <v-card class="pp-card-pad" height="100%">
           <h2 class="pp-card-title">Stops per Run</h2>
           <p class="pp-card-subtitle">Average delivery stops each courier makes per run.</p>
-          <BarSeriesChart
-            :labels="courierStops.labels"
-            :values="courierStops.values"
-            :height="210"
-            unit="stops"
+          <LollipopChart
+            :rows="courierStops.labels.map((l, i) => ({ label: l, value: courierStops.values[i]! }))"
+            accent="indigo"
+            :reference="avg(courierStops.values)"
+            reference-label="Fleet average"
           />
         </v-card>
       </v-col>
@@ -83,12 +84,17 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
         <v-card class="pp-card-pad" height="100%">
           <h2 class="pp-card-title">First-Attempt Rate by Courier</h2>
           <p class="pp-card-subtitle">Share of parcels each courier lands on the first try.</p>
-          <BarSeriesChart
-            :labels="courierFirstAttempt.labels"
-            :values="courierFirstAttempt.values"
+          <LollipopChart
+            :rows="
+              courierFirstAttempt.labels.map((l, i) => ({
+                label: l,
+                value: courierFirstAttempt.values[i]!,
+              }))
+            "
             format="percent"
-            :color-index="2"
-            :height="210"
+            accent="teal"
+            :reference="avg(courierFirstAttempt.values)"
+            reference-label="Fleet average"
           />
         </v-card>
       </v-col>
@@ -99,12 +105,11 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
         <v-card class="pp-card-pad" height="100%">
           <h2 class="pp-card-title">Rest Days Taken</h2>
           <p class="pp-card-subtitle">Rest days each courier has taken across their tenure.</p>
-          <BarSeriesChart
-            :labels="courierRest.labels"
-            :values="courierRest.values"
-            :color-index="3"
-            :height="210"
-            unit="days"
+          <LollipopChart
+            :rows="courierRest.labels.map((l, i) => ({ label: l, value: courierRest.values[i]! }))"
+            accent="plum"
+            :reference="avg(courierRest.values)"
+            reference-label="Fleet average"
           />
         </v-card>
       </v-col>

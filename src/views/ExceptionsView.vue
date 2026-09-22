@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import PageShell from '@/components/PageShell.vue'
 import LineSeriesChart from '@/components/charts/LineSeriesChart.vue'
+import WaterfallChart from '@/components/charts/WaterfallChart.vue'
 import { useChartTheme } from '@/components/charts/chartTheme'
 import { useMetrics } from '@/composables/useMetrics'
 
@@ -58,27 +59,11 @@ const num = (n: number) => n.toLocaleString('en-US')
       <v-col cols="12" lg="7">
         <v-card class="pp-card-pad" height="100%">
           <h2 class="pp-card-title">Exceptions by Cause</h2>
-          <p class="pp-card-subtitle">What went wrong, and how often.</p>
-          <ul class="causes">
-            <li v-for="c in exceptionsByCause" :key="c.cause" class="causes__row">
-              <span
-                class="causes__swatch"
-                :style="{ background: categorical[c.colorIndex % categorical.length] }"
-              />
-              <span class="causes__label">{{ c.cause }}</span>
-              <span class="causes__value">{{ num(c.value) }}</span>
-              <span class="causes__share">{{ (c.share * 100).toFixed(1) }}%</span>
-              <span class="causes__track">
-                <span
-                  class="causes__fill"
-                  :style="{
-                    width: `${Math.max(c.share * 100, 1.5)}%`,
-                    background: categorical[c.colorIndex % categorical.length],
-                  }"
-                />
-              </span>
-            </li>
-          </ul>
+          <p class="pp-card-subtitle">How each cause builds the exception total.</p>
+          <WaterfallChart
+            :steps="exceptionsByCause.map((c) => ({ label: c.cause, value: c.value }))"
+            total-label="All exceptions"
+          />
         </v-card>
       </v-col>
 
@@ -124,7 +109,7 @@ const num = (n: number) => n.toLocaleString('en-US')
           <LineSeriesChart
             :labels="exceptionsOverMonths.labels"
             :values="exceptionsOverMonths.values"
-            :color-index="2"
+            accent="coral"
             :height="200"
             unit="exceptions"
           />

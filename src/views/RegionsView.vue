@@ -2,6 +2,7 @@
 import PageShell from '@/components/PageShell.vue'
 import ReliabilityHealth from '@/components/ReliabilityHealth.vue'
 import BarSeriesChart from '@/components/charts/BarSeriesChart.vue'
+import BulletChart from '@/components/charts/BulletChart.vue'
 import { useMetrics } from '@/composables/useMetrics'
 
 const {
@@ -33,13 +34,12 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
           <p class="pp-card-subtitle">
             On-time delivery rate per region, against the {{ pct(onTimeTarget) }} target.
           </p>
-          <BarSeriesChart
-            :labels="onTimeVsTarget.map((r) => r.region)"
-            :values="onTimeVsTarget.map((r) => r.onTime)"
-            format="percent"
+          <BulletChart
+            :rows="onTimeVsTarget.map((r) => ({ label: r.region, value: r.onTime }))"
             :target="onTimeTarget"
-            target-label="Target"
-            :height="240"
+            :min="0.84"
+            :max="0.99"
+            format="percent"
           />
         </v-card>
       </v-col>

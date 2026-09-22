@@ -36,6 +36,7 @@ const kpiCards = computed<MetricCardProps[]>(() => [
     format: 'number',
     trend: trends.value.parcelsDelivered,
     icon: 'mdi-package-variant-closed',
+    accent: 'indigo',
   },
   {
     label: 'On-Time Rate',
@@ -44,6 +45,8 @@ const kpiCards = computed<MetricCardProps[]>(() => [
     trend: trends.value.onTimeRate,
     trendUnit: 'points',
     icon: 'mdi-clock-check-outline',
+    accent: 'teal',
+    sprite: 'onTime',
   },
   {
     label: 'First-Attempt Rate',
@@ -52,6 +55,7 @@ const kpiCards = computed<MetricCardProps[]>(() => [
     trend: trends.value.firstAttemptRate,
     trendUnit: 'points',
     icon: 'mdi-check-decagram-outline',
+    accent: 'plum',
   },
   {
     label: 'Cost per Parcel',
@@ -60,6 +64,8 @@ const kpiCards = computed<MetricCardProps[]>(() => [
     trend: trends.value.costPerParcel,
     invertTrend: true,
     icon: 'mdi-cash-multiple',
+    accent: 'orange',
+    sprite: 'cost',
   },
   {
     label: 'Open Exceptions',
@@ -68,6 +74,8 @@ const kpiCards = computed<MetricCardProps[]>(() => [
     trend: trends.value.openExceptions,
     invertTrend: true,
     icon: 'mdi-alert-circle-outline',
+    accent: 'coral',
+    sprite: 'exceptions',
   },
 ])
 

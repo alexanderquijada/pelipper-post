@@ -102,11 +102,23 @@ function markerRadius(i: number) {
   return i === props.selectedIndex ? 6 : 0
 }
 
+/** Vertical gradient fill — strongest at the line, fading to nothing at the axis. */
+function gradientFill(color: string) {
+  return (ctx: { chart: { ctx: CanvasRenderingContext2D; chartArea?: { top: number; bottom: number } } }) => {
+    const { chart } = ctx
+    if (!chart.chartArea) return withAlpha(color, 0.18)
+    const g = chart.ctx.createLinearGradient(0, chart.chartArea.top, 0, chart.chartArea.bottom)
+    g.addColorStop(0, withAlpha(color, 0.42))
+    g.addColorStop(1, withAlpha(color, 0.02))
+    return g
+  }
+}
+
 function series(values: number[], color: string) {
   return {
     data: values,
     borderColor: color,
-    backgroundColor: withAlpha(color, 0.18),
+    backgroundColor: gradientFill(color),
     borderWidth: 2,
     fill: true,
     tension: 0.35,

@@ -11,7 +11,7 @@ import {
   Tooltip,
   type ChartOptions,
 } from 'chart.js'
-import { SEQUENTIAL_COLORS, compactNumber, fullNumber, useChartTheme, withAlpha } from './chartTheme'
+import { compactNumber, fullNumber, useChartTheme, withAlpha } from './chartTheme'
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Filler, Tooltip)
 
@@ -24,14 +24,15 @@ const props = withDefaults(
     references?: { value: number; label: string }[]
     height?: number
     unit?: string
-    colorIndex?: number
+    /** Editorial accent key — these are single-series charts, so it is safe here. */
+    accent?: 'coral' | 'indigo' | 'teal' | 'orange' | 'plum'
   }>(),
-  { format: 'number', references: () => [], height: 220, unit: '', colorIndex: 0 },
+  { format: 'number', references: () => [], height: 220, unit: '', accent: 'indigo' },
 )
 
-const { muted, grid, surface, ink } = useChartTheme()
+const { muted, grid, surface, ink, editorial } = useChartTheme()
 
-const color = computed(() => SEQUENTIAL_COLORS[props.colorIndex % SEQUENTIAL_COLORS.length]!)
+const color = computed(() => editorial.value[props.accent])
 
 const fmt = (v: number) => {
   if (props.format === 'percent') return `${(v * 100).toFixed(1)}%`
@@ -76,7 +77,14 @@ const data = computed(() => ({
     {
       data: props.values,
       borderColor: color.value,
-      backgroundColor: withAlpha(color.value, 0.16),
+      backgroundColor: (ctx: any) => {
+        const { chart } = ctx
+        if (!chart.chartArea) return withAlpha(color.value, 0.16)
+        const g = chart.ctx.createLinearGradient(0, chart.chartArea.top, 0, chart.chartArea.bottom)
+        g.addColorStop(0, withAlpha(color.value, 0.4))
+        g.addColorStop(1, withAlpha(color.value, 0.02))
+        return g
+      },
       borderWidth: 2,
       fill: true,
       tension: 0.35,

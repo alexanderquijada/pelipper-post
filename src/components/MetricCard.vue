@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useChartTheme } from '@/components/charts/chartTheme'
+import { conceptItemUrl } from '@/utils/sprites'
 
 export interface MetricCardProps {
   /** Small uppercase muted label above the value. */
@@ -30,12 +32,29 @@ export interface MetricCardProps {
    * a rate, where "+3.1%" and "+3.1 points" mean very different things.
    */
   trendUnit?: 'relative' | 'points'
+  /** Editorial accent for the icon circle. */
+  accent?: 'coral' | 'indigo' | 'teal' | 'orange' | 'plum'
+  /** Concept key for a Pokémon item sprite; falls back to `icon` when absent. */
+  sprite?: string
 }
 
 const props = withDefaults(defineProps<MetricCardProps>(), {
   invertTrend: false,
   trendUnit: 'relative',
+  accent: 'indigo',
+  sprite: '',
 })
+
+const { editorial } = useChartTheme()
+const accentHex = computed(() => editorial.value[props.accent])
+/** rgb triplet so the circle can tint at 13% without a second hex. */
+const accentRgb = computed(() => {
+  const h = accentHex.value.replace('#', '')
+  const n = Number.parseInt(h, 16)
+  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`
+})
+const spriteUrlFor = computed(() => (props.sprite ? conceptItemUrl(props.sprite) : null))
+const spriteFailed = ref(false)
 
 const displayValue = computed(() =>
   props.format === 'percent'
@@ -88,7 +107,15 @@ const trendAria = computed(() => {
   <v-card class="metric-card" height="100%">
     <div class="d-flex align-start justify-space-between ga-2">
       <div class="metric-card__label">{{ label }}</div>
-      <v-icon :icon="icon" color="primary" size="16" class="metric-card__icon" />
+      <span class="pp-ico pp-ico--sm" :style="{ '--pp-accent-rgb': accentRgb }">
+        <img
+          v-if="spriteUrlFor && !spriteFailed"
+          :src="spriteUrlFor"
+          alt=""
+          @error="spriteFailed = true"
+        />
+        <v-icon v-else :icon="icon" size="15" />
+      </span>
     </div>
 
     <div class="metric-card__value">{{ displayValue }}</div>
@@ -122,11 +149,6 @@ const trendAria = computed(() => {
   color: rgb(var(--v-theme-muted));
   /* reserve two lines so every value in the strip shares a baseline */
   min-height: 2.6em;
-}
-
-.metric-card__icon {
-  opacity: 0.55;
-  flex: none;
 }
 
 .metric-card__value {

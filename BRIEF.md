@@ -441,11 +441,11 @@ data, and no changes to that file.
 
 | Page | Contains |
 |---|---|
-| **`/trends`** | The twelve-month chart at full width and taller · Parcels by Region · a month-by-month table (12 rows: parcels, Poké Balls, berries, gym runs, fainted, on-time) · six small sparklines, one per region |
-| **`/exceptions`** | Every signal, uncapped, grouped under **Critical / Warning / Healthy** with counts and details expanded by default · a per-region on-time table against the 93% target |
+| **`/trends`** | The twelve-month chart, gradient-filled · on-time over time with **both** reference lines · cost per parcel over time · a **month × region seasonality heatmap** (CSS grid, normalised per row so the seasonal shape shows rather than region size) · a peak-vs-trough callout · the month-by-month table |
+| **`/exceptions`** | Every signal, uncapped, grouped under **Critical / Warning / Healthy** with counts and details expanded by default · a **waterfall** of exceptions by cause · exceptions over time · first-attempt failure cost · regions below the 93% target |
 | **`/cargo`** | The horizontal cargo bars · a cargo-by-region matrix (6 regions × 5 types) · cargo mix across the twelve months. Item sprites throughout |
-| **`/regions`** | The health rows · a six-region comparison table (parcels, on-time, fainted, gym runs, avg monthly volume) · on-time by region with a 93% target line · fainted couriers by month |
-| **`/couriers`** | The full roster · a card per courier with a larger sprite and their stats · on-time rate compared across couriers · a status breakdown of On Route / Resting / Grounded |
+| **`/regions`** | The health rows · parcels by region · **bullet charts** for on-time vs the 93% target, one per region · capacity and transit by region · region growth · the six-region comparison table |
+| **`/couriers`** | The full roster · a card per courier with a larger sprite and their stats · **lollipop/dot plots** (stops per run, first-attempt rate, rest days) each against the fleet average · a status breakdown of On Route / Resting / Grounded |
 
 The filter controls stay in the **top bar** and apply to **every** page.
 
@@ -638,6 +638,42 @@ gradient and keep the clouds visible in a static position — remove the animati
 **Dark theme keeps its flat `#0E1621` background.** No sky, no clouds. The sky is the light theme's
 character; the dark theme's is calm and recessive, and dropping clouds into it would fight the
 palette for no gain.
+
+### Colour-blind constraints bind only where colour is the SOLE encoder
+
+This is the rule that decides which palette a mark may use.
+
+**Where colour is the only thing distinguishing one category from another** — the five-way cargo
+doughnut and its bars — the palette must survive colourblind simulation as a *set*. That is
+`CATEGORICAL_*` below, and **it does not change.**
+
+**Where colour is decoration, or where the category is already carried by position, label or axis**
+— a single-series trend line, a heatmap ramp, a bullet bar against its own labelled row, an icon
+circle, a card accent tint — the set never has to be mutually separable, because nothing depends on
+telling two hues apart. Those marks use the **editorial palette**.
+
+**Editorial palette:** coral `#D94F6A` · indigo `#2F4B7C` · teal `#36B5C4` · orange `#F2A15C` ·
+plum `#9B5FB5`.
+
+**These must never be used as a categorical set.** Tested as one they fail: teal and mint collapse
+to ΔE 2.1 under deuteranopia, and several miss 3:1 on one theme.
+
+Each still has to clear **3:1 against the surface it sits on**, since it colours a visible mark.
+Three of the five miss that at their base value, so there are two variants — pure lightness shifts,
+same hue and saturation:
+
+| | Light on `#FFFFFF` | Dark on `#16202E` |
+|---|---|---|
+| coral | `#D94F6A` **3.98:1** | `#D94F6A` **4.12:1** |
+| indigo | `#2F4B7C` **8.68:1** | `#4871B9` **3.39:1** *(base was 1.89)* |
+| teal | `#2E99A6` **3.37:1** *(base was 2.45)* | `#36B5C4` **6.69:1** |
+| orange | `#DB6E11` **3.36:1** *(base was 2.09)* | `#F2A15C` **7.83:1** |
+| plum | `#9B5FB5` **4.47:1** | `#9B5FB5` **3.67:1** |
+
+Targeted 3.35:1 rather than exactly 3.0, so a slot isn't one surface tweak away from failing.
+
+**Tinted icon circles.** Every icon sits in a circle filled with its own accent at **13%** opacity;
+the icon keeps full saturation. Applies to KPI cards, list rows and nav items.
 
 ### Chart colors — two palettes, because there are two different jobs
 

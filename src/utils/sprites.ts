@@ -56,6 +56,35 @@ const CARGO_ITEM_FILES: Record<string, string> = {
   'Evolution Stones': 'fire-stone',
 }
 
+/**
+ * Concept -> item sprite, for KPI cards, list rows and section headers.
+ * All curl-verified HTTP 200 on 2026-09-22.
+ *
+ * Only mappings that genuinely fit are here. Where no item represents the
+ * concept the caller keeps its MDI icon rather than forcing a bad metaphor —
+ * see PELIPPER-POST-STATUS.md for the list of what stayed MDI and why.
+ */
+const CONCEPT_ITEM_FILES: Record<string, string> = {
+  // a Nugget is the game's plain "this is money" item
+  cost: 'nugget',
+  // Revive is literally what you use on a fainted Pokémon
+  exceptions: 'revive',
+  fainted: 'revive',
+  // Quick Claw is the speed/priority item
+  onTime: 'quick-claw',
+  // the Town Map is the game's region view
+  region: 'town-map',
+  // Amulet Coin multiplies money earned
+  revenue: 'amulet-coin',
+  // Exp. Share distributes across the team
+  fleet: 'exp-share',
+}
+
+export function conceptItemUrl(concept: string): string | null {
+  const file = CONCEPT_ITEM_FILES[concept]
+  return file ? `${ITEM_BASE}/${file}.png` : null
+}
+
 /** Item sprite for a cargo type, or null if the type has no mapping. */
 export function cargoItemUrl(cargoType: string): string | null {
   const file = CARGO_ITEM_FILES[cargoType]

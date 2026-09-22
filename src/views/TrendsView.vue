@@ -2,11 +2,13 @@
 import PageShell from '@/components/PageShell.vue'
 import LineSeriesChart from '@/components/charts/LineSeriesChart.vue'
 import DeliveryTrendChart from '@/components/charts/DeliveryTrendChart.vue'
-import SparkLine from '@/components/charts/SparkLine.vue'
+import SeasonHeatmap from '@/components/charts/SeasonHeatmap.vue'
+import { computed } from 'vue'
 import { useMetrics } from '@/composables/useMetrics'
 
 const {
   trendChart,
+  regions,
   monthlyTable,
   regionSparklines,
   onTimeOverMonths,
@@ -17,6 +19,11 @@ const {
 } = useMetrics()
 
 const num = (n: number) => n.toLocaleString('en-US')
+
+/** Month x region grid — the clearest read of Gym Season and the storm dip. */
+const heatRows = computed(() =>
+  regionSparklines.value.map((r) => ({ region: r.region, values: r.values })),
+)
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 </script>
 
@@ -69,7 +76,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
             :labels="costOverMonths.labels"
             :values="costOverMonths.values"
             format="currency"
-            :color-index="2"
+            accent="orange"
             :height="240"
           />
         </v-card>
@@ -103,20 +110,14 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 
       <v-col cols="12" lg="7">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Regional Trends</h2>
-          <p class="pp-card-subtitle">Twelve-month parcel volume for each region.</p>
-          <div class="sparks">
-            <div v-for="r in regionSparklines" :key="r.region" class="sparks__item">
-              <div class="sparks__head">
-                <span class="sparks__region">{{ r.region }}</span>
-                <span class="sparks__total">{{ num(r.total) }}</span>
-              </div>
-              <SparkLine :values="r.values" :dimmed="r.dimmed" />
-              <span class="sparks__change" :class="r.change >= 0 ? 'text-success' : 'text-error'">
-                {{ r.change >= 0 ? '+' : '−' }}{{ Math.abs(r.change * 100).toFixed(1) }}%
-              </span>
-            </div>
-          </div>
+          <h2 class="pp-card-title">Seasonality by Region</h2>
+          <p class="pp-card-subtitle">Parcel volume for each region in each month.</p>
+          <SeasonHeatmap
+            :months="trendChart.labels"
+            :rows="heatRows"
+            polarity="high-good"
+            unit="parcels"
+          />
         </v-card>
       </v-col>
     </v-row>

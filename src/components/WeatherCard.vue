@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useChartTheme } from '@/components/charts/chartTheme'
 import type { DelayRisk, RegionWeather } from '@/types/metrics'
 
 defineProps<{ rows: RegionWeather[] }>()
@@ -7,6 +8,20 @@ const RISK_COLOR: Record<DelayRisk, string> = {
   High: 'error',
   Moderate: 'accent',
   Low: 'success',
+}
+
+// Circle tint tracks the delay risk, so the row reads before you get to the chip.
+const RISK_ACCENT: Record<DelayRisk, 'coral' | 'orange' | 'teal'> = {
+  High: 'coral',
+  Moderate: 'orange',
+  Low: 'teal',
+}
+
+const { editorial } = useChartTheme()
+function accentRgb(risk: DelayRisk) {
+  const h = editorial.value[RISK_ACCENT[risk]].replace('#', '')
+  const n = Number.parseInt(h, 16)
+  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`
 }
 </script>
 
@@ -17,7 +32,9 @@ const RISK_COLOR: Record<DelayRisk, string> = {
 
     <ul class="wx">
       <li v-for="w in rows" :key="w.region" class="wx__row" :title="w.note">
-        <v-icon :icon="w.icon" size="20" class="wx__icon" />
+        <span class="pp-ico pp-ico--sm" :style="{ '--pp-accent-rgb': accentRgb(w.delayRisk) }">
+          <v-icon :icon="w.icon" size="15" />
+        </span>
         <span class="wx__region">{{ w.region }}</span>
         <span class="wx__condition">{{ w.condition }}</span>
         <span class="wx__temp">{{ w.tempC }}°C</span>
@@ -38,7 +55,7 @@ const RISK_COLOR: Record<DelayRisk, string> = {
 
 .wx__row {
   display: grid;
-  grid-template-columns: 22px 62px 1fr auto auto;
+  grid-template-columns: 26px 62px 1fr auto auto;
   align-items: center;
   gap: 10px;
   padding: 8px 0;
@@ -46,10 +63,6 @@ const RISK_COLOR: Record<DelayRisk, string> = {
 
 .wx__row + .wx__row {
   border-top: 1px solid rgba(var(--v-theme-muted), 0.16);
-}
-
-.wx__icon {
-  color: rgb(var(--v-theme-primary));
 }
 
 .wx__region {

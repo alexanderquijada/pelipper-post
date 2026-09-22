@@ -26,6 +26,38 @@ export const SEQUENTIAL_COLORS = ['#4FA3D1', '#7FD1E8', '#F2A65A', '#9BB8D3', '#
 export const CATEGORICAL_DARK = ['#56B4E9', '#E69F00', '#009E73', '#CC79A7', '#F0E442'] as const
 export const CATEGORICAL_LIGHT = ['#0072B2', '#D55E00', '#009E73', '#CC79A7', '#6B4E00'] as const
 
+/**
+ * EDITORIAL palette — coral / indigo / teal / orange / plum.
+ *
+ * For marks where colour is NOT the sole encoder of category: single- and
+ * dual-series charts, heatmap ramps, bullet charts, card accent tints and icon
+ * circles. **Never for the five-way cargo chart** — as a categorical set these
+ * fail colourblind separation (teal/mint collapse to ΔE 2.1 under deuteranopia),
+ * which is exactly why CATEGORICAL_* above exists and stays untouched.
+ *
+ * Two variants because three of the five miss 3:1 on one surface at their base
+ * value — indigo 1.89 on dark, teal 2.45 and orange 2.09 on light. The variants
+ * are pure lightness shifts: same hue, same saturation. Every slot clears
+ * 3.35:1 on its own surface, with headroom rather than sitting on the floor.
+ */
+export const EDITORIAL_LIGHT = {
+  coral: '#D94F6A',
+  indigo: '#2F4B7C',
+  teal: '#2E99A6',
+  orange: '#DB6E11',
+  plum: '#9B5FB5',
+} as const
+
+export const EDITORIAL_DARK = {
+  coral: '#D94F6A',
+  indigo: '#4871B9',
+  teal: '#36B5C4',
+  orange: '#F2A15C',
+  plum: '#9B5FB5',
+} as const
+
+export type EditorialKey = keyof typeof EDITORIAL_LIGHT
+
 /** #RRGGBB -> rgba(r, g, b, alpha). Lets us tint a theme colour without hardcoding one. */
 export function withAlpha(hex: string, alpha: number): string {
   const h = hex.replace('#', '')
@@ -60,6 +92,8 @@ export function useChartTheme() {
     categorical: computed<readonly string[]>(() =>
       isDark.value ? CATEGORICAL_DARK : CATEGORICAL_LIGHT,
     ),
+    /** Editorial accents — NOT for categorical encoding. See the note above. */
+    editorial: computed(() => (isDark.value ? EDITORIAL_DARK : EDITORIAL_LIGHT)),
   }
 }
 

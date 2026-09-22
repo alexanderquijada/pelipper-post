@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-22 — **Nested card shell with glass sidebar.** Only the Vercel deployment is outstanding.
+- **Last updated:** 2026-09-22 — **Editorial palette, modern chart types, sprite iconography.** Only the Vercel deployment is outstanding.
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -888,6 +888,50 @@ Append here as the build goes. Date, what came up, what was decided.
      measured **83% full** — the exact defect this phase was meant to remove, in a row I hadn't
      thought to question. Replaced with an auto-fit grid; now 100%. **Five does not divide twelve**
      — any odd card count needs a grid, not `v-col` widths.
+
+- **2026-09-22 — Editorial palette, modern chart types, sprite iconography.**
+
+  **Colour.** The governing distinction is now in `BRIEF.md` §6: **colourblind constraints bind only
+  where colour is the sole encoder of category.** The five-way cargo palette stays exactly as
+  verified; the editorial set is for single/dual-series marks, ramps, bullets, tints and icon
+  circles, where position or label already carries identity.
+
+  Contrast measured for all five on both card surfaces — **three failed at base value** and got
+  lightness-only variants (hue and saturation unchanged), targeting 3.35:1 rather than 3.0 so no
+  slot sits on the floor:
+
+  | | Light `#FFFFFF` | Dark `#16202E` |
+  |---|---|---|
+  | coral `#D94F6A` | 3.98 | 4.12 |
+  | indigo | 8.68 | **1.89 → `#4871B9` 3.39** |
+  | teal | **2.45 → `#2E99A6` 3.37** | 6.69 |
+  | orange | **2.09 → `#DB6E11` 3.36** | 7.83 |
+  | plum `#9B5FB5` | 4.47 | 3.67 |
+
+  **Chart types**, all verified rendering in both themes: month × region **heatmap** (72 cells),
+  **bullet charts** (6), **lollipop plots** (24 rows across three), **waterfall** (6 rows), and
+  gradient-filled areas. Heatmap, bullets, lollipops and waterfall are **pure CSS** — no new
+  dependencies. `SparkLine.vue` was superseded by the heatmap and deleted.
+
+  **The heatmap needed a second pass.** Normalised globally, Kanto's size dominated the ramp and the
+  smaller regions read as empty — the seasonality story, which is the entire point of the view, was
+  invisible. Switched to **per-row normalisation**, so each region is shaded against its own range;
+  Gym Season and the storm dip now read across every row. Caught by looking at the render, not by
+  any numeric check.
+
+  **Sprite icons — what stayed MDI and why.** Item sprites are used where a real concept match
+  exists: Cost per Parcel → `nugget`, Open Exceptions → `revive` (literally what revives a fainted
+  Pokémon), On-Time Rate → `quick-claw`. Kept MDI:
+  - **Parcels Delivered** — no item represents "a parcel"; the nearest, a Poké Ball, already means
+    the *cargo type* Poké Balls, so it would collide with the cargo iconography.
+  - **First-Attempt Rate** — no item represents "delivered on the first try".
+  - **All six nav items** — these are dashboard sections, not game concepts, and mixing one sprite
+    into an otherwise MDI nav set would read as an inconsistency rather than a flourish.
+
+  Forcing a sprite where the metaphor doesn't hold makes the icon *less* informative, not more.
+
+  Verified: build exit 0, validator exit 0, 0 console errors on all six routes in both themes, 21px
+  card gaps throughout, no NaN, `metrics.json` untouched, `CATEGORICAL_*` untouched.
 
 ---
 

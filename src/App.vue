@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { RouterView } from 'vue-router'
 import { useDisplay, useTheme } from 'vuetify'
 import BrandLockup from '@/components/BrandLockup.vue'
+import { useChartTheme } from '@/components/charts/chartTheme'
 import AccountBlock from '@/components/AccountBlock.vue'
 
 const theme = useTheme()
@@ -24,13 +25,21 @@ const rail = computed(() => width.value < 960)
  * BRIEF.md §4. The active item comes from the route; there is no scroll-spy.
  */
 const NAV = [
-  { to: '/', label: 'Overview', icon: 'mdi-view-dashboard-outline' },
-  { to: '/trends', label: 'Monthly Trends', icon: 'mdi-chart-line' },
-  { to: '/exceptions', label: 'Exceptions', icon: 'mdi-alert-circle-outline' },
-  { to: '/cargo', label: 'Cargo & Revenue', icon: 'mdi-package-variant-closed' },
-  { to: '/regions', label: 'Regions', icon: 'mdi-map-marker-radius-outline' },
-  { to: '/couriers', label: 'Courier Fleet', icon: 'mdi-account-group-outline' },
+  { to: '/', label: 'Overview', icon: 'mdi-view-dashboard-outline', accent: 'indigo' },
+  { to: '/trends', label: 'Monthly Trends', icon: 'mdi-chart-line', accent: 'teal' },
+  { to: '/exceptions', label: 'Exceptions', icon: 'mdi-alert-circle-outline', accent: 'coral' },
+  { to: '/cargo', label: 'Cargo & Revenue', icon: 'mdi-package-variant-closed', accent: 'orange' },
+  { to: '/regions', label: 'Regions', icon: 'mdi-map-marker-radius-outline', accent: 'plum' },
+  { to: '/couriers', label: 'Courier Fleet', icon: 'mdi-account-group-outline', accent: 'indigo' },
 ] as const
+
+const { editorial } = useChartTheme()
+/** rgb triplet for a tinted circle without hardcoding a second hex. */
+function accentRgb(key: keyof typeof editorial.value) {
+  const h = editorial.value[key].replace('#', '')
+  const n = Number.parseInt(h, 16)
+  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`
+}
 
 </script>
 
@@ -63,11 +72,16 @@ const NAV = [
           :key="item.to"
           :to="item.to"
           exact
-          :prepend-icon="item.icon"
           :title="item.label"
           color="primary"
           class="sidebar__item"
-        />
+        >
+          <template #prepend>
+            <span class="pp-ico pp-ico--sm mr-3" :style="{ '--pp-accent-rgb': accentRgb(item.accent) }">
+              <v-icon :icon="item.icon" size="15" />
+            </span>
+          </template>
+        </v-list-item>
       </v-list>
 
       <template #append>
@@ -154,6 +168,46 @@ const NAV = [
   line-height: 1.4;
   color: rgb(var(--v-theme-muted));
   margin: 2px 0 14px;
+}
+
+/* ---- editorial accents ----
+   Every icon sits in a circle filled with its own colour at low opacity; the
+   icon itself keeps full saturation. */
+.pp-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(var(--pp-accent-rgb), 0.13);
+  color: rgb(var(--pp-accent-rgb));
+}
+
+.pp-ico--sm {
+  width: 26px;
+  height: 26px;
+}
+
+.pp-ico--md {
+  width: 32px;
+  height: 32px;
+}
+
+.pp-ico--lg {
+  width: 38px;
+  height: 38px;
+}
+
+.pp-ico img {
+  image-rendering: pixelated;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.pp-ico--sm img {
+  width: 17px;
+  height: 17px;
 }
 
 /* Pixel art must not be smoothed on scale-up. */
