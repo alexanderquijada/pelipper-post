@@ -40,9 +40,20 @@ Owner: Alex Quijada. Alex is a designer, not a developer. He reviews and redirec
 5. **Verify before you claim done.** Run `npm run dev`, then `npm run build`. Report actual output.
    Never say something works because it should.
 
-6. **Six routes, one app.** `/` (Overview), `/trends`, `/signals`, `/cargo`, `/network`,
-   `/couriers`. Vue Router is the app's actual navigation now, not decoration. Unknown paths
-   redirect to `/`.
+6. **Six routes, one app.**
+
+   | Route | Sidebar | Page title |
+   |---|---|---|
+   | `/` | Overview | Network Overview |
+   | `/trends` | Monthly Trends | Monthly Trends & Seasonality |
+   | `/exceptions` | Exceptions | Exceptions & Delivery Risk |
+   | `/cargo` | Cargo & Revenue | Cargo Mix & Revenue |
+   | `/regions` | Regions | Regional Performance |
+   | `/couriers` | Courier Fleet | Courier Fleet |
+
+   Vue Router is the app's actual navigation now, not decoration. Unknown paths redirect to `/`.
+   **`/signals` and `/network` are the old names and must keep redirecting** to `/exceptions` and
+   `/regions` — renamed 2026-09-22, and existing links should not break.
 
    **This replaces the previous "one page, one route — do not add pages" rule, changed on Alex's
    explicit instruction (2026-09-22).** The capstone only ever required that Router be used; it did

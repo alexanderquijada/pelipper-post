@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-22 — **Dataset expanded; pages de-duplicated by dimension.** Only the Vercel deployment is outstanding.
+- **Last updated:** 2026-09-22 — **Weather, brand lockup, night sky, renamed navigation.** Only the Vercel deployment is outstanding.
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -824,6 +824,42 @@ Append here as the build goes. Date, what came up, what was decided.
 
   Constraints held: chart palettes untouched, `metrics.json` unchanged after commit 1, validator
   exit 0, filters shared and driving every new card, both themes.
+
+- **2026-09-22 — Weather, lockup, night sky, navigation rename.** Two commits.
+
+  **Data (`6ead420`).** Eighth courier **Dawdle** (Slowpoke, 79, Johto) as a deliberate outlier —
+  6.8d transit vs 3.4 next worst, 8 stops/run vs 19, 0.3% damage vs 0.9% best, 86.1% on-time
+  (lowest), 93.4% first-attempt (highest). Couriers gained `avgTransitDays` and `damageRate`; a new
+  top-level `weather` block carries current conditions per region. New validator checks were run
+  against the OLD data first and produced **17 failures** before the new data existed.
+
+  **UI (`<this commit>`).**
+
+  | Change | Result |
+  |---|---|
+  | Page titles | one shared `PageHeader` on all six — **20px / 700** title, 13px subtitle, 12px muted scope line. Overview previously used a bespoke 11px eyebrow. |
+  | Brand lockup | `BrandLockup.vue` — 44px sprite + **PELIPPER** 17px/800 over **POST & FREIGHT** 8.5px/600 at 0.17em, primary colour. Collapses to sprite-only in the rail. |
+  | Routes | `/signals` → `/exceptions`, `/network` → `/regions`; both old paths redirect, `/nonsense` → `/` |
+  | Night sky | two parallax star layers (260s / 150s) plus cloud bands (320s), opacities 0.35 / 0.5 / 0.14 |
+  | Weather card | six regions, Sinnoh (High) first; all icons verified |
+  | Roster weather | icon + risk chip on both the Overview preview and the Courier Fleet roster; temperature dropped to keep the table compact |
+
+  **Two defects caught by verification, both of which passed a screenshot:**
+
+  1. **The night-sky CSS never landed.** The edit's anchor text didn't match, so the markup shipped
+     with no styles — `.night` computed `opacity: 1` in *both* themes and `animation-duration: 0s`.
+     A screenshot of the dark theme looked fine because the layers were invisible either way.
+     Caught by reading computed style, not by looking.
+  2. **The first weather-icon test did not discriminate.** Measuring the `.v-icon` box width returned
+     20px for a real name *and* a bogus one, because the box is fixed regardless of glyph. Replaced
+     with a `::before` content check: a real name yields a codepoint, a bogus one yields `none` —
+     verified by deliberately rendering `mdi-weather-notarealicon`. **A test that cannot fail proves
+     nothing**; this is the same discipline used for the validator's new checks.
+
+  Re-verified after both fixes: all six routes load, old paths redirect, 21px minimum card gap on
+  every route, 0 console errors, no NaN, both themes, reduced motion stops clouds *and* night while
+  leaving both visible. Validator exit 0, `metrics.json` unchanged since the data commit, chart
+  palettes untouched.
 
 ---
 

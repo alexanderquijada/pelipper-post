@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { RouterView } from 'vue-router'
 import { useDisplay, useTheme } from 'vuetify'
-import { BRAND_FALLBACK_ICON, BRAND_SPRITE_URL } from '@/utils/sprites'
+import BrandLockup from '@/components/BrandLockup.vue'
 import { useMetrics } from '@/composables/useMetrics'
 
 const theme = useTheme()
@@ -22,7 +22,6 @@ const { selectedMonth, selectedRegion, monthOptions, regionOptions } = useMetric
 const { width } = useDisplay()
 const rail = computed(() => width.value < 960)
 
-const brandSpriteFailed = ref(false)
 
 /**
  * Real routes. Order matches the reading order of the Overview cards — see
@@ -30,11 +29,11 @@ const brandSpriteFailed = ref(false)
  */
 const NAV = [
   { to: '/', label: 'Overview', icon: 'mdi-view-dashboard-outline' },
-  { to: '/trends', label: 'Trends', icon: 'mdi-chart-line' },
-  { to: '/signals', label: 'Signals', icon: 'mdi-alert-circle-outline' },
-  { to: '/cargo', label: 'Cargo', icon: 'mdi-package-variant-closed' },
-  { to: '/network', label: 'Network', icon: 'mdi-lan' },
-  { to: '/couriers', label: 'Couriers', icon: 'mdi-account-group-outline' },
+  { to: '/trends', label: 'Monthly Trends', icon: 'mdi-chart-line' },
+  { to: '/exceptions', label: 'Exceptions', icon: 'mdi-alert-circle-outline' },
+  { to: '/cargo', label: 'Cargo & Revenue', icon: 'mdi-package-variant-closed' },
+  { to: '/regions', label: 'Regions', icon: 'mdi-map-marker-radius-outline' },
+  { to: '/couriers', label: 'Courier Fleet', icon: 'mdi-account-group-outline' },
 ] as const
 
 </script>
@@ -48,23 +47,18 @@ const NAV = [
       <div class="sky__clouds sky__clouds--front" />
     </div>
 
+    <!-- Night equivalent: two parallax star layers plus slow dark cloud bands.
+         Deliberately faint — it must never compete with the data. -->
+    <div class="night" :class="{ 'night--visible': isDark }" aria-hidden="true">
+      <div class="night__stars night__stars--far" />
+      <div class="night__stars night__stars--near" />
+      <div class="night__bands" />
+    </div>
+
     <!-- ---------- left sidebar ---------- -->
     <v-navigation-drawer permanent :rail="rail" :width="220" class="sidebar" border="e">
       <div class="sidebar__brand">
-        <img
-          v-if="!brandSpriteFailed"
-          :src="BRAND_SPRITE_URL"
-          alt=""
-          class="brand-sprite"
-          width="34"
-          height="34"
-          @error="brandSpriteFailed = true"
-        />
-        <v-icon v-else :icon="BRAND_FALLBACK_ICON" color="primary" size="24" />
-        <div v-if="!rail" class="sidebar__brand-text">
-          <p class="sidebar__wordmark">Pelipper Post &amp; Freight</p>
-          <p class="sidebar__subtitle">Executive Dashboard</p>
-        </div>
+        <BrandLockup :rail="rail" />
       </div>
 
       <v-list density="compact" nav class="px-2">
@@ -276,6 +270,96 @@ const NAV = [
   }
 }
 
+/* ---------- night sky (dark theme only) ----------
+   The dark counterpart to the drifting clouds: two parallax star layers plus
+   slow dark cloud bands. Deliberately faint — it must never compete with the
+   data sitting on top of it. */
+.night {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.night--visible {
+  opacity: 1;
+}
+
+.night__stars {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Two layers at different speeds and densities — that difference is the parallax. */
+.night__stars--far {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='420'><g fill='%23ffffff'><circle cx='40' cy='60' r='0.8'/><circle cx='150' cy='30' r='0.7'/><circle cx='260' cy='90' r='0.9'/><circle cx='360' cy='40' r='0.7'/><circle cx='90' cy='190' r='0.8'/><circle cx='210' cy='230' r='0.7'/><circle cx='330' cy='180' r='0.8'/><circle cx='60' cy='320' r='0.7'/><circle cx='180' cy='360' r='0.9'/><circle cx='290' cy='300' r='0.7'/><circle cx='390' cy='350' r='0.8'/></g></svg>");
+  background-size: 420px 420px;
+  opacity: 0.35;
+  animation-name: star-drift-far;
+  animation-duration: 260s;
+}
+
+.night__stars--near {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><g fill='%23dbeafe'><circle cx='30' cy='45' r='1.3'/><circle cx='140' cy='95' r='1.1'/><circle cx='245' cy='35' r='1.4'/><circle cx='80' cy='200' r='1.2'/><circle cx='200' cy='250' r='1.3'/><circle cx='275' cy='165' r='1.1'/></g></svg>");
+  background-size: 300px 300px;
+  opacity: 0.5;
+  animation-name: star-drift-near;
+  animation-duration: 150s;
+}
+
+/* Cloud bands, slower than the stars so they read as further away. */
+.night__bands {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='320'><g fill='%235b7fa8'><ellipse cx='180' cy='90' rx='190' ry='28'/><ellipse cx='640' cy='220' rx='230' ry='32'/></g></svg>");
+  background-repeat: repeat-x;
+  background-size: 900px auto;
+  background-position-y: 22%;
+  opacity: 0.14;
+  animation: band-drift 320s linear infinite;
+}
+
+@keyframes star-drift-far {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -420px 210px;
+  }
+}
+
+@keyframes star-drift-near {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -300px 150px;
+  }
+}
+
+@keyframes band-drift {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -900px;
+  }
+}
+
+/* Reduced motion stops the night exactly as it stops the clouds — the artwork
+   stays, only the drift goes. */
+@media (prefers-reduced-motion: reduce) {
+  .night__stars,
+  .night__bands {
+    animation: none;
+  }
+}
+
 .above-sky {
   position: relative;
   z-index: 1;
@@ -287,30 +371,10 @@ const NAV = [
 }
 
 .sidebar__brand {
+  padding: 14px 12px 12px;
+  min-height: 72px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 14px 10px;
-  min-height: 64px;
-}
-
-.sidebar__brand-text {
-  min-width: 0;
-}
-
-.sidebar__wordmark {
-  font-size: 12.5px;
-  font-weight: 700;
-  line-height: 1.25;
-  margin: 0;
-}
-
-.sidebar__subtitle {
-  font-size: 10.5px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: rgb(var(--v-theme-muted));
-  margin: 1px 0 0;
 }
 
 .sidebar__item :deep(.v-list-item-title) {

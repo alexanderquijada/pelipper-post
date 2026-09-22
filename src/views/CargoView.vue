@@ -17,7 +17,10 @@ const num = (n: number) => n.toLocaleString('en-US')
 
 <template>
   <v-container class="pelipper-width px-4 py-4">
-    <PageHeader title="Cargo" subtitle="What the network is carrying, and where it goes." />
+    <PageHeader
+      title="Cargo Mix &amp; Revenue"
+      subtitle="What the network is carrying, and what it earns."
+    />
 
     <v-row dense class="mb-2">
       <v-col cols="12" lg="5">

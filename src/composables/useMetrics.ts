@@ -3,7 +3,9 @@ import raw from '@/data/metrics.json'
 import type {
   CargoType,
   Courier,
+  DelayRisk,
   ExceptionCause,
+  RegionWeather,
   MetricsDataset,
   MonthMetrics,
   RegionMetrics,
@@ -708,6 +710,24 @@ export function useMetrics() {
   })
 
 
+  // ---- weather -------------------------------------------------------------
+  /**
+   * Current conditions — point-in-time, so this deliberately ignores the MONTH
+   * filter. It still honours the region filter, since that is about scope.
+   */
+  const RISK_ORDER: Record<DelayRisk, number> = { High: 0, Moderate: 1, Low: 2 }
+
+  const weather = computed<RegionWeather[]>(() => {
+    const rows =
+      selectedRegion.value === ALL_REGIONS
+        ? metrics.weather
+        : metrics.weather.filter((w) => w.region === selectedRegion.value)
+    return [...rows].sort((a, b) => RISK_ORDER[a.delayRisk] - RISK_ORDER[b.delayRisk])
+  })
+
+  /** Conditions for one region — used to hang weather off a courier's home. */
+  const weatherFor = (region: string) => metrics.weather.find((w) => w.region === region) ?? null
+
   // ---- new page-specific series -------------------------------------------
   const INDUSTRY_BENCHMARK = 0.95
 
@@ -887,6 +907,10 @@ export function useMetrics() {
     courierStatusBreakdown,
     cargoTypes: metrics.cargoTypes,
     regions: metrics.regions,
+
+    // weather
+    weather,
+    weatherFor,
 
     // expanded page content
     industryBenchmark: INDUSTRY_BENCHMARK,

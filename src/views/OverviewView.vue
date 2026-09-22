@@ -4,12 +4,14 @@ import { RouterLink } from 'vue-router'
 import MetricCard, { type MetricCardProps } from '@/components/MetricCard.vue'
 import CriticalSignals from '@/components/CriticalSignals.vue'
 import ReliabilityHealth from '@/components/ReliabilityHealth.vue'
+import PageHeader from '@/components/PageHeader.vue'
+import WeatherCard from '@/components/WeatherCard.vue'
 import DeliveryTrendChart from '@/components/charts/DeliveryTrendChart.vue'
 import { useMetrics } from '@/composables/useMetrics'
 import { SPRITE_FALLBACK_ICON, spriteUrl } from '@/utils/sprites'
+import type { DelayRisk } from '@/types/metrics'
 
 const {
-  filterCaption,
   current,
   hasData,
   trends,
@@ -19,6 +21,8 @@ const {
   reliability,
   signals,
   filteredCouriers,
+  weather,
+  weatherFor,
 } = useMetrics()
 
 /**
@@ -85,18 +89,24 @@ const snapshotRows = computed(() =>
   ),
 )
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`
+
+const RISK_COLOR: Record<DelayRisk, string> = {
+  High: 'error',
+  Moderate: 'accent',
+  Low: 'success',
+}
 </script>
 
 <template>
   <v-container class="pelipper-width px-4 py-4">
     <template v-if="hasData">
+      <PageHeader
+        title="Network Overview"
+        subtitle="Headline delivery performance across the network."
+      />
+
       <section class="pp-section">
-        <div class="mb-3">
-          <p class="pp-eyebrow mb-0">Overview</p>
-          <p class="pp-section-subtitle">
-            {{ filterCaption }}<template v-if="trendCaption"> · {{ trendCaption }}</template>
-          </p>
-        </div>
+        <p v-if="trendCaption" class="pp-section-subtitle mb-3">{{ trendCaption }}</p>
 
         <v-row dense>
           <v-col v-for="card in kpiCards" :key="card.label" cols="12" sm="6" md="4" lg="2" xl="2">
@@ -158,6 +168,14 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
             />
           </v-col>
 
+          <v-col cols="12" md="6" lg="4">
+            <WeatherCard :rows="weather" />
+          </v-col>
+        </v-row>
+      </section>
+
+      <section class="pp-section">
+        <v-row dense>
           <v-col cols="12" lg="4">
             <v-card class="pp-card-pad" height="100%">
               <div class="d-flex align-start justify-space-between ga-3">
@@ -177,6 +195,20 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
                   </v-avatar>
                   <span class="top__name">{{ c.name }}</span>
                   <span class="top__region">{{ c.homeRegion }}</span>
+                  <span v-if="weatherFor(c.homeRegion)" class="top__wx">
+                    <v-icon
+                      :icon="weatherFor(c.homeRegion)!.icon"
+                      size="16"
+                      :aria-label="weatherFor(c.homeRegion)!.condition"
+                    />
+                    <v-chip
+                      :color="RISK_COLOR[weatherFor(c.homeRegion)!.delayRisk]"
+                      variant="tonal"
+                      size="x-small"
+                    >
+                      {{ weatherFor(c.homeRegion)!.delayRisk }}
+                    </v-chip>
+                  </span>
                   <span class="top__value">{{ pct(c.onTimeRate) }}</span>
                 </li>
               </ul>
@@ -224,14 +256,6 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
   text-decoration: underline;
 }
 
-.pp-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: rgb(var(--v-theme-muted));
-}
-
 .top {
   list-style: none;
   padding: 0;
@@ -262,6 +286,13 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 .top__name {
   font-size: 13px;
   font-weight: 600;
+}
+
+.top__wx {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: rgb(var(--v-theme-primary));
 }
 
 .top__region {

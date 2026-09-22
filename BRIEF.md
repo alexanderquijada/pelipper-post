@@ -279,8 +279,9 @@ degrades to an icon rather than a gap in the wordmark.
   (`@mdi/font`). Install as `vuetify@^3`; a bare `npm install vuetify` now resolves to 4.x.
 - **Chart.js** + **vue-chartjs** for all charts
 - No Pinia, no testing framework, no JSX, no ESLint, no Prettier
-- **Six routes**, lazy-loaded: `/` Overview · `/trends` · `/signals` · `/cargo` · `/network` ·
-  `/couriers`. Unknown paths redirect to `/`. See `CLAUDE.md` rule 6.
+- **Six routes**, lazy-loaded: `/` · `/trends` · `/exceptions` · `/cargo` · `/regions` ·
+  `/couriers`. `/signals` and `/network` redirect to the renamed `/exceptions` and `/regions`;
+  anything else redirects to `/`. See `CLAUDE.md` rule 6 for the full name table.
 - **Filter state is shared across all six pages** — `selectedMonth` and `selectedRegion` live at
   module scope in `useMetrics.ts`, so a filter set on one page is still set on the next.
 - Deploys to Vercel as a static Vite build
@@ -342,10 +343,12 @@ Content column is centred, **max-width 1440px**, sitting on the sky gradient fro
 **Left sidebar** — `v-navigation-drawer`, **220px**, `permanent` on desktop, collapsing to a **rail
 below 960px**:
 
-- Pelipper sprite + **Pelipper Post & Freight** wordmark, with **Executive Dashboard** beneath as
-  small muted subtitle
+- A **brand lockup** (`BrandLockup.vue`): the Pelipper sprite at 44px beside a two-line wordmark —
+  **PELIPPER** at 17px/800 over **POST & FREIGHT** at 8.5px/600 with 0.17em letter-spacing in the
+  primary colour. Original design; it does not imitate any real carrier's branding. In the collapsed
+  rail only the sprite shows.
 - Nav items, in this order — **it must match the reading order of the Overview cards**:
-  **Overview · Trends · Signals · Cargo · Network · Couriers**
+  **Overview · Monthly Trends · Exceptions · Cargo & Revenue · Regions · Courier Fleet**
 - These are **real routes.** The active item comes from the current route — there is no scroll-spy.
 - Pinned to the bottom: a **theme toggle** row. This is the only theme toggle in the app.
 
@@ -386,12 +389,12 @@ dimension.
 
 | Page | Dimension it owns |
 |---|---|
-| Overview | the headline figures, every card linking out |
-| Trends | **when** — time series only |
-| Signals | **what's wrong** — exceptions and breaches |
-| Cargo | **what** — cargo properties, not volume repeated |
-| Network | **where** — regional comparison |
-| Couriers | **who** — the fleet |
+| Network Overview | the headline figures, every card linking out |
+| Monthly Trends | **when** — time series only |
+| Exceptions | **what's wrong** — exceptions and breaches |
+| Cargo & Revenue | **what** — cargo properties, not volume repeated |
+| Regions | **where** — regional comparison |
+| Courier Fleet | **who** — the fleet |
 
 So *parcels delivered over twelve months* belongs on Trends (its dimension is time) and *parcels
 delivered by region* belongs on Network (its dimension is place) — but the **headline total** appears
@@ -412,12 +415,16 @@ data, and no changes to that file.
 | Page | Contains |
 |---|---|
 | **`/trends`** | The twelve-month chart at full width and taller · Parcels by Region · a month-by-month table (12 rows: parcels, Poké Balls, berries, gym runs, fainted, on-time) · six small sparklines, one per region |
-| **`/signals`** | Every signal, uncapped, grouped under **Critical / Warning / Healthy** with counts and details expanded by default · a per-region on-time table against the 93% target |
+| **`/exceptions`** | Every signal, uncapped, grouped under **Critical / Warning / Healthy** with counts and details expanded by default · a per-region on-time table against the 93% target |
 | **`/cargo`** | The horizontal cargo bars · a cargo-by-region matrix (6 regions × 5 types) · cargo mix across the twelve months. Item sprites throughout |
-| **`/network`** | The health rows · a six-region comparison table (parcels, on-time, fainted, gym runs, avg monthly volume) · on-time by region with a 93% target line · fainted couriers by month |
+| **`/regions`** | The health rows · a six-region comparison table (parcels, on-time, fainted, gym runs, avg monthly volume) · on-time by region with a 93% target line · fainted couriers by month |
 | **`/couriers`** | The full roster · a card per courier with a larger sprite and their stats · on-time rate compared across couriers · a status breakdown of On Route / Resting / Grounded |
 
 The filter controls stay in the **top bar** and apply to **every** page.
+
+**Page titles are identical in treatment across all six pages** — one shared `PageHeader.vue`
+renders title, subtitle and the filter-scope line. **20px / 700** title, **13px** subtitle, **12px**
+muted scope line, all in the app font stack. No page styles its own heading.
 
 ### Card copy
 
@@ -435,6 +442,7 @@ That is implementation detail; a reader in a meeting needs to know what they are
 | Top Cargo Categories | Parcels delivered by cargo type. |
 | Network Reliability & Fulfillment Health | Key delivery and fleet health measures. |
 | Courier Roster | Couriers, their home regions, and delivery performance. |
+| Regional Weather | Current conditions across the delivery network. |
 
 The **Overview** section heading takes the filter summary as its subtitle —
 *"Showing 12 months across 6 regions · Trends compare Sep 2026 to Aug 2026."* — sitting directly

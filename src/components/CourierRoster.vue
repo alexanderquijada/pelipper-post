@@ -2,8 +2,20 @@
 import { ref } from 'vue'
 import type { Courier, CourierStatus } from '@/types/metrics'
 import { SPRITE_FALLBACK_ICON, spriteUrl } from '@/utils/sprites'
+import { useMetrics } from '@/composables/useMetrics'
+import type { DelayRisk } from '@/types/metrics'
 
 defineProps<{ couriers: Courier[] }>()
+
+const { weatherFor } = useMetrics()
+
+// Compact on purpose: icon plus risk chip, no temperature — the table is wide
+// enough already. Full conditions live on the Regional Weather card.
+const RISK_COLOR: Record<DelayRisk, string> = {
+  High: 'error',
+  Moderate: 'accent',
+  Low: 'success',
+}
 
 const STATUS_COLOR: Record<CourierStatus, string> = {
   'On Route': 'success',
@@ -30,6 +42,7 @@ function onSpriteError(dexId: number) {
         <th class="text-left">Courier</th>
         <th class="text-left">Species</th>
         <th class="text-left">Home Region</th>
+        <th class="text-left">Conditions</th>
         <th class="text-right">Runs</th>
         <th class="text-right">On-Time Rate</th>
         <th class="text-left">Status</th>
@@ -51,6 +64,23 @@ function onSpriteError(dexId: number) {
         <td class="font-weight-bold">{{ courier.name }}</td>
         <td class="text-muted">{{ courier.species }}</td>
         <td class="text-muted">{{ courier.homeRegion }}</td>
+        <td>
+          <span v-if="weatherFor(courier.homeRegion)" class="wx-cell">
+            <v-icon
+              :icon="weatherFor(courier.homeRegion)!.icon"
+              size="17"
+              class="wx-cell__icon"
+              :aria-label="weatherFor(courier.homeRegion)!.condition"
+            />
+            <v-chip
+              :color="RISK_COLOR[weatherFor(courier.homeRegion)!.delayRisk]"
+              variant="tonal"
+              size="x-small"
+            >
+              {{ weatherFor(courier.homeRegion)!.delayRisk }}
+            </v-chip>
+          </span>
+        </td>
         <td class="text-right">{{ formatNumber(courier.runs) }}</td>
         <td class="text-right">{{ formatRate(courier.onTimeRate) }}</td>
         <td>
@@ -68,6 +98,16 @@ function onSpriteError(dexId: number) {
 </template>
 
 <style scoped>
+.wx-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wx-cell__icon {
+  color: rgb(var(--v-theme-primary));
+}
+
 /* 44px rows, compact density — BRIEF.md §4. */
 .roster :deep(tbody td) {
   height: 44px;

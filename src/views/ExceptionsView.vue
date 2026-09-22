@@ -25,8 +25,8 @@ const num = (n: number) => n.toLocaleString('en-US')
 <template>
   <v-container class="pelipper-width px-4 py-4">
     <PageHeader
-      title="Signals"
-      subtitle="Notable shifts in network performance, grouped by severity."
+      title="Exceptions &amp; Delivery Risk"
+      subtitle="Where deliveries are failing, and what it is costing."
     />
 
     <v-row dense class="mb-2">

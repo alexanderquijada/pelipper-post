@@ -23,7 +23,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 <template>
   <v-container class="pelipper-width px-4 py-4">
     <PageHeader
-      title="Trends"
+      title="Monthly Trends &amp; Seasonality"
       subtitle="Parcel volume and delivery activity across the trailing twelve months."
     />
 
