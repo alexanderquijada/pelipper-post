@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useChartTheme } from '@/components/charts/chartTheme'
+import { rgbTriplet, useChartTheme } from '@/components/charts/chartTheme'
 import { conceptItemUrl } from '@/utils/sprites'
 
 export interface MetricCardProps {
@@ -45,14 +45,9 @@ const props = withDefaults(defineProps<MetricCardProps>(), {
   sprite: '',
 })
 
-const { editorial } = useChartTheme()
-const accentHex = computed(() => editorial.value[props.accent])
-/** rgb triplet so the circle can tint at 13% without a second hex. */
-const accentRgb = computed(() => {
-  const h = accentHex.value.replace('#', '')
-  const n = Number.parseInt(h, 16)
-  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`
-})
+const { editorial, iconGlyph } = useChartTheme()
+const accentRgb = computed(() => rgbTriplet(editorial.value[props.accent]))
+const glyphRgb = computed(() => rgbTriplet(iconGlyph.value[props.accent]))
 const spriteUrlFor = computed(() => (props.sprite ? conceptItemUrl(props.sprite) : null))
 const spriteFailed = ref(false)
 
@@ -107,14 +102,17 @@ const trendAria = computed(() => {
   <v-card class="metric-card" height="100%">
     <div class="d-flex align-start justify-space-between ga-2">
       <div class="metric-card__label">{{ label }}</div>
-      <span class="pp-ico pp-ico--sm" :style="{ '--pp-accent-rgb': accentRgb }">
+      <span
+        class="pp-ico pp-ico--md"
+        :style="{ '--pp-accent-rgb': accentRgb, '--pp-glyph-rgb': glyphRgb }"
+      >
         <img
           v-if="spriteUrlFor && !spriteFailed"
           :src="spriteUrlFor"
           alt=""
           @error="spriteFailed = true"
         />
-        <v-icon v-else :icon="icon" size="15" />
+        <v-icon v-else :icon="icon" size="22" />
       </span>
     </div>
 

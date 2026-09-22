@@ -56,7 +56,38 @@ export const EDITORIAL_DARK = {
   plum: '#9B5FB5',
 } as const
 
+/**
+ * Glyph colours for tinted icon circles.
+ *
+ * A glyph over a 15% tint OF ITS OWN HUE is the hard case: the two converge, so
+ * deepening the tint makes it worse, not better. These are minimal lightness
+ * shifts away from the tint — hue and saturation unchanged — each clearing
+ * >= 3.3:1 against its circle and >= 3:1 against the card behind it.
+ * Unshifted slots already passed.
+ */
+export const ICON_GLYPH_LIGHT = {
+  coral: '#D94E69',
+  indigo: '#2F4B7C',
+  teal: '#2A8D99',
+  orange: '#CA6510',
+  plum: '#9B5FB5',
+} as const
+
+export const ICON_GLYPH_DARK = {
+  coral: '#DA5670',
+  indigo: '#6084C2',
+  teal: '#36B5C4',
+  orange: '#F2A15C',
+  plum: '#A56FBC',
+} as const
+
 export type EditorialKey = keyof typeof EDITORIAL_LIGHT
+
+/** #RRGGBB -> "r, g, b" for use inside rgba(). */
+export function rgbTriplet(hex: string): string {
+  const n = Number.parseInt(hex.replace('#', ''), 16)
+  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`
+}
 
 /** #RRGGBB -> rgba(r, g, b, alpha). Lets us tint a theme colour without hardcoding one. */
 export function withAlpha(hex: string, alpha: number): string {
@@ -94,6 +125,8 @@ export function useChartTheme() {
     ),
     /** Editorial accents — NOT for categorical encoding. See the note above. */
     editorial: computed(() => (isDark.value ? EDITORIAL_DARK : EDITORIAL_LIGHT)),
+    /** Glyph colour for an icon sitting on a tint of its own accent. */
+    iconGlyph: computed(() => (isDark.value ? ICON_GLYPH_DARK : ICON_GLYPH_LIGHT)),
   }
 }
 

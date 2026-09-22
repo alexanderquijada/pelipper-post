@@ -19,6 +19,15 @@ const STATUS_COLOR: Record<CourierStatus, string> = {
 const failedSprites = ref(new Set<number>())
 const num = (n: number) => n.toLocaleString('en-US')
 const avg = (a: number[]) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0)
+
+/** Attach each courier's dexId so the charts can show the same sprite as the roster. */
+function withSprites(series: { labels: string[]; values: number[] }) {
+  return series.labels.map((label, i) => ({
+    label,
+    value: series.values[i]!,
+    dexId: filteredCouriers.value.find((c) => c.name === label)?.dexId,
+  }))
+}
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 </script>
 
@@ -72,7 +81,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
           <h2 class="pp-card-title">Stops per Run</h2>
           <p class="pp-card-subtitle">Average delivery stops each courier makes per run.</p>
           <LollipopChart
-            :rows="courierStops.labels.map((l, i) => ({ label: l, value: courierStops.values[i]! }))"
+            :rows="withSprites(courierStops)"
             accent="indigo"
             :reference="avg(courierStops.values)"
             reference-label="Fleet average"
@@ -85,12 +94,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
           <h2 class="pp-card-title">First-Attempt Rate by Courier</h2>
           <p class="pp-card-subtitle">Share of parcels each courier lands on the first try.</p>
           <LollipopChart
-            :rows="
-              courierFirstAttempt.labels.map((l, i) => ({
-                label: l,
-                value: courierFirstAttempt.values[i]!,
-              }))
-            "
+            :rows="withSprites(courierFirstAttempt)"
             format="percent"
             accent="teal"
             :reference="avg(courierFirstAttempt.values)"
@@ -106,7 +110,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
           <h2 class="pp-card-title">Rest Days Taken</h2>
           <p class="pp-card-subtitle">Rest days each courier has taken across their tenure.</p>
           <LollipopChart
-            :rows="courierRest.labels.map((l, i) => ({ label: l, value: courierRest.values[i]! }))"
+            :rows="withSprites(courierRest)"
             accent="plum"
             :reference="avg(courierRest.values)"
             reference-label="Fleet average"

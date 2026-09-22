@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useChartTheme } from '@/components/charts/chartTheme'
+import { rgbTriplet, useChartTheme } from '@/components/charts/chartTheme'
 import type { DelayRisk, RegionWeather } from '@/types/metrics'
 
 defineProps<{ rows: RegionWeather[] }>()
@@ -17,12 +17,9 @@ const RISK_ACCENT: Record<DelayRisk, 'coral' | 'orange' | 'teal'> = {
   Low: 'teal',
 }
 
-const { editorial } = useChartTheme()
-function accentRgb(risk: DelayRisk) {
-  const h = editorial.value[RISK_ACCENT[risk]].replace('#', '')
-  const n = Number.parseInt(h, 16)
-  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`
-}
+const { editorial, iconGlyph } = useChartTheme()
+const accentRgb = (risk: DelayRisk) => rgbTriplet(editorial.value[RISK_ACCENT[risk]])
+const glyphRgb = (risk: DelayRisk) => rgbTriplet(iconGlyph.value[RISK_ACCENT[risk]])
 </script>
 
 <template>
@@ -32,8 +29,11 @@ function accentRgb(risk: DelayRisk) {
 
     <ul class="wx">
       <li v-for="w in rows" :key="w.region" class="wx__row" :title="w.note">
-        <span class="pp-ico pp-ico--sm" :style="{ '--pp-accent-rgb': accentRgb(w.delayRisk) }">
-          <v-icon :icon="w.icon" size="15" />
+        <span
+          class="pp-ico pp-ico--sm"
+          :style="{ '--pp-accent-rgb': accentRgb(w.delayRisk), '--pp-glyph-rgb': glyphRgb(w.delayRisk) }"
+        >
+          <v-icon :icon="w.icon" size="20" />
         </span>
         <span class="wx__region">{{ w.region }}</span>
         <span class="wx__condition">{{ w.condition }}</span>
@@ -55,7 +55,7 @@ function accentRgb(risk: DelayRisk) {
 
 .wx__row {
   display: grid;
-  grid-template-columns: 26px 62px 1fr auto auto;
+  grid-template-columns: 34px 62px 1fr auto auto;
   align-items: center;
   gap: 10px;
   padding: 8px 0;

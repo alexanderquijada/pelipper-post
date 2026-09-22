@@ -722,8 +722,18 @@ same hue and saturation:
 
 Targeted 3.35:1 rather than exactly 3.0, so a slot isn't one surface tweak away from failing.
 
-**Tinted icon circles.** Every icon sits in a circle filled with its own accent at **13%** opacity;
-the icon keeps full saturation. Applies to KPI cards, list rows and nav items.
+**Tinted icon circles.** Every icon sits in a circle filled with its own accent at **15%** opacity.
+Circles are **34–40px** with **20–22px** glyphs; item sprites render at **exactly 30px (1×)**.
+
+**The glyph is NOT the same value as its tint.** A glyph over a tint of its own hue converges with
+it, so *deepening the tint makes contrast worse, not better*. Glyph colours are minimal lightness
+shifts away from the tint — hue and saturation unchanged — each measured at **≥3.3:1 against its
+own circle** and ≥3:1 against the card. Applies to KPI cards, list rows and nav items.
+
+**Pixel-art sprites are scaled at integer multiples only.** PokeAPI item sprites are 30×30 with no
+high-resolution source, so they render at 30/60/90px with `image-rendering: pixelated`. Fractional
+scaling — the old 22px — is what made them look mushy. `image-rendering` is never applied by a
+blanket `img` rule: the 475×475 brand artwork and the courier avatars must stay smoothed.
 
 ### Chart colors — two palettes, because there are two different jobs
 

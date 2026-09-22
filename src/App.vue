@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { RouterView } from 'vue-router'
 import { useDisplay, useTheme } from 'vuetify'
 import BrandLockup from '@/components/BrandLockup.vue'
-import { useChartTheme } from '@/components/charts/chartTheme'
+import { rgbTriplet, useChartTheme } from '@/components/charts/chartTheme'
 import AccountBlock from '@/components/AccountBlock.vue'
 
 const theme = useTheme()
@@ -33,13 +33,9 @@ const NAV = [
   { to: '/couriers', label: 'Courier Fleet', icon: 'mdi-account-group-outline', accent: 'indigo' },
 ] as const
 
-const { editorial } = useChartTheme()
-/** rgb triplet for a tinted circle without hardcoding a second hex. */
-function accentRgb(key: keyof typeof editorial.value) {
-  const h = editorial.value[key].replace('#', '')
-  const n = Number.parseInt(h, 16)
-  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`
-}
+const { editorial, iconGlyph } = useChartTheme()
+const accentRgb = (key: keyof typeof editorial.value) => rgbTriplet(editorial.value[key])
+const glyphRgb = (key: keyof typeof editorial.value) => rgbTriplet(iconGlyph.value[key])
 
 </script>
 
@@ -77,8 +73,11 @@ function accentRgb(key: keyof typeof editorial.value) {
           class="sidebar__item"
         >
           <template #prepend>
-            <span class="pp-ico pp-ico--sm mr-3" :style="{ '--pp-accent-rgb': accentRgb(item.accent) }">
-              <v-icon :icon="item.icon" size="15" />
+            <span
+              class="pp-ico pp-ico--sm mr-3"
+              :style="{ '--pp-accent-rgb': accentRgb(item.accent), '--pp-glyph-rgb': glyphRgb(item.accent) }"
+            >
+              <v-icon :icon="item.icon" size="20" />
             </span>
           </template>
         </v-list-item>
@@ -201,36 +200,39 @@ function accentRgb(key: keyof typeof editorial.value) {
   justify-content: center;
   flex: none;
   border-radius: 50%;
-  background: rgba(var(--pp-accent-rgb), 0.13);
-  color: rgb(var(--pp-accent-rgb));
+  /* tint from the accent; glyph from its own shifted variant, because a glyph
+     on a tint of its OWN hue would otherwise wash out */
+  background: rgba(var(--pp-accent-rgb), 0.15);
+  color: rgb(var(--pp-glyph-rgb, var(--pp-accent-rgb)));
 }
 
+/* 40-44px circles with 20-24px glyphs — the icons were lost inside the old ones. */
 .pp-ico--sm {
-  width: 26px;
-  height: 26px;
+  width: 34px;
+  height: 34px;
 }
 
 .pp-ico--md {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
 }
 
 .pp-ico--lg {
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
 }
 
+/* Item sprites are 30x30 pixel art with no high-res source. Integer scaling
+   only — 1x here — because fractional scaling is what makes pixel art mushy. */
 .pp-ico img {
   image-rendering: pixelated;
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   object-fit: contain;
 }
 
-.pp-ico--sm img {
-  width: 17px;
-  height: 17px;
-}
+/* No size override for --sm: the sprite stays at 1x (30px) inside the 34px
+   circle. Any other size would be fractional scaling. */
 
 /* NOTE: there is deliberately NO blanket `img { image-rendering }` rule.
    Pixel rendering is scoped to the classes that wrap 30x30 item sprites; the

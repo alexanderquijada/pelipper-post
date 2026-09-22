@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useChartTheme, withAlpha } from './chartTheme'
+import { SPRITE_FALLBACK_ICON, spriteUrl } from '@/utils/sprites'
 
 /**
  * Dot plot: a thin stem to a dot, rather than a heavy bar. The ink is in the
@@ -8,7 +9,7 @@ import { useChartTheme, withAlpha } from './chartTheme'
  */
 const props = withDefaults(
   defineProps<{
-    rows: { label: string; value: number; sublabel?: string }[]
+    rows: { label: string; value: number; sublabel?: string; dexId?: number }[]
     format?: 'percent' | 'number'
     accent?: 'coral' | 'indigo' | 'teal' | 'orange' | 'plum'
     /** Optional baseline, e.g. the fleet average. */
@@ -38,9 +39,18 @@ const fmt = (v: number) =>
 <template>
   <ul class="pop">
     <li v-for="r in rows" :key="r.label" class="pop__row">
-      <span class="pop__label">
-        {{ r.label }}
-        <em v-if="r.sublabel" class="pop__sub">{{ r.sublabel }}</em>
+      <span class="pop__who">
+        <v-avatar v-if="r.dexId" size="26" class="pop__avatar">
+          <v-img :src="spriteUrl(r.dexId)" :alt="''">
+            <template #error>
+              <v-icon :icon="SPRITE_FALLBACK_ICON" color="muted" size="14" />
+            </template>
+          </v-img>
+        </v-avatar>
+        <span class="pop__label">
+          {{ r.label }}
+          <em v-if="r.sublabel" class="pop__sub">{{ r.sublabel }}</em>
+        </span>
       </span>
 
       <span class="pop__track" :style="{ background: withAlpha(muted, 0.12) }">
@@ -68,10 +78,27 @@ const fmt = (v: number) =>
 
 .pop__row {
   display: grid;
-  grid-template-columns: 96px 1fr 58px;
+  grid-template-columns: 130px 1fr 58px;
   align-items: center;
   gap: 10px;
   padding: 6px 0;
+}
+
+.pop__who {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pop__avatar {
+  background: rgba(var(--v-theme-primary), 0.12);
+  flex: none;
+}
+
+.pop__avatar :deep(img) {
+  object-fit: contain;
+  padding: 2px;
 }
 
 .pop__label {
@@ -79,6 +106,7 @@ const fmt = (v: number) =>
   font-weight: 600;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .pop__sub {

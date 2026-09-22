@@ -3,6 +3,8 @@ import PageShell from '@/components/PageShell.vue'
 import ReliabilityHealth from '@/components/ReliabilityHealth.vue'
 import BarSeriesChart from '@/components/charts/BarSeriesChart.vue'
 import BulletChart from '@/components/charts/BulletChart.vue'
+import BubbleChart from '@/components/charts/BubbleChart.vue'
+import { computed } from 'vue'
 import { useMetrics } from '@/composables/useMetrics'
 
 const {
@@ -18,6 +20,16 @@ const {
 
 const num = (n: number) => Math.round(n).toLocaleString('en-US')
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`
+
+/** Volume x reliability, sized by exceptions — two metrics crossed, not repeated. */
+const volumeVsReliability = computed(() =>
+  regionComparison.value.map((r) => ({
+    label: r.region,
+    x: r.parcelsDelivered,
+    y: r.onTimeRate,
+    size: r.faintedCouriers,
+  })),
+)
 </script>
 
 <template>
@@ -85,8 +97,8 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
     </v-row>
 
     <v-row dense class="mb-2">
-      <v-col cols="12">
-        <v-card class="pp-card-pad">
+      <v-col cols="12" lg="6">
+        <v-card class="pp-card-pad" height="100%">
           <h2 class="pp-card-title">Region Growth</h2>
           <p class="pp-card-subtitle">Change in parcel volume from the first month to the last.</p>
           <ul class="growth">
@@ -98,6 +110,16 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
               </span>
             </li>
           </ul>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" lg="6">
+        <v-card class="pp-card-pad" height="100%">
+          <h2 class="pp-card-title">Volume vs Reliability</h2>
+          <p class="pp-card-subtitle">
+            Whether the regions handling the most parcels are also the ones keeping their promises.
+          </p>
+          <BubbleChart :points="volumeVsReliability" :target="onTimeTarget" />
         </v-card>
       </v-col>
     </v-row>

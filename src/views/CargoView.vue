@@ -48,6 +48,16 @@ const num = (n: number) => n.toLocaleString('en-US')
           <p class="pp-card-subtitle">Revenue contribution in Pokédollars, highest first.</p>
           <ul class="bars">
             <li v-for="r in revenueByCargo" :key="r.cargo" class="bars__row">
+              <img
+                v-if="cargoItemUrl(r.cargo) && !failedSprites.has(r.cargo)"
+                :src="cargoItemUrl(r.cargo)!"
+                alt=""
+                class="bars__sprite"
+                width="30"
+                height="30"
+                @error="failedSprites = new Set(failedSprites).add(r.cargo)"
+              />
+              <span v-else class="bars__sprite" />
               <span
                 class="bars__swatch"
                 :style="{ background: categorical[r.colorIndex % categorical.length] }"
@@ -92,8 +102,8 @@ const num = (n: number) => n.toLocaleString('en-US')
                       :src="cargoItemUrl(c.cargo)!"
                       alt=""
                       class="matrix__sprite"
-                      width="22"
-                      height="22"
+                      width="30"
+                      height="30"
                       @error="failedSprites = new Set(failedSprites).add(c.cargo)"
                     />
                     <strong>{{ c.cargo }}</strong>
@@ -126,8 +136,8 @@ const num = (n: number) => n.toLocaleString('en-US')
                       :src="cargoItemUrl(c)!"
                       alt=""
                       class="matrix__sprite"
-                      width="22"
-                      height="22"
+                      width="30"
+                      height="30"
                       @error="failedSprites = new Set(failedSprites).add(c)"
                     />
                     {{ c }}
@@ -159,11 +169,19 @@ const num = (n: number) => n.toLocaleString('en-US')
 
 .bars__row {
   display: grid;
-  grid-template-columns: 10px 1fr auto 52px;
-  grid-template-areas: 'swatch label value share' '. track track track';
+  grid-template-columns: 30px 10px 1fr auto 52px;
+  grid-template-areas: 'sprite swatch label value share' '. . track track track';
   align-items: center;
   gap: 4px 10px;
   padding: 7px 0;
+}
+
+.bars__sprite {
+  grid-area: sprite;
+  image-rendering: pixelated;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
 }
 
 .bars__swatch {
@@ -250,8 +268,13 @@ const num = (n: number) => n.toLocaleString('en-US')
   justify-content: flex-end;
 }
 
+/* 30x30 natural, rendered at exactly 1x. Fractional scaling (the old 22px) is
+   what made these look mushy — nearest-neighbour at an integer multiple is
+   crisp and deliberate. */
 .matrix__sprite {
   image-rendering: pixelated;
+  width: 30px;
+  height: 30px;
   flex: none;
   object-fit: contain;
 }
