@@ -26,8 +26,10 @@ const props = withDefaults(
   gymSupplyRuns: number[]
   /** Index of the month to mark, or -1 for none. */
   selectedIndex: number
+  /** Which months fall inside the selected window. */
+  marked?: boolean[]
 }>(),
-  { tall: false, parcelsOnly: false },
+  { tall: false, parcelsOnly: false, marked: () => [] },
 )
 
 const { muted, grid, surface, ink } = useChartTheme()
@@ -99,7 +101,9 @@ function panelOptions(opts: {
 }
 
 function markerRadius(i: number) {
-  return i === props.selectedIndex ? 6 : 0
+  if (i === props.selectedIndex) return 6
+  // a preset selects a whole window, so mark every month inside it
+  return props.marked[i] && props.selectedIndex === -1 ? 3 : 0
 }
 
 /** Vertical gradient fill — strongest at the line, fading to nothing at the axis. */

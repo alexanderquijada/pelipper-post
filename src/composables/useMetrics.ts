@@ -21,19 +21,48 @@ import type {
  */
 const metrics = raw as MetricsDataset
 
-export type MonthFilter = 'all' | string
+export type PresetMonths = 3 | 6 | 12
+
+/**
+ * The time filter is a RANGE, modelled explicitly so the two cases can never be
+ * confused: either a preset spanning N trailing months, or one specific month.
+ */
+export type MonthSelection =
+  | { kind: 'preset'; months: PresetMonths }
+  | { kind: 'month'; key: string }
+
 export type RegionFilter = 'all' | RegionName
 
 /**
  * Module-level state, deliberately. Every component that calls useMetrics()
  * shares one selection — this is the "single composable, no Pinia" pattern the
- * capstone asks for.
+ * capstone asks for, and the thing most likely to break in a refactor.
  */
-const selectedMonth = ref<MonthFilter>('all')
+const monthSelection = ref<MonthSelection>({ kind: 'preset', months: 12 })
 const selectedRegion = ref<RegionFilter>('all')
 
-const ALL_MONTHS = 'all'
 const ALL_REGIONS = 'all'
+const DEFAULT_PRESET: PresetMonths = 12
+
+/** Month keys in a selection, in chronological order. */
+function keysFor(sel: MonthSelection): string[] {
+  const all = metrics.months.map((m) => m.key)
+  if (sel.kind === 'month') return all.filter((k) => k === sel.key)
+  return all.slice(Math.max(0, all.length - sel.months))
+}
+
+/**
+ * The equal-length window immediately before `keys`, or null when the data
+ * doesn't reach back far enough. Returning null is what suppresses the trend
+ * rather than inventing a partial comparison.
+ */
+function precedingKeys(keys: string[]): string[] | null {
+  const all = metrics.months.map((m) => m.key)
+  const firstIdx = all.indexOf(keys[0]!)
+  const len = keys.length
+  if (firstIdx < len) return null
+  return all.slice(firstIdx - len, firstIdx)
+}
 
 /** Aggregated totals for whatever slice of the data is currently selected. */
 export interface Aggregate {
@@ -61,16 +90,20 @@ export interface Aggregate {
   recordCount: number
 }
 
-function monthsFor(month: MonthFilter): MonthMetrics[] {
-  return month === ALL_MONTHS ? metrics.months : metrics.months.filter((m) => m.key === month)
+function monthsForKeys(keys: string[]): MonthMetrics[] {
+  return metrics.months.filter((m) => keys.includes(m.key))
+}
+
+function monthsFor(sel: MonthSelection): MonthMetrics[] {
+  return monthsForKeys(keysFor(sel))
 }
 
 function regionsFor(m: MonthMetrics, region: RegionFilter): RegionMetrics[] {
   return region === ALL_REGIONS ? m.regions : m.regions.filter((r) => r.region === region)
 }
 
-function recordsFor(month: MonthFilter, region: RegionFilter): RegionMetrics[] {
-  return monthsFor(month).flatMap((m) => regionsFor(m, region))
+function recordsFor(sel: MonthSelection, region: RegionFilter): RegionMetrics[] {
+  return monthsFor(sel).flatMap((m) => regionsFor(m, region))
 }
 
 const CAUSES: ExceptionCause[] = [
@@ -178,10 +211,42 @@ const ON_TIME_TARGET = 0.93
 
 export function useMetrics() {
   // ---- filter options -------------------------------------------------------
-  const monthOptions = computed(() => [
-    { title: 'All Months', value: ALL_MONTHS },
-    ...metrics.months.map((m) => ({ title: m.label, value: m.key })),
-  ])
+  /** Specific months, newest first — the menu beside the segmented control. */
+  const monthOptions = computed(() =>
+    [...metrics.months].reverse().map((m) => ({ title: m.label, value: m.key })),
+  )
+
+  const activePreset = computed(() =>
+    monthSelection.value.kind === 'preset' ? monthSelection.value.months : null,
+  )
+  const activeMonthKey = computed(() =>
+    monthSelection.value.kind === 'month' ? monthSelection.value.key : null,
+  )
+
+  /** Picking a preset clears any specific month, and vice versa. */
+  function selectPreset(months: PresetMonths) {
+    monthSelection.value = { kind: 'preset', months }
+  }
+  function selectMonth(key: string) {
+    monthSelection.value = { kind: 'month', key }
+  }
+  function resetFilters() {
+    monthSelection.value = { kind: 'preset', months: DEFAULT_PRESET }
+    selectedRegion.value = ALL_REGIONS
+  }
+  const isDefaultSelection = computed(
+    () =>
+      monthSelection.value.kind === 'preset' &&
+      monthSelection.value.months === DEFAULT_PRESET &&
+      selectedRegion.value === ALL_REGIONS,
+  )
+
+  /** Human-readable span of whatever is selected, e.g. "Oct 2025 – Sep 2026". */
+  const rangeLabel = computed(() => {
+    const ms = monthsFor(monthSelection.value)
+    if (!ms.length) return ''
+    return ms.length === 1 ? ms[0]!.label : `${ms[0]!.label} – ${ms[ms.length - 1]!.label}`
+  })
 
   const regionOptions = computed(() => [
     { title: 'All Regions', value: ALL_REGIONS },
@@ -189,11 +254,11 @@ export function useMetrics() {
   ])
 
   // ---- the current slice ----------------------------------------------------
-  const currentRecords = computed(() => recordsFor(selectedMonth.value, selectedRegion.value))
+  const currentRecords = computed(() => recordsFor(monthSelection.value, selectedRegion.value))
   const current = computed(() => aggregate(currentRecords.value))
   const hasData = computed(() => currentRecords.value.length > 0)
 
-  const monthCount = computed(() => monthsFor(selectedMonth.value).length)
+  const monthCount = computed(() => monthsFor(monthSelection.value).length)
   const regionCount = computed(() =>
     selectedRegion.value === ALL_REGIONS ? metrics.regions.length : 1,
   )
@@ -206,22 +271,14 @@ export function useMetrics() {
 
   // ---- trends ---------------------------------------------------------------
   /**
-   * Which two months the trend compares.
-   *  - "All Months"    -> trailing month vs. the one before it
-   *  - a single month  -> that month vs. the month before it
-   *  - the first month -> null, because there is no prior month to compare to
+   * The selected window and the equal-length window immediately before it.
+   * null when the data doesn't reach back far enough — e.g. the default 12M
+   * preset covers the whole dataset, so there is nothing to compare it to.
    */
-  const trendPair = computed<{ current: MonthMetrics; previous: MonthMetrics } | null>(() => {
-    const all = metrics.months
-    if (all.length < 2) return null
-
-    if (selectedMonth.value === ALL_MONTHS) {
-      return { current: all[all.length - 1]!, previous: all[all.length - 2]! }
-    }
-
-    const i = all.findIndex((m) => m.key === selectedMonth.value)
-    if (i <= 0) return null
-    return { current: all[i]!, previous: all[i - 1]! }
+  const comparisonPeriods = computed<{ current: string[]; previous: string[] } | null>(() => {
+    const current = keysFor(monthSelection.value)
+    const previous = precedingKeys(current)
+    return previous ? { current, previous } : null
   })
 
   function changeFraction(now: number, before: number): number | null {
@@ -231,7 +288,7 @@ export function useMetrics() {
 
   /** Per-KPI change vs. the previous month, as a fraction. null = no prior month. */
   const trends = computed(() => {
-    const pair = trendPair.value
+    const pair = comparisonPeriods.value
     const none = {
       parcelsDelivered: null,
       pokeBallsShipped: null,
@@ -245,8 +302,12 @@ export function useMetrics() {
     }
     if (!pair) return none
 
-    const now = aggregate(regionsFor(pair.current, selectedRegion.value))
-    const before = aggregate(regionsFor(pair.previous, selectedRegion.value))
+    const now = aggregate(
+      monthsForKeys(pair.current).flatMap((m) => regionsFor(m, selectedRegion.value)),
+    )
+    const before = aggregate(
+      monthsForKeys(pair.previous).flatMap((m) => regionsFor(m, selectedRegion.value)),
+    )
 
     return {
       parcelsDelivered: changeFraction(now.parcelsDelivered, before.parcelsDelivered),
@@ -269,9 +330,13 @@ export function useMetrics() {
    * null means render no caption at all.
    */
   const trendCaption = computed(() => {
-    const pair = trendPair.value
+    const pair = comparisonPeriods.value
     if (!pair) return null
-    return `Trends compare ${pair.current.label} to ${pair.previous.label}.`
+    const span = (keys: string[]) => {
+      const ms = monthsForKeys(keys)
+      return ms.length === 1 ? ms[0]!.label : `${ms[0]!.label} – ${ms[ms.length - 1]!.label}`
+    }
+    return `Compared with the previous ${pair.previous.length === 1 ? 'month' : `${pair.previous.length} months`} (${span(pair.previous)}).`
   })
 
   // ---- chart data -----------------------------------------------------------
@@ -282,7 +347,7 @@ export function useMetrics() {
   const showRegionChart = computed(() => selectedRegion.value === ALL_REGIONS)
 
   const regionChart = computed(() => {
-    const months = monthsFor(selectedMonth.value)
+    const months = monthsFor(monthSelection.value)
     const labels = metrics.regions
     const values = labels.map((region) =>
       months.reduce(
@@ -306,12 +371,14 @@ export function useMetrics() {
     const parcelsDelivered = metrics.months.map((m) =>
       regionsFor(m, selectedRegion.value).reduce((s, r) => s + r.parcelsDelivered, 0),
     )
+    // Mark every month in the selected window, not just a single point.
+    const keys = keysFor(monthSelection.value)
+    const marked = metrics.months.map((m) => keys.includes(m.key))
+    const sel = monthSelection.value
     const selectedIndex =
-      selectedMonth.value === ALL_MONTHS
-        ? -1
-        : metrics.months.findIndex((m) => m.key === selectedMonth.value)
+      sel.kind === 'month' ? metrics.months.findIndex((m) => m.key === sel.key) : -1
 
-    return { labels, gymSupplyRuns, parcelsDelivered, selectedIndex }
+    return { labels, gymSupplyRuns, parcelsDelivered, selectedIndex, marked }
   })
 
 
@@ -340,7 +407,7 @@ export function useMetrics() {
 
   /** Parcels per region across the selected months — powers busiest/quietest. */
   const regionTotals = computed(() => {
-    const months = monthsFor(selectedMonth.value)
+    const months = monthsFor(monthSelection.value)
     const scope =
       selectedRegion.value === ALL_REGIONS ? metrics.regions : [selectedRegion.value as RegionName]
     return scope
@@ -381,7 +448,7 @@ export function useMetrics() {
     // Avg monthly parcel volume, measured against the same region scope's
     // twelve-month average. Meaningful at every filter combination, unlike a
     // ratio against courier `runs` — those are lifetime totals with no month.
-    const monthsInScope = monthsFor(selectedMonth.value).length || 1
+    const monthsInScope = monthsFor(monthSelection.value).length || 1
     const perMonth = agg.parcelsDelivered / monthsInScope
     const baselineRecords = metrics.months.flatMap((m) => regionsFor(m, selectedRegion.value))
     const baselinePerMonth =
@@ -446,7 +513,7 @@ export function useMetrics() {
    */
   const signals = computed<Signal[]>(() => {
     const out: Signal[] = []
-    const months = monthsFor(selectedMonth.value)
+    const months = monthsFor(monthSelection.value)
     const inScope = (m: MonthMetrics) => regionsFor(m, selectedRegion.value)
     const regionLabel =
       selectedRegion.value === ALL_REGIONS ? 'the network' : (selectedRegion.value as string)
@@ -493,13 +560,11 @@ export function useMetrics() {
     // Uses the full series for the selected region so a single-month selection
     // can still be compared against its predecessor.
     const series = metrics.months.map((m) => ({ label: m.label, rate: weightedOnTime(inScope(m)) }))
-    const window =
-      selectedMonth.value === ALL_MONTHS
-        ? series
-        : (() => {
-            const i = metrics.months.findIndex((m) => m.key === selectedMonth.value)
-            return i > 0 ? [series[i - 1]!, series[i]!] : []
-          })()
+    // Scan the selected window, plus the month immediately before it so a
+    // single-month selection still has something to compare against.
+    const selKeys = keysFor(monthSelection.value)
+    const firstIdx = metrics.months.findIndex((m) => m.key === selKeys[0])
+    const window = series.slice(Math.max(0, firstIdx - 1), firstIdx + selKeys.length)
     if (window.length >= 2) {
       let worstDrop = { from: '', to: '', delta: 0 }
       for (let i = 1; i < window.length; i++) {
@@ -587,7 +652,7 @@ export function useMetrics() {
         gymSupplyRuns: agg.gymSupplyRuns,
         faintedCouriers: agg.faintedCouriers,
         onTimeRate: agg.onTimeRate,
-        isSelected: selectedMonth.value === m.key,
+        isSelected: keysFor(monthSelection.value).includes(m.key),
       }
     }),
   )
@@ -636,7 +701,7 @@ export function useMetrics() {
   // ---- /cargo ----------------------------------------------------------------
   /** 6 regions x 5 cargo types for the selected months. */
   const cargoByRegion = computed(() => {
-    const months = monthsFor(selectedMonth.value)
+    const months = monthsFor(monthSelection.value)
     const scope =
       selectedRegion.value === ALL_REGIONS ? metrics.regions : [selectedRegion.value as RegionName]
     return scope.map((region) => {
@@ -665,7 +730,7 @@ export function useMetrics() {
   // ---- /network --------------------------------------------------------------
   /** Six-region comparison for the selected months. */
   const regionComparison = computed(() => {
-    const months = monthsFor(selectedMonth.value)
+    const months = monthsFor(monthSelection.value)
     const scope =
       selectedRegion.value === ALL_REGIONS ? metrics.regions : [selectedRegion.value as RegionName]
     return scope
@@ -816,7 +881,7 @@ export function useMetrics() {
 
   // ---- /network: the WHERE --------------------------------------------------
   const capacityByRegion = computed(() => {
-    const months = monthsFor(selectedMonth.value)
+    const months = monthsFor(monthSelection.value)
     const scope =
       selectedRegion.value === ALL_REGIONS ? metrics.regions : [selectedRegion.value as RegionName]
     return scope.map((region) => {
@@ -867,11 +932,19 @@ export function useMetrics() {
     tagline: metrics.tagline,
 
     // filter state
-    selectedMonth,
+    monthSelection,
     selectedRegion,
     monthOptions,
     regionOptions,
     filterCaption,
+    activePreset,
+    activeMonthKey,
+    rangeLabel,
+    selectPreset,
+    selectMonth,
+    resetFilters,
+    isDefaultSelection,
+    comparisonPeriods,
 
     // aggregates
     current,

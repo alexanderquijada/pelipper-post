@@ -43,6 +43,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
             :parcels-delivered="trendChart.parcelsDelivered"
             :gym-supply-runs="trendChart.gymSupplyRuns"
             :selected-index="trendChart.selectedIndex"
+                :marked="trendChart.marked"
           />
         </v-card>
       </v-col>

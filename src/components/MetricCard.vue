@@ -130,7 +130,7 @@ const trendAria = computed(() => {
       <v-icon :icon="trendIcon" size="14" aria-hidden="true" />
       <span>{{ trendLabel }}</span>
     </div>
-    <div v-else class="metric-card__delta metric-card__delta--none">no prior month</div>
+    <div v-else class="metric-card__delta metric-card__delta--none">no prior period</div>
   </v-card>
 </template>
 

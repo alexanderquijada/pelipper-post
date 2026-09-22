@@ -380,6 +380,31 @@ nesting reads as nesting rather than cards stacked on cards.
 **The filters live in the shell**, on their own row above the inner cards, not in the top bar. They
 remain module-level state shared across all six routes.
 
+**The control bar** replaces the two labelled selects, which read as a form:
+
+```
+[ 12M | 6M | 3M | 1M ]  [ Oct 2025 – Sep 2026 ▾ ]        [region chips]
+```
+
+- **Segmented control**, pill-shaped, muted fill, the active segment *raised* with a soft shadow.
+  A `radiogroup`: arrow keys move and select, Home/End jump to the ends, focus rings visible.
+- **A range chip** showing the resolved span, opening a menu of specific months. Picking a month
+  clears the preset; picking a preset clears the month — the two are mutually exclusive by
+  construction, not by convention.
+- **Region chips**, single-select, active chip using an accent **tint** not a heavy fill. Wraps to
+  its own line below 1200px rather than overflowing or shrinking.
+- **A Reset link**, shown only when the selection isn't the default 12M + All Regions.
+- The scope line and the comparison caption sit **under the page title**, not in this row.
+
+**The time filter is a RANGE.** `MonthSelection` is either `{ kind: 'preset', months }` or
+`{ kind: 'month', key }` — modelled explicitly so the two cases can't be confused.
+
+**The trend compares the selected window against the equal-length window immediately before it.**
+6M compares against the prior 6 months, 3M against the prior 3, a single month against the prior
+month. **Where no full preceding window exists, there is no trend** — the card says so rather than
+inventing a partial comparison. Note this means **the default 12M preset shows no deltas**, because
+it spans the entire dataset and there is nothing before it.
+
 **Every row must be fully occupied.** No dead negative space at the end of a row, and cards grow and
 shrink with how many are in the row. Where a count doesn't divide the 12-column grid — five KPI
 cards, for instance — use an auto-fit CSS grid rather than `v-col` widths that leave a gap.

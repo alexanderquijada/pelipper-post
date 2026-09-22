@@ -15,7 +15,6 @@ const {
   current,
   hasData,
   trends,
-  trendCaption,
   trendChart,
   cargoCategories,
   reliability,
@@ -59,7 +58,8 @@ const kpiCards = computed<MetricCardProps[]>(() => [
   },
   {
     label: 'Cost per Parcel',
-    value: current.value.costPerParcel,
+    // weighted average in Pokédollars — whole currency, not fractions of one
+    value: Math.round(current.value.costPerParcel),
     format: 'number',
     trend: trends.value.costPerParcel,
     invertTrend: true,
@@ -110,8 +110,6 @@ const RISK_COLOR: Record<DelayRisk, string> = {
   <PageShell title="Network Overview" subtitle="Headline delivery performance across the network.">
     <template v-if="hasData">
       <section class="pp-section">
-        <p v-if="trendCaption" class="pp-section-subtitle mb-3">{{ trendCaption }}</p>
-
         <!-- auto-fit grid rather than the 12-column row: five cards can't divide
              12 evenly, which left two columns of dead space at the end. -->
         <div class="kpi-strip">
@@ -134,6 +132,7 @@ const RISK_COLOR: Record<DelayRisk, string> = {
                 :parcels-delivered="trendChart.parcelsDelivered"
                 :gym-supply-runs="trendChart.gymSupplyRuns"
                 :selected-index="trendChart.selectedIndex"
+                :marked="trendChart.marked"
               />
             </v-card>
           </v-col>
