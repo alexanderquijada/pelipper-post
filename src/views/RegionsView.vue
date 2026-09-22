@@ -33,7 +33,10 @@ const volumeVsReliability = computed(() =>
 </script>
 
 <template>
-  <PageShell title="Regional Performance" subtitle="Delivery volume and reliability across the six regions.">
+  <PageShell
+    title="Regional Performance"
+    subtitle="How each region is performing, and which are struggling."
+  >
 
     <v-row dense class="mb-2">
       <v-col cols="12" lg="5">
@@ -42,9 +45,9 @@ const volumeVsReliability = computed(() =>
 
       <v-col cols="12" lg="7">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">On-Time Rate by Region</h2>
+          <h2 class="pp-card-title">Who's Meeting the Target</h2>
           <p class="pp-card-subtitle">
-            On-time delivery rate per region, against the {{ pct(onTimeTarget) }} target.
+            Which regions keep their delivery promise, and which fall short.
           </p>
           <BulletChart
             :rows="onTimeVsTarget.map((r) => ({ label: r.region, value: r.onTime }))"
@@ -60,8 +63,8 @@ const volumeVsReliability = computed(() =>
     <v-row dense class="mb-2">
       <v-col cols="12" lg="6">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Parcels by Region</h2>
-          <p class="pp-card-subtitle">Total parcels delivered by region.</p>
+          <h2 class="pp-card-title">Where the Volume Is</h2>
+          <p class="pp-card-subtitle">The regions carrying the most parcels.</p>
           <BarSeriesChart
             v-if="showRegionChart"
             :labels="regionChart.labels"
@@ -80,8 +83,10 @@ const volumeVsReliability = computed(() =>
 
       <v-col cols="12" lg="6">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Capacity &amp; Transit by Region</h2>
-          <p class="pp-card-subtitle">Load factor and average days in transit for each region.</p>
+          <h2 class="pp-card-title">How Full and How Fast</h2>
+          <p class="pp-card-subtitle">
+            Whether regions are running near capacity, and how long delivery takes.
+          </p>
           <ul class="cap">
             <li v-for="r in capacityByRegion" :key="r.region" class="cap__row">
               <span class="cap__region">{{ r.region }}</span>
@@ -99,8 +104,8 @@ const volumeVsReliability = computed(() =>
     <v-row dense class="mb-2">
       <v-col cols="12" lg="6">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Region Growth</h2>
-          <p class="pp-card-subtitle">Change in parcel volume from the first month to the last.</p>
+          <h2 class="pp-card-title">Which Regions Are Growing</h2>
+          <p class="pp-card-subtitle">Where volume is climbing, and where it's flat.</p>
           <ul class="growth">
             <li v-for="r in regionGrowth" :key="r.region" class="growth__row">
               <span class="growth__region">{{ r.region }}</span>
@@ -127,8 +132,8 @@ const volumeVsReliability = computed(() =>
     <v-row dense>
       <v-col cols="12">
         <v-card class="pp-card-pad">
-          <h2 class="pp-card-title">Region Comparison</h2>
-          <p class="pp-card-subtitle">Delivery volume and reliability side by side.</p>
+          <h2 class="pp-card-title">All Regions Side by Side</h2>
+          <p class="pp-card-subtitle">Every region's figures in one place for direct comparison.</p>
           <v-table density="compact" class="compare">
             <thead>
               <tr>

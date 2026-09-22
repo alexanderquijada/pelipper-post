@@ -20,10 +20,10 @@ const fullNumber = (n: number) => n.toLocaleString('en-US')
 <template>
   <v-card class="pp-card-pad" height="100%">
     <div class="d-flex align-start justify-space-between ga-3">
-      <h2 class="pp-card-title">Top Cargo Categories</h2>
+      <h2 class="pp-card-title">What We Ship</h2>
       <RouterLink v-if="detailsTo" class="pp-details" :to="detailsTo">View details →</RouterLink>
     </div>
-    <p class="pp-card-subtitle">Parcels delivered by cargo type.</p>
+    <p class="pp-card-subtitle">The goods we move most, by number of parcels.</p>
 
     <ul class="cargo">
       <li v-for="c in categories" :key="c.label" class="cargo__row">

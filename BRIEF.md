@@ -418,7 +418,7 @@ remain module-level state shared across all six routes.
   construction, not by convention.
 - **Region chips**, single-select, active chip using an accent **tint** not a heavy fill. Wraps to
   its own line below 1200px rather than overflowing or shrinking.
-- **A Reset link**, shown only when the selection isn't the default 12M + All Regions.
+- **A Reset link**, shown only when the selection isn't the default 6M + All Regions.
 - The scope line and the comparison caption sit **under the page title**, not in this row.
 
 **The time filter is a RANGE.** `MonthSelection` is either `{ kind: 'preset', months }` or
@@ -427,8 +427,13 @@ remain module-level state shared across all six routes.
 **The trend compares the selected window against the equal-length window immediately before it.**
 6M compares against the prior 6 months, 3M against the prior 3, a single month against the prior
 month. **Where no full preceding window exists, there is no trend** — the card says so rather than
-inventing a partial comparison. Note this means **the default 12M preset shows no deltas**, because
-it spans the entire dataset and there is nothing before it.
+inventing a partial comparison. The 12M preset therefore shows no deltas: it spans the entire
+twelve-month dataset, so there is nothing before it.
+
+**The default preset is 6M**, not 12M. The rule above is correct, but pairing it with a 12M default
+meant the landing page — the most-viewed screen in the app — rendered every KPI with no delta at
+all. 6M resolves to Apr–Sep 2026 against Oct 2025–Mar 2026, so trends are present on first load.
+The fix is the default, never a special case in the comparison logic.
 
 **Every row must be fully occupied.** No dead negative space at the end of a row, and cards grow and
 shrink with how many are in the row. Where a count doesn't divide the 12-column grid — five KPI
@@ -505,24 +510,76 @@ muted scope line, all in the app font stack. No page styles its own heading.
 
 ### Card copy
 
-Every card carries a one-line subtitle that says **what the card shows** — nothing about how the
-number is derived, which filter it respects, what the thresholds are, or what the dot colours mean.
-That is implementation detail; a reader in a meeting needs to know what they are looking at.
+A card title names **the question the card answers**, and the subtitle says **what the reader is
+looking at and why it matters** — in plain language. A subtitle never restates the title, never
+describes how the number is derived or aggregated, never names a filter or threshold, and never
+leaves jargon unexplained. That is implementation detail; a reader in a meeting needs to know what
+they are looking at.
+
+**Card copy must be true under every filter combination.** A subtitle is chrome: it is rendered
+identically whatever the range and region are, so any specific claim in it — *"berries at the
+December rush"*, *"Evolution Stones earn far more per parcel"* — is wrong the moment a filter
+excludes the data behind it. Select Kanto + Sep 2026 and a December claim sits beside a month of
+data containing no December. **Findings belong where they are computed**, on Exceptions, where each
+one is derived from the current slice and omitted when it can't be calculated. Subtitles describe;
+they do not assert.
 
 **These strings are the specification. Do not paraphrase them per phase.**
 
-| Card | Subtitle |
-|---|---|
-| Gym Supply Runs & Parcels Delivered | Monthly parcel volume and gym supply runs over the trailing twelve months. |
-| Parcels by Region | Total parcels delivered by region. |
-| Critical Delivery Signals | Notable shifts in network performance. |
-| Top Cargo Categories | Parcels delivered by cargo type. |
-| Network Reliability & Fulfillment Health | Key delivery and fleet health measures. |
-| Courier Roster | Couriers, their home regions, and delivery performance. |
-| Regional Weather | Current conditions across the delivery network. |
+| Page | Card | Subtitle |
+|---|---|---|
+| Overview | Network Overview | The numbers to check first — volume, reliability, and what's going wrong. |
+| Overview | Parcel Volume Trend | Whether we're shipping more or less than we were a year ago. |
+| Overview | What Needs Attention | The three things most worth knowing about right now. |
+| Overview | Top Cargo Types | The goods that make up the bulk of what we move. |
+| Overview | Reliability Snapshot | Whether the fleet is coping, and where it isn't. |
+| Overview | Weather Delays Today | Current conditions in each region, and how likely they are to delay deliveries. |
+| Overview | Who's Delivering Best | Our couriers ranked by how often they arrive on time. |
+| Trends | Monthly Trends & Seasonality | How the year unfolded, and which months reliably run hot or cold. |
+| Trends | Volume Through the Year | Whether gym restocking rises and falls with overall parcel volume. |
+| Trends | Are We Hitting Our Target? | Our monthly on-time record against what we promise and what rivals manage. |
+| Trends | What Each Delivery Costs | When moving a parcel gets more expensive, and by how much. |
+| Trends | Our Busiest and Quietest Months | How much more we move at peak than in the slowest month. |
+| Trends | When Each Region Peaks | Darker means busier. One row per region, across the year. |
+| Trends | The Full Year in Numbers | Every month's figures, if you need the exact value. |
+| Exceptions | Exceptions & Delivery Risk | Deliveries that went wrong, why, and what fixing them costs. |
+| Exceptions | Critical / Warning / Healthy | Needs attention now. / Worth watching. / Performing as expected. |
+| Exceptions | Why Deliveries Fail | The most common reasons parcels don't arrive on time. |
+| Exceptions | The Cost of Missed Deliveries | What we spend going back for parcels nobody was there to receive. |
+| Exceptions | When Things Go Wrong | The months when failed deliveries spike. |
+| Exceptions | Regions Below Target | Places where we're not keeping our delivery promise. |
+| Cargo | Cargo Mix & Revenue | What we move, what it earns, and which goods are hardest to handle. |
+| Cargo | What We Ship | The goods we move most, by number of parcels. |
+| Cargo | How the Mix Shifts | Which cargo types rise and fall across the year. |
+| Cargo | Where the Money Comes From | Which goods bring in the most money, not just the most parcels. |
+| Cargo | What's Hard to Ship | Which goods are heaviest, slowest, and most likely to break. |
+| Cargo | What Each Region Orders | Whether regions want different things, or the same mix everywhere. |
+| Regions | Regional Performance | How each region is performing, and which are struggling. |
+| Regions | Overall Network Health | The handful of measures that say whether the network is coping. |
+| Regions | Who's Meeting the Target | Which regions keep their delivery promise, and which fall short. |
+| Regions | Where the Volume Is | The regions carrying the most parcels. |
+| Regions | How Full and How Fast | Whether regions are running near capacity, and how long delivery takes. |
+| Regions | Which Regions Are Growing | Where volume is climbing, and where it's flat. |
+| Regions | Volume vs Reliability | Whether the regions handling the most parcels are also the ones keeping their promises. |
+| Regions | All Regions Side by Side | Every region's figures in one place for direct comparison. |
+| Couriers | Courier Fleet | Who flies for us, how hard they work, and how well they deliver. |
+| Couriers | Stops on a Typical Run | How many delivery stops each courier makes in one run. |
+| Couriers | Who Gets It Right First Time | How often each courier delivers without needing a second trip. |
+| Couriers | Time Off Taken | Days each courier has rested since joining the fleet. |
+| Couriers | Who's Available Now | How many couriers are flying, resting, or grounded. |
+| Couriers | Courier Roster | Couriers, their home regions, and delivery performance. |
+
+Two titles are deliberately literal rather than interpretive. **Stops on a Typical Run** is route
+density, not load — load is `capacityUtilization`, a different field on a different card, and
+calling this one "how much each courier carries" conflates them. **Time Off Taken** states the
+measure; a title like "Who Needs a Break" asserts a welfare judgement `restDaysTaken` cannot
+support, since a low figure is equally consistent with a short tenure.
+
+Overview's **Top Cargo Types** and Cargo's **What We Ship** are the same measure at two levels of
+detail — the preview and the full page — and must not carry near-identical titles.
 
 The **Overview** section heading takes the filter summary as its subtitle —
-*"Showing 12 months across 6 regions · Trends compare Sep 2026 to Aug 2026."* — sitting directly
+*"Showing 6 months across 6 regions · Trends compare Apr 2026 to Sep 2026."* — sitting directly
 beneath the heading. It appears there and nowhere else.
 
 **No page footer**, and **no "About this data" dialog**. The fabricated-data disclosure lives in
@@ -609,6 +666,19 @@ point — do not make every card full width.
 ---
 
 ## 6. Style
+
+### Standing rule — card copy must hold in every filter state
+
+**Any string that is rendered identically regardless of the filters must be true for all of them.**
+Titles, subtitles, axis labels, legends, column headers, empty-state text: all of it is chrome, and
+chrome is written once and shown against every possible slice of the data. A subtitle that names a
+month, a cargo type, a region or a direction of travel will eventually sit beside data that
+contradicts it — Kanto + Sep 2026 is enough to falsify a claim about December.
+
+The test is mechanical: **if changing a filter could make the sentence false, the sentence doesn't
+belong in chrome.** Put findings where they are computed — the signals on Exceptions derive from the
+current slice and are omitted when they cannot be calculated. The full approved copy table is in §4,
+*Card copy*.
 
 **Light by default.** Register two named Vuetify themes, `pelipperLight` (**default**) and
 `pelipperDark`. Dark stays available on the toggle — it is no longer the starting state.

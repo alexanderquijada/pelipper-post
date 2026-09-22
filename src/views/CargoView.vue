@@ -16,7 +16,10 @@ const num = (n: number) => n.toLocaleString('en-US')
 </script>
 
 <template>
-  <PageShell title="Cargo Mix &amp; Revenue" subtitle="What the network is carrying, and what it earns.">
+  <PageShell
+    title="Cargo Mix &amp; Revenue"
+    subtitle="What we move, what it earns, and which goods are hardest to handle."
+  >
 
     <v-row dense class="mb-2">
       <v-col cols="12" lg="5">
@@ -25,8 +28,8 @@ const num = (n: number) => n.toLocaleString('en-US')
 
       <v-col cols="12" lg="7">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Cargo Mix Over Time</h2>
-          <p class="pp-card-subtitle">Parcels by cargo type across the trailing twelve months.</p>
+          <h2 class="pp-card-title">How the Mix Shifts</h2>
+          <p class="pp-card-subtitle">Which cargo types rise and fall across the year.</p>
           <CargoTrendChart :labels="cargoOverMonths.labels" :series="cargoOverMonths.series" />
           <ul class="legend">
             <li v-for="(c, i) in cargoTypes" :key="c" class="legend__item">
@@ -44,8 +47,10 @@ const num = (n: number) => n.toLocaleString('en-US')
     <v-row dense class="mb-2">
       <v-col cols="12" lg="6">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Revenue by Cargo Type</h2>
-          <p class="pp-card-subtitle">Revenue contribution in Pokédollars, highest first.</p>
+          <h2 class="pp-card-title">Where the Money Comes From</h2>
+          <p class="pp-card-subtitle">
+            Which goods bring in the most money, not just the most parcels.
+          </p>
           <ul class="bars">
             <li v-for="r in revenueByCargo" :key="r.cargo" class="bars__row">
               <img
@@ -81,8 +86,10 @@ const num = (n: number) => n.toLocaleString('en-US')
 
       <v-col cols="12" lg="6">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Cargo Handling Profile</h2>
-          <p class="pp-card-subtitle">Weight, damage rate and transit time for each cargo type.</p>
+          <h2 class="pp-card-title">What's Hard to Ship</h2>
+          <p class="pp-card-subtitle">
+            Which goods are heaviest, slowest, and most likely to break.
+          </p>
           <v-table density="compact" class="matrix">
             <thead>
               <tr>
@@ -123,8 +130,8 @@ const num = (n: number) => n.toLocaleString('en-US')
     <v-row dense>
       <v-col cols="12">
         <v-card class="pp-card-pad">
-          <h2 class="pp-card-title">Cargo by Region</h2>
-          <p class="pp-card-subtitle">Parcels delivered per cargo type in each region.</p>
+          <h2 class="pp-card-title">What Each Region Orders</h2>
+          <p class="pp-card-subtitle">Whether regions want different things, or the same mix everywhere.</p>
           <v-table density="compact" class="matrix">
             <thead>
               <tr>

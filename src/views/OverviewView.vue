@@ -107,7 +107,10 @@ const RISK_COLOR: Record<DelayRisk, string> = {
 </script>
 
 <template>
-  <PageShell title="Network Overview" subtitle="Headline delivery performance across the network.">
+  <PageShell
+    title="Network Overview"
+    subtitle="The numbers to check first — volume, reliability, and what's going wrong."
+  >
     <template v-if="hasData">
       <section class="pp-section">
         <!-- auto-fit grid rather than the 12-column row: five cards can't divide
@@ -125,7 +128,9 @@ const RISK_COLOR: Record<DelayRisk, string> = {
                 <h2 class="pp-card-title">Parcel Volume Trend</h2>
                 <RouterLink class="pp-details" to="/trends">View details →</RouterLink>
               </div>
-              <p class="pp-card-subtitle">Parcel volume across the trailing twelve months.</p>
+              <p class="pp-card-subtitle">
+                Whether we're shipping more or less than we were a year ago.
+              </p>
               <DeliveryTrendChart
                 parcels-only
                 :labels="trendChart.labels"
@@ -148,10 +153,10 @@ const RISK_COLOR: Record<DelayRisk, string> = {
           <v-col cols="12" md="6" lg="4">
             <v-card class="pp-card-pad" height="100%">
               <div class="d-flex align-start justify-space-between ga-3">
-                <h2 class="pp-card-title">Cargo Share</h2>
+                <h2 class="pp-card-title">Top Cargo Types</h2>
                 <RouterLink class="pp-details" to="/cargo">View details →</RouterLink>
               </div>
-              <p class="pp-card-subtitle">The three largest cargo types by share of parcels.</p>
+              <p class="pp-card-subtitle">The goods that make up the bulk of what we move.</p>
               <ul class="mini">
                 <li v-for="c in topCargo" :key="c.label" class="mini__row">
                   <span class="mini__label">{{ c.label }}</span>
@@ -164,7 +169,7 @@ const RISK_COLOR: Record<DelayRisk, string> = {
           <v-col cols="12" md="6" lg="4">
             <ReliabilityHealth
               title="Reliability Snapshot"
-              subtitle="Fleet and exception health at a glance."
+              subtitle="Whether the fleet is coping, and where it isn't."
               :rows="snapshotRows"
               details-to="/network"
             />
@@ -181,11 +186,11 @@ const RISK_COLOR: Record<DelayRisk, string> = {
           <v-col cols="12">
             <v-card class="pp-card-pad">
               <div class="d-flex align-start justify-space-between ga-3">
-                <h2 class="pp-card-title">Courier Performance</h2>
+                <h2 class="pp-card-title">Who's Delivering Best</h2>
                 <RouterLink class="pp-details" to="/couriers">View details →</RouterLink>
               </div>
               <p class="pp-card-subtitle">
-                Couriers in scope, ranked by on-time rate, with their home conditions.
+                Our couriers ranked by how often they arrive on time.
               </p>
 
               <ul v-if="rankedCouriers.length" class="fleet">

@@ -32,7 +32,10 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 </script>
 
 <template>
-  <PageShell title="Courier Fleet" subtitle="The delivery fleet, their home regions and individual performance.">
+  <PageShell
+    title="Courier Fleet"
+    subtitle="Who flies for us, how hard they work, and how well they deliver."
+  >
 
     <v-row dense class="mb-2">
       <v-col v-for="c in filteredCouriers" :key="c.name" cols="12" sm="6" md="4" lg="3">
@@ -78,8 +81,8 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
     <v-row dense class="mb-2">
       <v-col cols="12" lg="6">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Stops per Run</h2>
-          <p class="pp-card-subtitle">Average delivery stops each courier makes per run.</p>
+          <h2 class="pp-card-title">Stops on a Typical Run</h2>
+          <p class="pp-card-subtitle">How many delivery stops each courier makes in one run.</p>
           <LollipopChart
             :rows="withSprites(courierStops)"
             accent="indigo"
@@ -91,8 +94,10 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 
       <v-col cols="12" lg="6">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">First-Attempt Rate by Courier</h2>
-          <p class="pp-card-subtitle">Share of parcels each courier lands on the first try.</p>
+          <h2 class="pp-card-title">Who Gets It Right First Time</h2>
+          <p class="pp-card-subtitle">
+            How often each courier delivers without needing a second trip.
+          </p>
           <LollipopChart
             :rows="withSprites(courierFirstAttempt)"
             format="percent"
@@ -107,8 +112,8 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
     <v-row dense class="mb-2">
       <v-col cols="12" lg="7">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Rest Days Taken</h2>
-          <p class="pp-card-subtitle">Rest days each courier has taken across their tenure.</p>
+          <h2 class="pp-card-title">Time Off Taken</h2>
+          <p class="pp-card-subtitle">Days each courier has rested since joining the fleet.</p>
           <LollipopChart
             :rows="withSprites(courierRest)"
             accent="plum"
@@ -120,8 +125,8 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 
       <v-col cols="12" lg="5">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Fleet Status</h2>
-          <p class="pp-card-subtitle">How the fleet is currently distributed.</p>
+          <h2 class="pp-card-title">Who's Available Now</h2>
+          <p class="pp-card-subtitle">How many couriers are flying, resting, or grounded.</p>
           <ul class="status">
             <li v-for="s in courierStatusBreakdown" :key="s.status" class="status__row">
               <span class="status__dot" :class="`status__dot--${s.status.replace(' ', '-')}`" />

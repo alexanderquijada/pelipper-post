@@ -28,14 +28,17 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 </script>
 
 <template>
-  <PageShell title="Monthly Trends &amp; Seasonality" subtitle="Parcel volume and delivery activity across the trailing twelve months.">
+  <PageShell
+    title="Monthly Trends &amp; Seasonality"
+    subtitle="How the year unfolded, and which months reliably run hot or cold."
+  >
 
     <v-row dense class="mb-2">
       <v-col cols="12">
         <v-card class="pp-card-pad">
-          <h2 class="pp-card-title">Gym Supply Runs &amp; Parcels Delivered</h2>
+          <h2 class="pp-card-title">Volume Through the Year</h2>
           <p class="pp-card-subtitle">
-            Monthly parcel volume and gym supply runs over the trailing twelve months.
+            Whether gym restocking rises and falls with overall parcel volume.
           </p>
           <DeliveryTrendChart
             tall
@@ -52,9 +55,9 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
     <v-row dense class="mb-2">
       <v-col cols="12" lg="7">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">On-Time Rate Over Time</h2>
+          <h2 class="pp-card-title">Are We Hitting Our Target?</h2>
           <p class="pp-card-subtitle">
-            Monthly on-time rate against the internal target and the industry benchmark.
+            Our monthly on-time record against what we promise and what rivals manage.
           </p>
           <LineSeriesChart
             :labels="onTimeOverMonths.labels"
@@ -71,8 +74,8 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 
       <v-col cols="12" lg="5">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Cost per Parcel Over Time</h2>
-          <p class="pp-card-subtitle">Monthly delivery cost per parcel, in Pokédollars.</p>
+          <h2 class="pp-card-title">What Each Delivery Costs</h2>
+          <p class="pp-card-subtitle">When moving a parcel gets more expensive, and by how much.</p>
           <LineSeriesChart
             :labels="costOverMonths.labels"
             :values="costOverMonths.values"
@@ -87,8 +90,8 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
     <v-row dense class="mb-2">
       <v-col cols="12" lg="5">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Seasonality</h2>
-          <p class="pp-card-subtitle">The busiest and quietest months in the period.</p>
+          <h2 class="pp-card-title">Our Busiest and Quietest Months</h2>
+          <p class="pp-card-subtitle">How much more we move at peak than in the slowest month.</p>
           <div class="season">
             <div class="season__item">
               <p class="season__label">Peak</p>
@@ -111,8 +114,8 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 
       <v-col cols="12" lg="7">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Seasonality by Region</h2>
-          <p class="pp-card-subtitle">Parcel volume for each region in each month.</p>
+          <h2 class="pp-card-title">When Each Region Peaks</h2>
+          <p class="pp-card-subtitle">Darker means busier. One row per region, across the year.</p>
           <SeasonHeatmap
             :months="trendChart.labels"
             :rows="heatRows"
@@ -126,8 +129,8 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
     <v-row dense>
       <v-col cols="12">
         <v-card class="pp-card-pad">
-          <h2 class="pp-card-title">Month by Month</h2>
-          <p class="pp-card-subtitle">Every metric for each of the trailing twelve months.</p>
+          <h2 class="pp-card-title">The Full Year in Numbers</h2>
+          <p class="pp-card-subtitle">Every month's figures, if you need the exact value.</p>
           <v-table density="compact" class="months">
             <thead>
               <tr>

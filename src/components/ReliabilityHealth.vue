@@ -8,8 +8,8 @@ withDefaults(
   subtitle?: string
 }>(),
   {
-    title: 'Network Reliability & Fulfillment Health',
-    subtitle: 'Key delivery and fleet health measures.',
+    title: 'Overall Network Health',
+    subtitle: 'The handful of measures that say whether the network is coping.',
   },
 )
 

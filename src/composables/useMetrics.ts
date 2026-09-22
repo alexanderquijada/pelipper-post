@@ -38,11 +38,18 @@ export type RegionFilter = 'all' | RegionName
  * shares one selection — this is the "single composable, no Pinia" pattern the
  * capstone asks for, and the thing most likely to break in a refactor.
  */
-const monthSelection = ref<MonthSelection>({ kind: 'preset', months: 12 })
-const selectedRegion = ref<RegionFilter>('all')
-
 const ALL_REGIONS = 'all'
-const DEFAULT_PRESET: PresetMonths = 12
+/**
+ * 6M, not 12M. The dataset is exactly twelve months long, so a 12M default spans
+ * the whole of it — `precedingKeys` finds nothing before it and every KPI on the
+ * landing page renders with no delta. 6M compares Apr–Sep 2026 against
+ * Oct 2025–Mar 2026, so the most-viewed screen shows trends. The comparison rule
+ * itself is unchanged: an equal-length preceding window or nothing.
+ */
+const DEFAULT_PRESET: PresetMonths = 6
+
+const monthSelection = ref<MonthSelection>({ kind: 'preset', months: DEFAULT_PRESET })
+const selectedRegion = ref<RegionFilter>(ALL_REGIONS)
 
 /** Month keys in a selection, in chronological order. */
 function keysFor(sel: MonthSelection): string[] {
@@ -272,8 +279,8 @@ export function useMetrics() {
   // ---- trends ---------------------------------------------------------------
   /**
    * The selected window and the equal-length window immediately before it.
-   * null when the data doesn't reach back far enough — e.g. the default 12M
-   * preset covers the whole dataset, so there is nothing to compare it to.
+   * null when the data doesn't reach back far enough — the 12M preset covers the
+   * whole dataset, so there is nothing before it to compare against.
    */
   const comparisonPeriods = computed<{ current: string[]; previous: string[] } | null>(() => {
     const current = keysFor(monthSelection.value)

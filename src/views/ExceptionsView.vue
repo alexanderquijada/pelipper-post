@@ -24,7 +24,10 @@ const num = (n: number) => n.toLocaleString('en-US')
 </script>
 
 <template>
-  <PageShell title="Exceptions &amp; Delivery Risk" subtitle="Where deliveries are failing, and what it is costing.">
+  <PageShell
+    title="Exceptions &amp; Delivery Risk"
+    subtitle="Deliveries that went wrong, why, and what fixing them costs."
+  >
 
     <v-row dense class="mb-2">
       <v-col v-for="group in signalGroups" :key="group.severity" cols="12" md="4">
@@ -58,8 +61,8 @@ const num = (n: number) => n.toLocaleString('en-US')
     <v-row dense class="mb-2">
       <v-col cols="12" lg="7">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Exceptions by Cause</h2>
-          <p class="pp-card-subtitle">How each cause builds the exception total.</p>
+          <h2 class="pp-card-title">Why Deliveries Fail</h2>
+          <p class="pp-card-subtitle">The most common reasons parcels don't arrive on time.</p>
           <WaterfallChart
             :steps="exceptionsByCause.map((c) => ({ label: c.cause, value: c.value }))"
             total-label="All exceptions"
@@ -69,8 +72,10 @@ const num = (n: number) => n.toLocaleString('en-US')
 
       <v-col cols="12" lg="5">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">First-Attempt Failures</h2>
-          <p class="pp-card-subtitle">Parcels that needed a second run, and what that costs.</p>
+          <h2 class="pp-card-title">The Cost of Missed Deliveries</h2>
+          <p class="pp-card-subtitle">
+            What we spend going back for parcels nobody was there to receive.
+          </p>
           <dl class="cost">
             <div class="cost__row">
               <dt>First-attempt rate</dt>
@@ -104,8 +109,8 @@ const num = (n: number) => n.toLocaleString('en-US')
     <v-row dense class="mb-2">
       <v-col cols="12">
         <v-card class="pp-card-pad">
-          <h2 class="pp-card-title">Exceptions Over Time</h2>
-          <p class="pp-card-subtitle">Open exceptions recorded in each month.</p>
+          <h2 class="pp-card-title">When Things Go Wrong</h2>
+          <p class="pp-card-subtitle">The months when failed deliveries spike.</p>
           <LineSeriesChart
             :labels="exceptionsOverMonths.labels"
             :values="exceptionsOverMonths.values"
@@ -121,9 +126,7 @@ const num = (n: number) => n.toLocaleString('en-US')
       <v-col cols="12">
         <v-card class="pp-card-pad">
           <h2 class="pp-card-title">Regions Below Target</h2>
-          <p class="pp-card-subtitle">
-            Regions falling short of the {{ pct(onTimeTarget) }} on-time target.
-          </p>
+          <p class="pp-card-subtitle">Places where we're not keeping our delivery promise.</p>
           <v-table v-if="breaches.length" density="compact" class="targets">
             <thead>
               <tr>

@@ -24,8 +24,8 @@ const glyphRgb = (risk: DelayRisk) => rgbTriplet(iconGlyph.value[RISK_ACCENT[ris
 
 <template>
   <v-card class="pp-card-pad" height="100%">
-    <h2 class="pp-card-title">Regional Weather</h2>
-    <p class="pp-card-subtitle">Current conditions across the delivery network.</p>
+    <h2 class="pp-card-title">Weather Delays Today</h2>
+    <p class="pp-card-subtitle">Where conditions are likely to slow deliveries right now.</p>
 
     <ul class="wx">
       <li v-for="w in rows" :key="w.region" class="wx__row" :title="w.note">

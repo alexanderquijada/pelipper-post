@@ -933,6 +933,44 @@ Append here as the build goes. Date, what came up, what was decided.
   Verified: build exit 0, validator exit 0, 0 console errors on all six routes in both themes, 21px
   card gaps throughout, no NaN, `metrics.json` untouched, `CATEGORICAL_*` untouched.
 
+- **2026-09-22 — card copy rewritten, and the default range moved to 6M.** Alex approved the copy
+  table with four changes; the approved strings are now in `BRIEF.md` §4 *Card copy* and are the
+  specification.
+
+  **The default preset was the bug, not the comparison rule.** The trend rule — compare the selected
+  window against the equal-length window immediately before it, and show nothing where no full
+  preceding window exists — is correct and unchanged. But the dataset is exactly twelve months, so a
+  **12M default spanned all of it** and the landing page rendered every KPI with "no prior period".
+  A regression on the most-viewed view, introduced by the default rather than the logic. Default is
+  now **6M** (`DEFAULT_PRESET` in `useMetrics.ts`, one constant, used by both the initial ref and
+  `resetFilters`). Verified on a fresh load: active segment 6M, range chip *Apr 2026 – Sep 2026*,
+  scope line *"Compared with the previous 6 months (Oct 2025 – Mar 2026)"*, and all five KPIs
+  showing a delta (6.3%, 0.3 pts, 0.9 pts, 4.1%, 19.9%). 12M still correctly shows none.
+
+  **Findings were stripped out of subtitles — they were wrong under filters, not merely stale.**
+  Five proposed subtitles named a specific finding ("berries at the December rush", "Evolution
+  Stones earn far more per parcel", "the bands show Gym Season and the storm-season slump",
+  "couriers making far fewer stops may be slow", "low numbers may mean someone is overworked").
+  Alex rejected all five: **a subtitle is chrome**, rendered identically in every filter state, so
+  Kanto + Sep 2026 puts a December claim beside a month of data containing no December. The standing
+  rule is now in `BRIEF.md` §6: *if changing a filter could make the sentence false, the sentence
+  doesn't belong in chrome.* Findings live on Exceptions, where each one is computed from the
+  current slice and omitted when it can't be calculated. A grep for all five strings across the six
+  rendered routes returns nothing.
+
+  **Two titles were over-claiming.** *Stops per Run → "How Much Each Courier Carries"* conflated
+  route density with load — load is `capacityUtilization`, a different field on a different card;
+  it is now **Stops on a Typical Run**. *Rest Days Taken → "Who Needs a Break"* asserted a welfare
+  judgement `restDaysTaken` cannot support, since a low figure is equally consistent with a short
+  tenure; it is now **Time Off Taken**. Overview's cargo preview became **Top Cargo Types** so it
+  no longer collides with Cargo's **What We Ship** — same measure, two levels of detail.
+
+  Kept unchanged on Alex's ruling: **Critical / Warning / Healthy** and their three subtitles, and
+  **Volume vs Reliability**, all of which already met the standard.
+
+  Verified: build exit 0, validator exit 0, 0 console errors on any of the six routes, no
+  NaN/undefined anywhere, every rendered title and subtitle matched against the approved table.
+
 ---
 
 ## 8. Known issues / watch list

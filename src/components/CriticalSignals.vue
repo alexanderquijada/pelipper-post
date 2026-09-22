@@ -24,10 +24,10 @@ const SEVERITY_LABEL: Record<Signal['severity'], string> = {
 <template>
   <v-card class="pp-card-pad" height="100%">
     <div class="d-flex align-start justify-space-between ga-3">
-      <h2 class="pp-card-title">Critical Delivery Signals</h2>
+      <h2 class="pp-card-title">What Needs Attention</h2>
       <RouterLink v-if="detailsTo" class="pp-details" :to="detailsTo">View details →</RouterLink>
     </div>
-    <p class="pp-card-subtitle">Notable shifts in network performance.</p>
+    <p class="pp-card-subtitle">The three things most worth knowing about right now.</p>
 
     <ul v-if="signals.length" class="signals">
       <li v-for="s in signals" :key="s.id" class="signal">
