@@ -146,7 +146,7 @@ const num = (n: number) => n.toLocaleString('en-US')
                   {{ r.gap >= 0 ? '+' : '−' }}{{ Math.abs(r.gap * 100).toFixed(1) }} pts
                 </td>
                 <td>
-                  <v-chip color="error" variant="tonal" size="small">Below target</v-chip>
+                  <span class="pp-pill pp-pill--bad">Below target</span>
                 </td>
               </tr>
             </tbody>

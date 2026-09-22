@@ -1023,6 +1023,48 @@ Append here as the build goes. Date, what came up, what was decided.
   **Held for Alex: F2**, plain-language risk wording ("Delays likely / Some delays / On track")
   versus the current High / Moderate / Low. Not applied either way.
 
+- **2026-09-22 — F2 resolved, chip contrast fixed, scatter copy, dead space.**
+
+  **F2 → Version A, with both halves.** Visible text stays the compact graded scale (High /
+  Moderate / Low) because that is what makes six rows scannable and it costs no width in the roster
+  or the 230px courier tile. The self-describing wording moves to `aria-label` and `title`:
+  *"High — delays likely"*, *"Moderate — some delays"*, *"Low — on track"*. Column headers kept.
+  Wording lives in `src/utils/status.ts` so the three risk sites and two status sites can't drift.
+
+  **The chip contrast failure was structural, not a bad colour choice.** Vuetify's
+  `variant="tonal"` paints the theme colour as text over a ~12% tint *of the same colour* — the one
+  pairing guaranteed to have almost no luminance difference. Alex measured 1.86 / 1.98 / 3.18:1
+  against a 4.5:1 requirement. **The same fault had been hand-written into the KPI delta pill**
+  (`rgba(theme, 0.14)` under `rgb(theme)`), which was not on the original list and was found by
+  auditing rather than by being told.
+
+  Fixed by replacing **every** tinted chip with one global `.pp-pill` class carrying explicit
+  measured light/dark pairs (see BRIEF §6 for the table). Alex's six values reproduced exactly; the
+  two `--neutral` values for `Resting` were derived and measured at 7.96 / 7.54:1. Backgrounds are
+  **opaque** on purpose, so a pill's ratio no longer depends on the card behind it. Weight raised
+  to 600.
+
+  Audited every pill and chip on all six routes in both themes — **47 instances per theme, 0
+  failing**; worst **6.34:1 light**, **7.54:1 dark**, against a 4.5:1 bar (11px is normal text; the
+  large-text 3:1 exemption starts at 18.66px bold). Sites converted: delay-risk pills ×3, courier
+  status ×2, "Below target", and the KPI delta pill. `document.querySelectorAll('.v-chip').length`
+  is now **0 on every route**.
+
+  **G2 — "Volume vs Reliability" → "Busy vs Reliable."** *"Keeping their promises"* was a
+  euphemism. New subtitle also states the bubble-size encoding. BRIEF §4 now draws the line
+  explicitly: explaining an unfamiliar visual **encoding** ("larger bubbles mean more failed
+  deliveries", "darker means busier") is allowed and often necessary; explaining **arithmetic**
+  ("how each cause builds the total", "weighted by parcels delivered") is not.
+
+  **G3 — chose natural heights, not more content.** The Overview's third row now uses
+  `align="start"`. Padding the short cards to match Weather's six rows would have meant surfacing
+  metrics that already have a home elsewhere, which §4's one-home-per-metric rule forbids — so the
+  dead band was a symptom of forcing equal heights onto genuinely unequal content. Measured after:
+  card heights 209 / 247 / 439px with a **21px trailing gap on all three** (the card padding), down
+  from a ~230px empty band under the shortest. Horizontal fill is unaffected.
+
+  Verified: build exit 0, validator exit 0, 0 console errors on any route, both themes.
+
 ---
 
 ## 8. Known issues / watch list

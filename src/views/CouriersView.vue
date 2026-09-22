@@ -5,16 +5,10 @@ import CourierRoster from '@/components/CourierRoster.vue'
 import LollipopChart from '@/components/charts/LollipopChart.vue'
 import { useMetrics } from '@/composables/useMetrics'
 import { SPRITE_FALLBACK_ICON, spriteUrl } from '@/utils/sprites'
-import type { CourierStatus } from '@/types/metrics'
+import { STATUS_PHRASE, STATUS_TONE } from '@/utils/status'
 
 const { filteredCouriers, courierStops, courierFirstAttempt, courierRest, courierStatusBreakdown } =
   useMetrics()
-
-const STATUS_COLOR: Record<CourierStatus, string> = {
-  'On Route': 'success',
-  Resting: 'secondary',
-  Grounded: 'error',
-}
 
 const failedSprites = ref(new Set<number>())
 const num = (n: number) => n.toLocaleString('en-US')
@@ -71,9 +65,13 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
             </div>
           </dl>
 
-          <v-chip :color="STATUS_COLOR[c.status]" variant="tonal" size="small">
+          <span
+            class="pp-pill"
+            :class="`pp-pill--${STATUS_TONE[c.status]}`"
+            :title="STATUS_PHRASE[c.status]"
+          >
             {{ c.status }}
-          </v-chip>
+          </span>
         </v-card>
       </v-col>
     </v-row>

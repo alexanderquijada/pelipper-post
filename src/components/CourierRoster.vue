@@ -1,34 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { Courier, CourierStatus } from '@/types/metrics'
+import type { Courier } from '@/types/metrics'
 import { SPRITE_FALLBACK_ICON, spriteUrl } from '@/utils/sprites'
 import { useMetrics } from '@/composables/useMetrics'
 import { useChartTheme, weatherKind } from '@/components/charts/chartTheme'
-import type { DelayRisk } from '@/types/metrics'
+import { RISK_PHRASE, RISK_TONE, STATUS_PHRASE, STATUS_TONE } from '@/utils/status'
 
 defineProps<{ couriers: Courier[] }>()
 
 const { weatherFor } = useMetrics()
 
-// Compact on purpose: icon plus risk chip, no temperature — the table is wide
-// enough already. Full conditions live on the Weather Delays Today card.
-const RISK_COLOR: Record<DelayRisk, string> = {
-  High: 'error',
-  Moderate: 'accent',
-  Low: 'success',
-}
-
-// Weather on the icon, risk on the chip — and they are now separate columns, so
+// Weather on the icon, risk on the pill — and they are now separate columns, so
 // the header names each one. A single "Conditions" column holding both left the
-// chip unlabelled exactly as it was on the weather card.
+// pill unlabelled exactly as it was on the weather card.
 const { weather } = useChartTheme()
 const wxColor = (icon: string) => weather.value[weatherKind(icon)]
-
-const STATUS_COLOR: Record<CourierStatus, string> = {
-  'On Route': 'success',
-  Resting: 'secondary',
-  Grounded: 'error',
-}
 
 const formatNumber = (n: number) => n.toLocaleString('en-US')
 const formatRate = (r: number) => `${(r * 100).toFixed(1)}%`
@@ -84,21 +70,26 @@ function onSpriteError(dexId: number) {
           </span>
         </td>
         <td>
-          <v-chip
+          <span
             v-if="weatherFor(courier.homeRegion)"
-            :color="RISK_COLOR[weatherFor(courier.homeRegion)!.delayRisk]"
-            variant="tonal"
-            size="x-small"
+            class="pp-pill pp-pill--sm"
+            :class="`pp-pill--${RISK_TONE[weatherFor(courier.homeRegion)!.delayRisk]}`"
+            :aria-label="`Delay risk: ${RISK_PHRASE[weatherFor(courier.homeRegion)!.delayRisk]}`"
+            :title="RISK_PHRASE[weatherFor(courier.homeRegion)!.delayRisk]"
           >
             {{ weatherFor(courier.homeRegion)!.delayRisk }}
-          </v-chip>
+          </span>
         </td>
         <td class="text-right">{{ formatNumber(courier.runs) }}</td>
         <td class="text-right">{{ formatRate(courier.onTimeRate) }}</td>
         <td>
-          <v-chip :color="STATUS_COLOR[courier.status]" variant="tonal" size="small">
+          <span
+            class="pp-pill"
+            :class="`pp-pill--${STATUS_TONE[courier.status]}`"
+            :title="STATUS_PHRASE[courier.status]"
+          >
             {{ courier.status }}
-          </v-chip>
+          </span>
         </td>
       </tr>
     </tbody>

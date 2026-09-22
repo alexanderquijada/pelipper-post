@@ -78,6 +78,9 @@ const trendColor = computed(() => {
   return isGood ? 'success' : 'error'
 })
 
+/** Semantic result -> the global pill tone that carries a verified colour pair. */
+const DELTA_TONE = { success: 'good', error: 'bad', muted: 'neutral' } as const
+
 const trendLabel = computed(() => {
   if (props.trend === null) return ''
   const magnitude = (Math.abs(props.trend) * 100).toFixed(1)
@@ -121,14 +124,16 @@ const trendAria = computed(() => {
     <!-- The delta reads as a small tinted pill, not bare arrow text. -->
     <div
       v-if="hasTrend"
-      class="metric-card__delta"
-      :class="`metric-card__delta--${trendColor}`"
+      class="pp-pill metric-card__delta"
+      :class="`pp-pill--${DELTA_TONE[trendColor]}`"
       :aria-label="trendAria"
     >
       <v-icon :icon="trendIcon" size="14" aria-hidden="true" />
       <span>{{ trendLabel }}</span>
     </div>
-    <div v-else class="metric-card__delta metric-card__delta--none">no prior period</div>
+    <div v-else class="pp-pill pp-pill--neutral metric-card__delta metric-card__delta--none">
+      no prior period
+    </div>
   </v-card>
 </template>
 
@@ -157,36 +162,16 @@ const trendAria = computed(() => {
   margin-top: 2px;
 }
 
+/* Colour comes from the global `.pp-pill--*` pairs — this rule only adjusts the
+   geometry, since the delta pill carries a leading arrow glyph. The old rules
+   here were theme-colour-on-a-14%-tint-of-itself, the same 1.9:1 fault as the
+   Vuetify tonal chips. */
 .metric-card__delta {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
   margin-top: 10px;
-  padding: 2px 8px 2px 5px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.5;
-}
-
-.metric-card__delta--success {
-  color: rgb(var(--v-theme-success));
-  background: rgba(var(--v-theme-success), 0.14);
-}
-
-.metric-card__delta--error {
-  color: rgb(var(--v-theme-error));
-  background: rgba(var(--v-theme-error), 0.14);
-}
-
-.metric-card__delta--muted,
-.metric-card__delta--none {
-  color: rgb(var(--v-theme-muted));
-  background: rgba(var(--v-theme-muted), 0.12);
+  padding-left: 5px;
 }
 
 .metric-card__delta--none {
-  padding-left: 8px;
-  font-weight: 500;
+  padding-left: 9px;
 }
 </style>

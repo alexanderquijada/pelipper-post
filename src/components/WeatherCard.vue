@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { rgbTriplet, useChartTheme, weatherKind } from '@/components/charts/chartTheme'
-import type { DelayRisk, RegionWeather } from '@/types/metrics'
+import { RISK_PHRASE, RISK_TONE } from '@/utils/status'
+import type { RegionWeather } from '@/types/metrics'
 
 defineProps<{ rows: RegionWeather[] }>()
-
-const RISK_COLOR: Record<DelayRisk, string> = {
-  High: 'error',
-  Moderate: 'accent',
-  Low: 'success',
-}
 
 /**
  * The circle tint tracks the WEATHER, not the delay risk. Tinting it by risk put
@@ -47,15 +42,16 @@ const wxRgb = (icon: string) => rgbTriplet(weather.value[weatherKind(icon)])
         <span class="wx__region">{{ w.region }}</span>
         <span class="wx__condition">{{ w.condition }}</span>
         <span class="wx__temp">{{ w.tempC }}°C</span>
-        <v-chip
-          :color="RISK_COLOR[w.delayRisk]"
-          variant="tonal"
-          size="x-small"
-          class="wx__chip"
-          :aria-label="`Delay risk: ${w.delayRisk}`"
+        <!-- Visible text stays the compact scale; the full phrase rides on
+             aria-label and title so the pill is self-describing out of context. -->
+        <span
+          class="pp-pill wx__chip"
+          :class="`pp-pill--${RISK_TONE[w.delayRisk]}`"
+          :aria-label="`Delay risk: ${RISK_PHRASE[w.delayRisk]}`"
+          :title="RISK_PHRASE[w.delayRisk]"
         >
           {{ w.delayRisk }}
-        </v-chip>
+        </span>
       </li>
     </ul>
   </v-card>

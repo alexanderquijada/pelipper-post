@@ -237,6 +237,70 @@ const glyphRgb = (key: keyof typeof editorial.value) => rgbTriplet(iconGlyph.val
 /* NOTE: there is deliberately NO blanket `img { image-rendering }` rule.
    Pixel rendering is scoped to the classes that wrap 30x30 item sprites; the
    475x475 brand artwork and the courier avatars must stay smoothed. */
+
+/* ---- status pills ----
+   Replaces every `<v-chip variant="tonal">` in the app. Vuetify's tonal variant
+   paints the theme colour as TEXT over a 12% tint OF THE SAME COLOUR, which is
+   the one combination guaranteed to have almost no luminance difference: the
+   Moderate chip measured 1.86:1 against a 4.5:1 requirement. Every pair below
+   is an explicit, measured light/dark pair — not a computed tint — and every
+   one clears 4.5:1, because 11px pill text is normal text, not large text.
+
+   Backgrounds are OPAQUE on purpose. A translucent fill would make the measured
+   ratio depend on whatever card happens to sit behind it. */
+.pp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  /* 600, not 500 — at 11px the lighter weight reads thin regardless of ratio */
+  font-weight: 600;
+  line-height: 1.55;
+  white-space: nowrap;
+  background: var(--pp-pill-bg);
+  color: var(--pp-pill-fg);
+}
+
+.pp-pill--sm {
+  font-size: 10.5px;
+  padding: 1px 8px;
+}
+
+.v-theme--pelipperLight .pp-pill--bad {
+  --pp-pill-bg: #fdeaea;
+  --pp-pill-fg: #a81e13;
+} /* 6.34:1 */
+.v-theme--pelipperLight .pp-pill--warn {
+  --pp-pill-bg: #fcf0e1;
+  --pp-pill-fg: #7a4405;
+} /* 7.04:1 */
+.v-theme--pelipperLight .pp-pill--good {
+  --pp-pill-bg: #e6f4eb;
+  --pp-pill-fg: #0f5d34;
+} /* 7.02:1 */
+.v-theme--pelipperLight .pp-pill--neutral {
+  --pp-pill-bg: #e9edf2;
+  --pp-pill-fg: #37485c;
+} /* 7.96:1 */
+
+.v-theme--pelipperDark .pp-pill--bad {
+  --pp-pill-bg: #3b1f20;
+  --pp-pill-fg: #ffb4ab;
+} /* 8.82:1 */
+.v-theme--pelipperDark .pp-pill--warn {
+  --pp-pill-bg: #3a2a16;
+  --pp-pill-fg: #ffd8a6;
+} /* 10.26:1 */
+.v-theme--pelipperDark .pp-pill--good {
+  --pp-pill-bg: #16301f;
+  --pp-pill-fg: #8fe3b4;
+} /* 9.36:1 */
+.v-theme--pelipperDark .pp-pill--neutral {
+  --pp-pill-bg: #22303f;
+  --pp-pill-fg: #b3c4d6;
+} /* 7.54:1 */
 </style>
 
 <style scoped>

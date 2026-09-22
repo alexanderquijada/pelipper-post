@@ -120,9 +120,10 @@ const volumeVsReliability = computed(() =>
 
       <v-col cols="12" lg="6">
         <v-card class="pp-card-pad" height="100%">
-          <h2 class="pp-card-title">Volume vs Reliability</h2>
+          <h2 class="pp-card-title">Busy vs Reliable</h2>
           <p class="pp-card-subtitle">
-            Whether the regions handling the most parcels are also the ones keeping their promises.
+            Each region plotted by how much it ships and how often it arrives on time. Larger
+            bubbles mean more failed deliveries.
           </p>
           <BubbleChart :points="volumeVsReliability" :target="onTimeTarget" />
         </v-card>

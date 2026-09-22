@@ -535,6 +535,23 @@ describes how the number is derived or aggregated, never names a filter or thres
 leaves jargon unexplained. That is implementation detail; a reader in a meeting needs to know what
 they are looking at.
 
+**Explaining an unfamiliar visual ENCODING is allowed, and often necessary. Explaining arithmetic
+is not.** These look similar and are not:
+
+| | |
+|---|---|
+| ✅ *"Larger bubbles mean more failed deliveries."* | tells the reader how to decode a mark they may never have seen |
+| ✅ *"Darker means busier."* | same — the heatmap ramp has no meaning until it's named |
+| ❌ *"How each cause builds the exception total."* | describes the aggregation, which is not the reader's problem |
+| ❌ *"Weighted by parcels delivered."* | method, not meaning |
+
+A scatter or bubble chart is the clearest case: most readers meet one rarely, and a third variable
+encoded as area is invisible until stated. Saying so is not clutter — it is the difference between
+a chart that can be read and one that can only be admired.
+
+Euphemism is its own failure. *"Keeping their promises"* sounds considerate and tells a reader
+nothing measurable; *"how often it arrives on time"* is the same length and is the actual thing.
+
 **Card copy must be true under every filter combination.** A subtitle is chrome: it is rendered
 identically whatever the range and region are, so any specific claim in it — *"berries at the
 December rush"*, *"Evolution Stones earn far more per parcel"* — is wrong the moment a filter
@@ -579,7 +596,7 @@ they do not assert.
 | Regions | Where the Volume Is | The regions carrying the most parcels. |
 | Regions | How Full and How Fast | Whether regions are running near capacity, and how long delivery takes. |
 | Regions | Which Regions Are Growing | Where volume is climbing, and where it's flat. |
-| Regions | Volume vs Reliability | Whether the regions handling the most parcels are also the ones keeping their promises. |
+| Regions | Busy vs Reliable | Each region plotted by how much it ships and how often it arrives on time. Larger bubbles mean more failed deliveries. |
 | Regions | All Regions Side by Side | Every region's figures in one place for direct comparison. |
 | Couriers | Courier Fleet | Who flies for us, how hard they work, and how well they deliver. |
 | Couriers | Stops on a Typical Run | How many delivery stops each courier makes in one run. |
@@ -685,6 +702,32 @@ point — do not make every card full width.
 ---
 
 ## 6. Style
+
+### Standing rule — never tint a colour with itself
+
+**Vuetify's `variant="tonal"` chip is a contrast failure by construction.** It paints the theme
+colour as text over a ~12% tint *of that same colour*, which is the one combination guaranteed to
+have almost no luminance difference between foreground and background. Measured in this app before
+the fix: **Moderate 1.86:1, Low 1.98:1, High 3.18:1** against a 4.5:1 requirement. The same fault
+was hand-written into the KPI delta pill (`rgba(theme-colour, 0.14)` under `rgb(theme-colour)`).
+
+There are no `variant="tonal"` chips left. Every pill in the app uses **`.pp-pill`** in `App.vue`,
+which carries an **explicit, measured light/dark colour pair per tone** — not a computed tint:
+
+| Tone | Light bg / text | Dark bg / text |
+|---|---|---|
+| `--bad` | `#FDEAEA` / `#A81E13` — 6.34:1 | `#3B1F20` / `#FFB4AB` — 8.82:1 |
+| `--warn` | `#FCF0E1` / `#7A4405` — 7.04:1 | `#3A2A16` / `#FFD8A6` — 10.26:1 |
+| `--good` | `#E6F4EB` / `#0F5D34` — 7.02:1 | `#16301F` / `#8FE3B4` — 9.36:1 |
+| `--neutral` | `#E9EDF2` / `#37485C` — 7.96:1 | `#22303F` / `#B3C4D6` — 7.54:1 |
+
+Three rules that come with it:
+
+- **Pill backgrounds are opaque.** A translucent fill makes the measured ratio depend on whichever
+  card happens to sit behind it, so the number stops being a property of the pill.
+- **Pill text is 4.5:1, not 3:1.** At 11px it is *normal* text — the large-text exemption starts at
+  18.66px bold or 24px regular. Nothing in this app is close.
+- **Weight 600 minimum.** At 11px, 500 reads thin no matter what the ratio says.
 
 ### Standing rule — one visual channel per meaning
 

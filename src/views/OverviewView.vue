@@ -8,9 +8,9 @@ import PageShell from '@/components/PageShell.vue'
 import WeatherCard from '@/components/WeatherCard.vue'
 import DeliveryTrendChart from '@/components/charts/DeliveryTrendChart.vue'
 import { useChartTheme, weatherKind } from '@/components/charts/chartTheme'
+import { RISK_PHRASE, RISK_TONE } from '@/utils/status'
 import { useMetrics } from '@/composables/useMetrics'
 import { SPRITE_FALLBACK_ICON, spriteUrl } from '@/utils/sprites'
-import type { DelayRisk } from '@/types/metrics'
 
 const {
   current,
@@ -100,12 +100,6 @@ const snapshotRows = computed(() =>
 )
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 
-const RISK_COLOR: Record<DelayRisk, string> = {
-  High: 'error',
-  Moderate: 'accent',
-  Low: 'success',
-}
-
 // `weather` is already the dataset rows from useMetrics(); this is the tint map.
 /** Weather on the icon, risk on the chip — never both on one channel. */
 const { weather: weatherTint } = useChartTheme()
@@ -154,10 +148,17 @@ const wxColor = (icon: string) => weatherTint.value[weatherKind(icon)]
         </v-row>
       </section>
 
+      <!-- align="start", so these three size to their own content.
+           Weather has six rows plus a header; Cargo has three. Stretching all
+           three to the tallest left ~130px of empty band under two of them.
+           The alternative — padding the short cards with extra rows — would
+           mean surfacing metrics that already have a home elsewhere, which §4's
+           one-home-per-metric rule forbids. Ragged bottoms are the cheaper cost.
+           Horizontal fill is unaffected: the row is still fully occupied. -->
       <section class="pp-section">
-        <v-row dense>
+        <v-row dense align="start">
           <v-col cols="12" md="6" lg="4">
-            <v-card class="pp-card-pad" height="100%">
+            <v-card class="pp-card-pad">
               <div class="d-flex align-start justify-space-between ga-3">
                 <h2 class="pp-card-title">Top Cargo Types</h2>
                 <RouterLink class="pp-details" to="/cargo">View details →</RouterLink>
@@ -236,13 +237,13 @@ const wxColor = (icon: string) => weatherTint.value[weatherKind(icon)]
                       <div v-if="weatherFor(c.homeRegion)">
                         <dt>Delay risk</dt>
                         <dd>
-                          <v-chip
-                            :color="RISK_COLOR[weatherFor(c.homeRegion)!.delayRisk]"
-                            variant="tonal"
-                            size="x-small"
+                          <span
+                            class="pp-pill pp-pill--sm"
+                            :class="`pp-pill--${RISK_TONE[weatherFor(c.homeRegion)!.delayRisk]}`"
+                            :title="RISK_PHRASE[weatherFor(c.homeRegion)!.delayRisk]"
                           >
                             {{ weatherFor(c.homeRegion)!.delayRisk }}
-                          </v-chip>
+                          </span>
                         </dd>
                       </div>
                     </dl>
