@@ -58,8 +58,10 @@ const vuetify = createVuetify({
   },
   defaults: {
     VCard: {
-      rounded: 'lg',
-      elevation: 1,
+      // No `rounded` default: Vuetify's rounded-* utilities carry !important and
+      // would beat the 12px radius BRIEF.md §4 specifies. Radius, border and
+      // shadow are all set in App.vue's global card rule instead.
+      elevation: 0,
     },
     VSelect: {
       variant: 'outlined',

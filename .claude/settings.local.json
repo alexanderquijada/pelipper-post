@@ -37,7 +37,8 @@
       "Grep",
       "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --window-size=1440,2200 --virtual-time-budget=12000 --screenshot=proto.png --allow-file-access-from-files \"file:///Users/alex.quijada/Projects/pelipper-post/index.html\")",
       "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --window-size=1440,1750 --virtual-time-budget=12000 --screenshot=proto2.png \"file:///Users/alex.quijada/Projects/pelipper-post/index.html\")",
-      "Bash(open /Users/alex.quijada/Projects/pelipper-post/index.html)"
+      "Bash(open /Users/alex.quijada/Projects/pelipper-post/index.html)",
+      "Bash(python3 -)"
     ],
     "deny": [
       "Bash(git push --force:*)",

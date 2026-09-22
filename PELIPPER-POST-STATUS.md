@@ -6,7 +6,7 @@
 > confirms.** Update this file at the end of every phase — it's how Alex picks this up on a
 > different machine.
 
-- **Last updated:** 2026-09-18 — **BUILD COMPLETE + illustrated delivery map.** Only the Vercel deployment is outstanding.
+- **Last updated:** 2026-09-22 — **Restructured into a dense multi-card executive layout.** Only the Vercel deployment is outstanding.
 - **Owner:** Alex Quijada (alex.quijada@slalom.com)
 - **Project:** Protogen 200s Capstone 2 — Build an Exec Dashboard
 - **Submission:** Microsoft Forms link on Workday — needs the GitHub repo URL + live Vercel URL
@@ -66,6 +66,7 @@ what the capstone document and videos require — nothing more.
 | 7 | — | Final pass: cleanup, README | ✅ Done | `Final pass: cleanup, README, and documentation` |
 | 7b | — | Extension: Pokémon theming, delivery map, light default | ✅ Done | `Add Pokémon theming, delivery map, and light default` |
 | 7c | — | Illustrated delivery map replaces the abstract diagram | ✅ Done | `Add Pokémon theming, delivery map, and light default` |
+| 7d | — | Dense multi-card executive layout (sidebar, 5 KPIs, 3 derived cards) | ✅ Done | `Restructure into a dense multi-card executive layout` |
 | 8 | — | Submit repo + live URL on Workday | ⬜ Not started | — |
 
 **Status key:** ⬜ Not started · 🟡 In progress · ✅ Done
@@ -665,6 +666,49 @@ Append here as the build goes. Date, what came up, what was decided.
   The flip point and each waypoint's pulse timing are both **measured from the path at runtime**
   (`getPointAtLength` sampling) rather than hardcoded, so they stay correct if the route is ever
   redrawn.
+
+- **2026-09-22 — Dense multi-card executive layout.** Sidebar + top bar shell, five-KPI strip, and
+  three new cards computed entirely from the existing 72 records. Brief and implementation committed
+  separately. **`npm run build` exit 0, validator exit 0, 0 console errors.**
+
+  | Verified | Result |
+  |---|---|
+  | Density vs §4 | KPI **28px/700**, label **11px uppercase .06em**, padding **20px**, radius **12px**, border **1px**, title **15px/600**, subtitle **12px**, delta a **999px pill**, content max **1440px** — all measured from computed style |
+  | Shell | sidebar **220px**, 5 nav items, wordmark + "Executive Dashboard", top bar title + meta, **2 filters in the top bar**, map **absent** |
+  | Filters compose | Hoenn + Aug 2026 → **3,242 / 342 / 38 / 5** on the matching cards |
+  | New cards respond | signals **5 → 3**, cargo shares shift, health rows change, roster **7 → 1** |
+  | Sidebar nav | clicking *Couriers* scrolls to y=1002 and the active item follows |
+  | About dialog | opens, states the data is fabricated |
+  | Themes | light ⇄ dark both directions |
+  | NaN anywhere | none, in any filter state |
+
+  **Constraints held:** `metrics.json` unchanged, chart palettes unchanged, card surface still
+  `#FFFFFF`. Light-variant contrast therefore unchanged and re-measured anyway — 5.19 / 3.87 / 3.42 /
+  **3.06** / 7.74, all ≥ 3:1.
+
+  Three things worth flagging:
+
+  1. **On-Time Rate now shows its delta in percentage POINTS, not relative percent.** The card read
+     "3.1%" when the rate moved 93.0 → 90.2, which invites reading it as three points. Added a
+     `trendUnit` prop; the KPI now reads **"2.8 pts"**. This was a genuinely misleading number on the
+     most-scrutinised row of an exec dashboard.
+  2. **"Avg Parcels per Courier Run" is only meaningful at the All Months scope.** Courier `runs` in
+     `metrics.json` are lifetime totals with no time dimension, so filtering to one month divides a
+     single month's parcels by a career's worth of runs — it reads **61** across the year and **5**
+     for Hoenn in August. The basis is stated in the row's tooltip. Fixing it properly needs a
+     per-month run count in the dataset, which is a `BRIEF.md` §2 change.
+  3. **Two theme toggles now exist** — one in the sidebar footer, one in the top bar — because §4
+     specifies both. They share state so they stay in sync.
+
+  **Vuetify override notes**, both found by measuring computed style rather than by eye:
+  `rounded="lg"` in the `VCard` defaults emits a `!important` utility class that beat the 12px radius
+  (removed the default), and `v-container`'s own breakpoint maximum capped the page at 1200px rather
+  than 1440px (needed `.v-container.pelipper-width` for specificity).
+
+- 📁 **`src/assets/delivery-map.svg` is retained but UNREFERENCED.** The Delivery Network card was
+  removed in the 2026-09-22 restructure. The artwork is original work and is deliberately kept in the
+  repo — `grep -rn "DeliveryNetwork" src/` returns nothing, and `src/components/DeliveryNetwork.vue`
+  was deleted. Re-inlining it later is a component away; the file is not dead weight by accident.
 
 ---
 

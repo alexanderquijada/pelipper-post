@@ -151,11 +151,11 @@ const gymOptions = computed(() => panelOptions({ showXTicks: true, unit: 'runs' 
 }
 
 .panel--tall {
-  height: 168px;
+  height: 146px;
 }
 
 .panel--short {
-  height: 112px;
+  height: 94px;
 }
 
 .panel-label {

@@ -104,7 +104,7 @@ const legend = computed(() =>
 <style scoped>
 .chart-box {
   position: relative;
-  height: 220px;
+  height: 200px;
 }
 
 .legend {

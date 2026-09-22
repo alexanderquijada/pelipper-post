@@ -24,10 +24,17 @@ export interface MetricCardProps {
   invertTrend?: boolean
   /** mdi icon name shown in the card corner, e.g. "mdi-dumbbell". */
   icon: string
+  /**
+   * How to render `trend`. 'relative' (default) shows it as a percentage change.
+   * 'points' shows it as percentage POINTS — correct for a metric that is itself
+   * a rate, where "+3.1%" and "+3.1 points" mean very different things.
+   */
+  trendUnit?: 'relative' | 'points'
 }
 
 const props = withDefaults(defineProps<MetricCardProps>(), {
   invertTrend: false,
+  trendUnit: 'relative',
 })
 
 const displayValue = computed(() =>
@@ -59,7 +66,8 @@ const trendColor = computed(() => {
 
 const trendLabel = computed(() => {
   if (props.trend === null) return ''
-  return `${(Math.abs(props.trend) * 100).toFixed(1)}%`
+  const magnitude = (Math.abs(props.trend) * 100).toFixed(1)
+  return props.trendUnit === 'points' ? `${magnitude} pts` : `${magnitude}%`
 })
 
 /**
@@ -77,40 +85,88 @@ const trendAria = computed(() => {
 </script>
 
 <template>
-  <v-card class="pa-6" height="100%">
-    <div class="d-flex align-start justify-space-between">
-      <div class="text-overline text-muted metric-card__label">{{ label }}</div>
-      <v-icon :icon="icon" color="primary" size="20" class="metric-card__icon" />
+  <v-card class="metric-card" height="100%">
+    <div class="d-flex align-start justify-space-between ga-2">
+      <div class="metric-card__label">{{ label }}</div>
+      <v-icon :icon="icon" color="primary" size="16" class="metric-card__icon" />
     </div>
 
-    <div class="text-h4 font-weight-bold mt-2">{{ displayValue }}</div>
+    <div class="metric-card__value">{{ displayValue }}</div>
 
+    <!-- The delta reads as a small tinted pill, not bare arrow text. -->
     <div
       v-if="hasTrend"
-      class="d-flex align-center mt-2"
-      :class="`text-${trendColor}`"
+      class="metric-card__delta"
+      :class="`metric-card__delta--${trendColor}`"
       :aria-label="trendAria"
     >
-      <v-icon :icon="trendIcon" size="18" aria-hidden="true" />
-      <span class="text-caption ml-1">{{ trendLabel }}</span>
+      <v-icon :icon="trendIcon" size="14" aria-hidden="true" />
+      <span>{{ trendLabel }}</span>
     </div>
+    <div v-else class="metric-card__delta metric-card__delta--none">no prior month</div>
   </v-card>
 </template>
 
 <style scoped>
-/* text-overline forces its own line-height; this keeps a two-word label from
-   colliding with the corner icon.
+/* Density values are fixed by BRIEF.md §4 — 28px value, 11px label, 20px padding. */
+.metric-card {
+  padding: 20px;
+}
 
-   min-height reserves two lines whether or not the label wraps, so the big
-   values stay on a common baseline across the KPI row. Without it, a label that
-   wraps ("Berry Crates Delivered") pushes its own value lower than its
-   neighbours' and the row reads as misaligned. */
 .metric-card__label {
-  line-height: 1.2;
-  min-height: 2.4em;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgb(var(--v-theme-muted));
+  /* reserve two lines so every value in the strip shares a baseline */
+  min-height: 2.6em;
 }
 
 .metric-card__icon {
-  opacity: 0.6;
+  opacity: 0.55;
+  flex: none;
+}
+
+.metric-card__value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+
+.metric-card__delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 10px;
+  padding: 2px 8px 2px 5px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.metric-card__delta--success {
+  color: rgb(var(--v-theme-success));
+  background: rgba(var(--v-theme-success), 0.14);
+}
+
+.metric-card__delta--error {
+  color: rgb(var(--v-theme-error));
+  background: rgba(var(--v-theme-error), 0.14);
+}
+
+.metric-card__delta--muted,
+.metric-card__delta--none {
+  color: rgb(var(--v-theme-muted));
+  background: rgba(var(--v-theme-muted), 0.12);
+}
+
+.metric-card__delta--none {
+  padding-left: 8px;
+  font-weight: 500;
 }
 </style>

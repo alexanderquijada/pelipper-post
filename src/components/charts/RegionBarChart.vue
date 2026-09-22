@@ -80,6 +80,6 @@ const options = computed<ChartOptions<'bar'>>(() => ({
   position: relative;
   /* matches the Cargo Mix card's doughnut + legend so the two cards in the
      chart row end up the same height instead of one carrying dead space */
-  height: 360px;
+  height: 200px;
 }
 </style>

@@ -23,10 +23,10 @@ function onSpriteError(dexId: number) {
 </script>
 
 <template>
-  <v-table v-if="couriers.length">
+  <v-table v-if="couriers.length" density="compact" class="roster">
     <thead>
       <tr>
-        <th class="text-left" style="width: 72px"><span class="d-sr-only">Sprite</span></th>
+        <th class="text-left" style="width: 48px"><span class="d-sr-only">Sprite</span></th>
         <th class="text-left">Courier</th>
         <th class="text-left">Species</th>
         <th class="text-left">Home Region</th>
@@ -38,7 +38,7 @@ function onSpriteError(dexId: number) {
     <tbody>
       <tr v-for="courier in couriers" :key="courier.name">
         <td>
-          <v-avatar size="44" class="sprite-avatar">
+          <v-avatar size="30" class="sprite-avatar">
             <v-img
               v-if="!failedSprites.has(courier.dexId)"
               :src="spriteUrl(courier.dexId)"
@@ -68,6 +68,20 @@ function onSpriteError(dexId: number) {
 </template>
 
 <style scoped>
+/* 44px rows, compact density — BRIEF.md §4. */
+.roster :deep(tbody td) {
+  height: 44px;
+  font-size: 12.5px;
+}
+
+.roster :deep(thead th) {
+  height: 36px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .sprite-avatar {
   background: rgba(var(--v-theme-primary), 0.12);
 }
