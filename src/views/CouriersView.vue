@@ -28,7 +28,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 <template>
   <PageShell
     title="Courier Fleet"
-    subtitle="Who flies for us, how hard they work, and how well they deliver."
+    subtitle="How each courier is performing and where they're flying."
   >
 
     <v-row dense class="mb-2">
@@ -141,7 +141,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
       <v-col cols="12">
         <v-card class="pp-card-pad">
           <h2 class="pp-card-title">Courier Roster</h2>
-          <p class="pp-card-subtitle">Couriers, their home regions, and delivery performance.</p>
+          <p class="pp-card-subtitle">Every courier in scope, with their home region and how they are performing.</p>
           <CourierRoster :couriers="filteredCouriers" />
         </v-card>
       </v-col>
@@ -177,9 +177,10 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
   margin: 2px 0 0;
 }
 
+/* Same defect as the Overview tile — three adjacent numbers, 18px apart. */
 .courier__stats {
   display: flex;
-  gap: 18px;
+  gap: 26px;
   margin: 14px 0 12px;
 }
 
@@ -204,10 +205,13 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
   margin: 0;
 }
 
+/* Count and share are two separate numbers; at 20px "5" and "63%" blurred
+   into "5 63%". The dot keeps its tight 10px tie to the label it belongs to. */
 .status__row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 9px minmax(0, 1fr) 34px 46px;
   align-items: center;
-  gap: 10px;
+  column-gap: 10px;
   padding: 10px 0;
 }
 
@@ -235,13 +239,15 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 }
 
 .status__label {
-  flex: 1 1 auto;
   font-size: 13px;
 }
 
 .status__count {
   font-size: 13px;
   font-weight: 700;
+  text-align: right;
+  /* pushes the count clear of the label AND the share clear of the count */
+  margin-left: 18px;
   font-variant-numeric: tabular-nums;
 }
 

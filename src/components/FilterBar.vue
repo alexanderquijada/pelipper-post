@@ -14,6 +14,8 @@ const {
   selectMonth,
   resetFilters,
   isDefaultSelection,
+  filterCaption,
+  trendCaption,
 } = useMetrics()
 
 const PRESETS: { months: PresetMonths; label: string }[] = [
@@ -59,6 +61,7 @@ function selectOneMonth() {
 </script>
 
 <template>
+  <div class="filters">
   <div class="bar">
     <!-- TIME -->
     <div class="bar__group">
@@ -143,17 +146,38 @@ function selectOneMonth() {
       Reset
     </button>
   </div>
+
+    <!-- The scope line belongs to the CONTROLS, not the page description: it is
+         a readout of filter state, and it changes when these change. Sitting
+         under the page subtitle it read as a third sentence of prose. -->
+    <p class="filters__scope" aria-live="polite">
+      {{ filterCaption }}<template v-if="trendCaption"> · {{ trendCaption }}</template>
+    </p>
+  </div>
 </template>
 
 <style scoped>
+/* The rule now closes the whole filter block — controls plus their readout. */
+.filters {
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(var(--v-theme-muted), 0.18);
+}
+
 .bar {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
-  padding-bottom: 16px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid rgba(var(--v-theme-muted), 0.18);
+}
+
+/* Smaller and lighter than the page subtitle, so it can't be mistaken for it. */
+.filters__scope {
+  margin: 10px 0 0;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgb(var(--v-theme-muted));
 }
 
 .bar__group {

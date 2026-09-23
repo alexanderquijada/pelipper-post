@@ -27,7 +27,7 @@ const wxRgb = (icon: string) => rgbTriplet(weather.value[weatherKind(icon)])
       <span></span>
       <span>Region</span>
       <span>Conditions</span>
-      <span>Temp</span>
+      <span class="wx__head-temp">Temp</span>
       <span class="wx__head-risk">Delay Risk</span>
     </div>
 
@@ -64,13 +64,24 @@ const wxRgb = (icon: string) => rgbTriplet(weather.value[weatherKind(icon)])
   margin: 0;
 }
 
-/* Identical track sizing to .wx__row so each label sits over its own column. */
+/* Identical track sizing to .wx__row so each label sits over its own column.
+   Every track is an EXPLICIT width except the condition text — with `auto auto`
+   the temperature and the risk pill were sized by their own content and ended
+   up ~8px apart, so "-3°C High" read as one value. The 24px column-gap is the
+   gutter; the earlier columns claw back their tighter spacing with a negative
+   margin, since CSS grid has no per-gap control. */
 .wx__head,
 .wx__row {
   display: grid;
-  grid-template-columns: 34px 62px 1fr auto auto;
+  grid-template-columns: 34px 62px minmax(0, 1fr) 46px 76px;
   align-items: center;
-  gap: 10px;
+  column-gap: 24px;
+}
+
+/* Icon -> region -> conditions stay at 10px; only the last two gutters are 24px. */
+.wx__region,
+.wx__condition {
+  margin-left: -14px;
 }
 
 .wx__head {
@@ -83,8 +94,15 @@ const wxRgb = (icon: string) => rgbTriplet(weather.value[weatherKind(icon)])
   color: rgb(var(--v-theme-muted));
 }
 
-.wx__head-risk {
-  justify-self: end;
+/* Header and pill both start at the column's left edge, so the risk column has
+   one common x down the card instead of six ragged right-aligned pills. */
+.wx__head-risk,
+.wx__chip {
+  justify-self: start;
+}
+
+.wx__head-temp {
+  text-align: right;
 }
 
 .wx__row {
@@ -113,9 +131,7 @@ const wxRgb = (icon: string) => rgbTriplet(weather.value[weatherKind(icon)])
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   color: rgb(var(--v-theme-muted));
-}
-
-.wx__chip {
-  justify-self: end;
+  /* right-aligned against its OWN column edge, not shoved up against the pill */
+  text-align: right;
 }
 </style>

@@ -35,7 +35,7 @@ const volumeVsReliability = computed(() =>
 <template>
   <PageShell
     title="Regional Performance"
-    subtitle="How each region is performing, and which are struggling."
+    subtitle="How each of the six regions is performing against the rest."
   >
 
     <v-row dense class="mb-2">
@@ -47,7 +47,7 @@ const volumeVsReliability = computed(() =>
         <v-card class="pp-card-pad" height="100%">
           <h2 class="pp-card-title">Who's Meeting the Target</h2>
           <p class="pp-card-subtitle">
-            Which regions keep their delivery promise, and which fall short.
+            Which regions deliver on time often enough, and which fall short.
           </p>
           <BulletChart
             :rows="onTimeVsTarget.map((r) => ({ label: r.region, value: r.onTime }))"
@@ -177,7 +177,11 @@ const volumeVsReliability = computed(() =>
 
 .cap__row {
   display: grid;
-  grid-template-columns: 62px 1fr 42px 40px;
+  /* "82%" and "2.0d" are two separate measures and sat exactly on the 24px
+     line. Widening the LAST column pushes the value column left without moving
+     the right-aligned transit text — a margin here is a no-op, because the text
+     stays pinned to its column's right edge. */
+  grid-template-columns: 62px minmax(0, 1fr) 42px 52px;
   align-items: center;
   gap: 10px;
   padding: 8px 0;

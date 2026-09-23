@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import FilterBar from '@/components/FilterBar.vue'
-import { useMetrics } from '@/composables/useMetrics'
 
 defineProps<{ title: string; subtitle: string }>()
 
-// Filters live here now, inside the shell, rather than in the top bar. Same
-// module-level state, so they stay shared across all six routes.
-const { filterCaption, trendCaption } = useMetrics()
+// The header is title + one sentence, nothing else. The scope line moved into
+// FilterBar, because it describes filter state rather than the page.
 </script>
 
 <template>
@@ -16,9 +14,6 @@ const { filterCaption, trendCaption } = useMetrics()
       <header class="shell__header">
         <h1 class="shell__title">{{ title }}</h1>
         <p class="shell__subtitle">{{ subtitle }}</p>
-        <p class="shell__scope">
-          {{ filterCaption }}<template v-if="trendCaption"> · {{ trendCaption }}</template>
-        </p>
       </header>
 
       <FilterBar />
@@ -30,7 +25,7 @@ const { filterCaption, trendCaption } = useMetrics()
 
 <style scoped>
 .shell__header {
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 .shell__title {
@@ -42,14 +37,7 @@ const { filterCaption, trendCaption } = useMetrics()
 
 .shell__subtitle {
   font-size: 13px;
-  line-height: 1.4;
-  color: rgb(var(--v-theme-muted));
-  margin: 3px 0 0;
-}
-
-.shell__scope {
-  font-size: 12px;
-  line-height: 1.4;
+  line-height: 1.45;
   color: rgb(var(--v-theme-muted));
   margin: 4px 0 0;
 }

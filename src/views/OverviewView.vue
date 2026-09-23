@@ -109,7 +109,7 @@ const wxColor = (icon: string) => weatherTint.value[weatherKind(icon)]
 <template>
   <PageShell
     title="Network Overview"
-    subtitle="The numbers to check first — volume, reliability, and what's going wrong."
+    subtitle="A summary of how the delivery network is performing right now."
   >
     <template v-if="hasData">
       <section class="pp-section">
@@ -382,10 +382,13 @@ const wxColor = (icon: string) => weatherTint.value[weatherKind(icon)]
   margin: 1px 0 6px;
 }
 
+/* 24px column gap: at 14px "On-time 96.4%" and "Runs 2,613" read as one
+   run-on value. Adjacent labelled numbers need a gutter wider than the space
+   inside each pair. */
 .fleet__stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 14px;
+  gap: 8px 24px;
   margin: 0;
 }
 

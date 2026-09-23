@@ -26,7 +26,7 @@ const num = (n: number) => n.toLocaleString('en-US')
 <template>
   <PageShell
     title="Exceptions &amp; Delivery Risk"
-    subtitle="Deliveries that went wrong, why, and what fixing them costs."
+    subtitle="Deliveries that went wrong, why they failed, and what they cost."
   >
 
     <v-row dense class="mb-2">
@@ -40,10 +40,10 @@ const num = (n: number) => n.toLocaleString('en-US')
           <p class="pp-card-subtitle">
             {{
               group.severity === 'critical'
-                ? 'Needs attention now.'
+                ? 'These need attention now.'
                 : group.severity === 'warning'
-                  ? 'Worth watching.'
-                  : 'Performing as expected.'
+                  ? 'These are worth watching.'
+                  : 'These are performing as expected.'
             }}
           </p>
 
@@ -126,7 +126,7 @@ const num = (n: number) => n.toLocaleString('en-US')
       <v-col cols="12">
         <v-card class="pp-card-pad">
           <h2 class="pp-card-title">Regions Below Target</h2>
-          <p class="pp-card-subtitle">Places where we're not keeping our delivery promise.</p>
+          <p class="pp-card-subtitle">Regions where too many deliveries are arriving late.</p>
           <v-table v-if="breaches.length" density="compact" class="targets">
             <thead>
               <tr>

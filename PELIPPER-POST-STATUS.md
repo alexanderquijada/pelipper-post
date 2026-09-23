@@ -1065,6 +1065,64 @@ Append here as the build goes. Date, what came up, what was decided.
 
   Verified: build exit 0, validator exit 0, 0 console errors on any route, both themes.
 
+- **2026-09-22 — page descriptions, the scope line, and column gutters.**
+
+  **All six page subtitles rewritten** to Alex's wording. The pattern being removed was the em-dash
+  appositive headline (*"The numbers to check first — volume, reliability, and what's going
+  wrong"*); the replacement is natural prose. Verified: **0 em-dashes** in any page subtitle across
+  all six routes. Applied the same voice to card subtitles that were still fragments — the
+  Critical/Warning/Healthy trio became complete sentences, "One row per region, across the year"
+  and "Couriers, their home regions, and delivery performance" were rewritten, and **two further
+  instances of the "delivery promise" euphemism G2 rejected** were found on Exceptions and Regions
+  and replaced with the measurable phrasing.
+
+  **Scope line moved onto the control bar** — the stronger of the two options Alex offered, and the
+  one he was told about before it was applied. It is a readout of filter state, not a description
+  of the page; spacing alone would have been a mitigation that decays the moment a third line is
+  added. Now the thing that reports the filters sits with the thing that sets them, the header is
+  exactly title + one sentence on all six pages, and the line carries `aria-live="polite"`.
+  Verified: `.shell__scope` gone from every route, `.filters__scope` present on every route, 18px
+  from subtitle to control bar, and a type change (11.5px/500 against the subtitle's 13px/400) plus
+  the whole control bar between them.
+
+  **Column gutters — measured, not eyeballed.** Built a probe that measures **text-edge to
+  text-edge** rather than cell box to cell box, because a right-aligned number beside a left-aligned
+  pill can have touching cell boxes and still sit 8px apart.
+
+  **The probe was wrong three times before it was right**, and each bug would have produced a
+  confident false report:
+  - it measured *through* `text-overflow: ellipsis`, so clipped condition text produced **−17px**
+    gaps that do not exist on screen — fixed by clamping the text rect to the element's own box;
+  - it compared items that had **wrapped onto different lines** (`-149px` between a stat and a
+    wrapped pill) — fixed by requiring the two to share a baseline;
+  - it treated a **9px status dot as a column**, flagging the 10px tie between a bullet and its own
+    label as a defect — a dot belongs to its label and is now exempt.
+
+  Corrected, it found the weather card plus **four other lists** needing the same fix, which answers
+  Alex's question about which others were affected:
+
+  | List | Adjacent values | Before | After |
+  |---|---|---|---|
+  | Weather card | `-3°C` / `High` | **8px** | **33px** |
+  | Weather header | `TEMP` / `DELAY RISK` | ~8px | **24px** |
+  | Overview courier tile | `On-time 96.4%` / `Runs 2,613` | **14px** | **24px** |
+  | Courier card stats | `Runs` / `Stops / Run` / `Tenure` | **18px** | **26px** |
+  | Fleet Status | count `5` / share `63%` | **20px** | **30px** |
+  | Revenue by cargo | `₽59,445,540` / `31.5%` | **22px** | **28px** |
+  | Capacity & Transit | `82%` / `2.0d` | 24px (on the line) | **36px** |
+
+  Clean: Month by Month, Region Comparison, Regions Below Target, Cargo Handling, Courier Roster,
+  Region Growth, Top Cargo Types, Reliability Snapshot, Cost of Missed Deliveries — all already
+  above 24px, tightest 32px.
+
+  **One fix was initially a no-op and the measurement caught it.** `margin-left` on a right-aligned
+  grid item does nothing: the text stays pinned to its column's right edge, so Capacity & Transit
+  still measured 24px. Widening the last track moves the *previous* column left and does work.
+  Recorded in BRIEF §6 so it isn't repeated.
+
+  Verified: build exit 0, **0 pairs under 24px across all six routes**, 0 console errors, no
+  horizontal overflow.
+
 ---
 
 ## 8. Known issues / watch list

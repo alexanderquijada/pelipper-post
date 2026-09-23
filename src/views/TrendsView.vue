@@ -30,7 +30,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
 <template>
   <PageShell
     title="Monthly Trends &amp; Seasonality"
-    subtitle="How the year unfolded, and which months reliably run hot or cold."
+    subtitle="How delivery volume and performance have changed over the past year."
   >
 
     <v-row dense class="mb-2">
@@ -115,7 +115,7 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`
       <v-col cols="12" lg="7">
         <v-card class="pp-card-pad" height="100%">
           <h2 class="pp-card-title">When Each Region Peaks</h2>
-          <p class="pp-card-subtitle">Darker means busier. One row per region, across the year.</p>
+          <p class="pp-card-subtitle">Darker means busier. Each row is one region, read left to right across the year.</p>
           <SeasonHeatmap
             :months="trendChart.labels"
             :rows="heatRows"

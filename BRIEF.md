@@ -438,7 +438,17 @@ remain module-level state shared across all six routes.
 - **Region chips**, single-select, active chip using an accent **tint** not a heavy fill. Wraps to
   its own line below 1200px rather than overflowing or shrinking.
 - **A Reset link**, shown only when the selection isn't the default 6M + All Regions.
-- The scope line and the comparison caption sit **under the page title**, not in this row.
+- **The scope line sits directly beneath the controls**, inside the same block, closed by the
+  hairline rule — *"Showing 6 months across 6 regions · Compared with the previous 6 months
+  (Oct 2025 – Mar 2026)."*
+
+**Why it is here and not under the page title.** It is a readout of filter state, not a description
+of the page. Sitting under the subtitle it read as a third sentence of prose, and the fix would have
+been purely visual — more space, lighter type — which decays the moment a third line is added. Next
+to the controls, the thing that reports the filters sits with the thing that sets them, so changing
+a filter and watching the line change teaches the relationship. It also leaves the header as exactly
+title plus one sentence on every page. It is smaller and lighter than the page subtitle
+(11.5px/500 against 13px/400) and carries `aria-live="polite"` so the change is announced.
 
 **The time filter is a RANGE.** `MonthSelection` is either `{ kind: 'preset', months }` or
 `{ kind: 'month', key }` — modelled explicitly so the two cases can't be confused.
@@ -564,46 +574,46 @@ they do not assert.
 
 | Page | Card | Subtitle |
 |---|---|---|
-| Overview | Network Overview | The numbers to check first — volume, reliability, and what's going wrong. |
+| Overview | Network Overview | A summary of how the delivery network is performing right now. |
 | Overview | Parcel Volume Trend | Whether we're shipping more or less than we were a year ago. |
 | Overview | What Needs Attention | The three things most worth knowing about right now. |
 | Overview | Top Cargo Types | The goods that make up the bulk of what we move. |
 | Overview | Reliability Snapshot | Whether the fleet is coping, and where it isn't. |
 | Overview | Weather Delays Today | Current conditions in each region, and how likely they are to delay deliveries. |
 | Overview | Who's Delivering Best | Our couriers ranked by how often they arrive on time. |
-| Trends | Monthly Trends & Seasonality | How the year unfolded, and which months reliably run hot or cold. |
+| Trends | Monthly Trends & Seasonality | How delivery volume and performance have changed over the past year. |
 | Trends | Volume Through the Year | Whether gym restocking rises and falls with overall parcel volume. |
 | Trends | Are We Hitting Our Target? | Our monthly on-time record against what we promise and what rivals manage. |
 | Trends | What Each Delivery Costs | When moving a parcel gets more expensive, and by how much. |
 | Trends | Our Busiest and Quietest Months | How much more we move at peak than in the slowest month. |
-| Trends | When Each Region Peaks | Darker means busier. One row per region, across the year. |
+| Trends | When Each Region Peaks | Darker means busier. Each row is one region, read left to right across the year. |
 | Trends | The Full Year in Numbers | Every month's figures, if you need the exact value. |
-| Exceptions | Exceptions & Delivery Risk | Deliveries that went wrong, why, and what fixing them costs. |
-| Exceptions | Critical / Warning / Healthy | Needs attention now. / Worth watching. / Performing as expected. |
+| Exceptions | Exceptions & Delivery Risk | Deliveries that went wrong, why they failed, and what they cost. |
+| Exceptions | Critical / Warning / Healthy | These need attention now. / These are worth watching. / These are performing as expected. |
 | Exceptions | Why Deliveries Fail | The most common reasons parcels don't arrive on time. |
 | Exceptions | The Cost of Missed Deliveries | What we spend going back for parcels nobody was there to receive. |
 | Exceptions | When Things Go Wrong | The months when failed deliveries spike. |
-| Exceptions | Regions Below Target | Places where we're not keeping our delivery promise. |
-| Cargo | Cargo Mix & Revenue | What we move, what it earns, and which goods are hardest to handle. |
+| Exceptions | Regions Below Target | Regions where too many deliveries are arriving late. |
+| Cargo | Cargo Mix & Revenue | What the network carries, what it earns, and which goods are hardest to handle. |
 | Cargo | What We Ship | The goods we move most, by number of parcels. |
 | Cargo | How the Mix Shifts | Which cargo types rise and fall across the year. |
 | Cargo | Where the Money Comes From | Which goods bring in the most money, not just the most parcels. |
 | Cargo | What's Hard to Ship | Which goods are heaviest, slowest, and most likely to break. |
 | Cargo | What Each Region Orders | Whether regions want different things, or the same mix everywhere. |
-| Regions | Regional Performance | How each region is performing, and which are struggling. |
+| Regions | Regional Performance | How each of the six regions is performing against the rest. |
 | Regions | Overall Network Health | The handful of measures that say whether the network is coping. |
-| Regions | Who's Meeting the Target | Which regions keep their delivery promise, and which fall short. |
+| Regions | Who's Meeting the Target | Which regions deliver on time often enough, and which fall short. |
 | Regions | Where the Volume Is | The regions carrying the most parcels. |
 | Regions | How Full and How Fast | Whether regions are running near capacity, and how long delivery takes. |
 | Regions | Which Regions Are Growing | Where volume is climbing, and where it's flat. |
 | Regions | Busy vs Reliable | Each region plotted by how much it ships and how often it arrives on time. Larger bubbles mean more failed deliveries. |
 | Regions | All Regions Side by Side | Every region's figures in one place for direct comparison. |
-| Couriers | Courier Fleet | Who flies for us, how hard they work, and how well they deliver. |
+| Couriers | Courier Fleet | How each courier is performing and where they're flying. |
 | Couriers | Stops on a Typical Run | How many delivery stops each courier makes in one run. |
 | Couriers | Who Gets It Right First Time | How often each courier delivers without needing a second trip. |
 | Couriers | Time Off Taken | Days each courier has rested since joining the fleet. |
 | Couriers | Who's Available Now | How many couriers are flying, resting, or grounded. |
-| Couriers | Courier Roster | Couriers, their home regions, and delivery performance. |
+| Couriers | Courier Roster | Every courier in scope, with their home region and how they are performing. |
 
 Two titles are deliberately literal rather than interpretive. **Stops on a Typical Run** is route
 density, not load — load is `capacityUtilization`, a different field on a different card, and
@@ -614,9 +624,14 @@ support, since a low figure is equally consistent with a short tenure.
 Overview's **Top Cargo Types** and Cargo's **What We Ship** are the same measure at two levels of
 detail — the preview and the full page — and must not carry near-identical titles.
 
-The **Overview** section heading takes the filter summary as its subtitle —
-*"Showing 6 months across 6 regions · Trends compare Apr 2026 to Sep 2026."* — sitting directly
-beneath the heading. It appears there and nowhere else.
+**Page subtitles are natural prose, not headline constructions.** One complete thought, read
+aloud-able, no em-dash appositive lists, no telegraphic fragments, and no instructions about what to
+look at first. *"The numbers to check first — volume, reliability, and what's going wrong"* is the
+shape to avoid; *"A summary of how the delivery network is performing right now"* is the shape to
+use. The same voice applies to card subtitles.
+
+**The scope line does NOT live in the page header.** It belongs to the control bar — see §4,
+*The control bar*.
 
 **No page footer**, and **no "About this data" dialog**. The fabricated-data disclosure lives in
 `README.md`, which carries a dedicated *All of the data is fake* section; it does not need repeating
@@ -702,6 +717,26 @@ point — do not make every card full width.
 ---
 
 ## 6. Style
+
+### Standing rule — adjacent values need a gutter wider than the space inside them
+
+**Two values sitting close enough to be read as one value is a data-integrity bug, not a spacing
+preference.** `-3°C` beside a `High` chip, 8px apart, reads as a single reading. The rule:
+
+- **At least 24px of clear space between the text of one column and the text of the next**, measured
+  **text-edge to text-edge**, not cell box to cell box. A right-aligned number in a wide cell next to
+  a left-aligned pill can have touching cell boxes and still leave the values 8px apart, so cell
+  geometry hides the defect.
+- **Explicit column widths**, not `auto`. Content-sized tracks make the gutter depend on the data —
+  a longer condition string silently squeezes the temperature against the chip.
+- **Every value in a column shares one x.** Pills left-align to the column's left edge; numbers
+  right-align to their own column's right edge. Six pills at six different x is not a column.
+- **Headers sit over their own column**, not between two.
+- A **dot, swatch or sprite belongs to the label beside it** and is exempt — a 9px bullet 10px from
+  its text is one unit, not two columns.
+
+Note that a `margin` on a right-aligned grid item is a **no-op**: the text stays pinned to the
+column's right edge. Widen the track instead.
 
 ### Standing rule — never tint a colour with itself
 

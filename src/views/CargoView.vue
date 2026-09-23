@@ -18,7 +18,7 @@ const num = (n: number) => n.toLocaleString('en-US')
 <template>
   <PageShell
     title="Cargo Mix &amp; Revenue"
-    subtitle="What we move, what it earns, and which goods are hardest to handle."
+    subtitle="What the network carries, what it earns, and which goods are hardest to handle."
   >
 
     <v-row dense class="mb-2">
@@ -176,7 +176,9 @@ const num = (n: number) => n.toLocaleString('en-US')
 
 .bars__row {
   display: grid;
-  grid-template-columns: 30px 10px 1fr auto 52px;
+  /* share column widened and pushed off the money column: at 22px
+     "₽59,445,540" and "31.5%" read as a single figure. */
+  grid-template-columns: 30px 10px minmax(0, 1fr) auto 58px;
   grid-template-areas: 'sprite swatch label value share' '. . track track track';
   align-items: center;
   gap: 4px 10px;
@@ -213,6 +215,7 @@ const num = (n: number) => n.toLocaleString('en-US')
 
 .bars__share {
   grid-area: share;
+  margin-left: 16px;
   font-size: 12px;
   font-weight: 600;
   text-align: right;
